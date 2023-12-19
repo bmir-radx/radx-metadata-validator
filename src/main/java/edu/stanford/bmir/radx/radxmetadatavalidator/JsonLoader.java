@@ -15,10 +15,7 @@ public class JsonLoader {
             return objectMapper.readTree(Objects.requireNonNull(
                 JsonLoader.class.getClassLoader().getResourceAsStream(jsonFilePath)));
         } catch (IOException e) {
-            //TODO: throw own error
-            e.printStackTrace();
-            return null;
+            throw new JsonParseException("The provided file " + jsonFilePath + " is not a valid JSON file.");
         }
     }
-
 }

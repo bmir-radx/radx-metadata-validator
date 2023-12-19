@@ -39,7 +39,7 @@
     "Data Type Test": "https://schema.metadatacenter.org/properties/afa1ca8e-cfa4-409e-96eb-6ca0219243a5"
   },
   "Data Type Test": {
-    "@value":"9",
+    "@value":9,
     "@type": "xsd:int"
   },
   "schema:isBasedOn": "https://repo.metadatacenter.org/templates/58dc2489-53aa-41f8-82de-7acda6039818",

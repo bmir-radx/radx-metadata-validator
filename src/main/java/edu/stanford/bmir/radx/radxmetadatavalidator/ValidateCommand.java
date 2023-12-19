@@ -1,9 +1,5 @@
 package edu.stanford.bmir.radx.radxmetadatavalidator;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jsonschema.core.report.ProcessingReport;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.JsonValidatorComponent;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.SchemaValidatorComponent;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

@@ -55,6 +55,7 @@ public class SchemaValidatorComponent {
       var messageContent = message.getMessage();
       var jsonNode = message.asJson();
       var schemaNode = jsonNode.path(SCHEMA);
+      //TODO: need to modify the pointer?
       var pointer = schemaNode.path(POINTER).toString();
       if (logLevel.equals(WARNING)) {
         handler.accept(new ValidationResult(ValidationLevel.WARNING, ValidationName.SCHEMA_VALIDATION, messageContent, pointer));

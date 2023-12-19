@@ -2,13 +2,13 @@ package edu.stanford.bmir.radx.radxmetadatavalidator;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.CedarSchemaValidatorComponent;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.JsonValidatorComponent;
 import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.RequiredFieldValidatorComponent;
 import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.SchemaValidatorComponent;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
+import org.metadatacenter.artifacts.model.reader.ArtifactParseException;
 import org.metadatacenter.artifacts.model.reader.JsonSchemaArtifactReader;
-import org.metadatacenter.artifacts.model.visitors.TemplateValueConstraintsReporter;
+import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
@@ -18,16 +18,13 @@ import java.util.function.Consumer;
 
 @Component
 public class Validator {
-  private final JsonValidatorComponent jsonValidatorComponent;
   private final SchemaValidatorComponent schemaValidatorComponent;
   private final CedarSchemaValidatorComponent cedarSchemaValidatorComponent;
   private final RequiredFieldValidatorComponent requiredFieldValidatorComponent;
 
-  public Validator(JsonValidatorComponent jsonValidatorComponent,
-                   SchemaValidatorComponent schemaValidatorComponent,
+  public Validator(SchemaValidatorComponent schemaValidatorComponent,
                    CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
                    RequiredFieldValidatorComponent requiredFieldValidatorComponent) {
-    this.jsonValidatorComponent = jsonValidatorComponent;
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
@@ -37,31 +34,45 @@ public class Validator {
   public ValidationReport validateInstance(Path templateFilePath, Path instanceFilePath) throws Exception {
     var results = new ArrayList<ValidationResult>();
     Consumer<ValidationResult> consumer = results::add;
-    var templateNode = JsonLoader.loadJson(String.valueOf(templateFilePath));
-    var instanceNode = JsonLoader.loadJson(String.valueOf(instanceFilePath));
 
-    //Check the instance file is JSON
-    jsonValidatorComponent.validate(instanceFilePath, consumer);
+    try{
+      //Check the provided files are JSON file and get the templateNode and instanceNode
+      var templateNode = JsonLoader.loadJson(String.valueOf(templateFilePath));
+      var instanceNode = JsonLoader.loadJson(String.valueOf(instanceFilePath));
 
-    if (templateNode != null && instanceNode != null){
       //Check the template is CEDAR model template
       cedarSchemaValidatorComponent.validate(templateNode, consumer);
 
-      //Compare instance JSON schema against template's
-      schemaValidatorComponent.validateAgainstSchema(templateNode, instanceNode, consumer);
+      try{
+        //Read template and get valueConstraints map
+        JsonSchemaArtifactReader jsonSchemaArtifactReader = new JsonSchemaArtifactReader();
+        TemplateSchemaArtifact templateSchemaArtifact = jsonSchemaArtifactReader.readTemplateSchemaArtifact((ObjectNode) templateNode);
+        TemplateReporter templateValueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
-      //Read template and get valueConstraints map
-      JsonSchemaArtifactReader jsonSchemaArtifactReader = new JsonSchemaArtifactReader();
-      //TODO:handle the ArtifactParseException
-      TemplateSchemaArtifact templateSchemaArtifact = jsonSchemaArtifactReader.readTemplateSchemaArtifact((ObjectNode) templateNode);
-      TemplateValueConstraintsReporter templateValueConstraintsReporter = new TemplateValueConstraintsReporter(templateSchemaArtifact);
 
-      //Read instance and get values map
-      TemplateInstanceArtifact templateInstanceArtifact = jsonSchemaArtifactReader.readTemplateInstanceArtifact((ObjectNode) instanceNode);
-      TemplateInstanceValuesReporter templateInstanceValuesReporter = new TemplateInstanceValuesReporter(templateInstanceArtifact);
-      templateInstanceValuesReporter.printValues(templateInstanceValuesReporter.getValues());
-      //Check required fields
-      requiredFieldValidatorComponent.validate(templateValueConstraintsReporter, templateInstanceValuesReporter, consumer);
+        //Read instance and get values map
+        TemplateInstanceArtifact templateInstanceArtifact = jsonSchemaArtifactReader.readTemplateInstanceArtifact((ObjectNode) instanceNode);
+        TemplateInstanceValuesReporter templateInstanceValuesReporter = new TemplateInstanceValuesReporter(templateInstanceArtifact);
+        templateInstanceValuesReporter.printValues(templateInstanceValuesReporter.getValues());
+
+        //TODO: Check the schema:isBasedOn of the instance matches template ID?
+        var templateID = templateSchemaArtifact.jsonLdId();
+        var instanceID = templateInstanceArtifact.isBasedOn();
+
+        //Compare instance JSON schema against template's
+        schemaValidatorComponent.validateAgainstSchema(templateNode, instanceNode, consumer);
+
+        //Check required fields
+        requiredFieldValidatorComponent.validate(templateValueConstraintsReporter, templateInstanceValuesReporter, consumer);
+      } catch (ArtifactParseException e){
+        String errorMessage = e.getMessage();
+        String pointer = e.getPath();
+        //TODO: modify the validation name
+        consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.JSON_VALIDATION, errorMessage, pointer));
+      }
+    } catch (JsonParseException e) {
+      String errorMessage = e.getMessage();
+      consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.JSON_VALIDATION, errorMessage, ""));
     }
 
     var comparator = Comparator.comparing(ValidationResult::validationLevel)
