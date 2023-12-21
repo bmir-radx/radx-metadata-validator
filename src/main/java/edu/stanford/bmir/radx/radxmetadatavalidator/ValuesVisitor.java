@@ -34,9 +34,9 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
   @Override
   public void visitFieldInstanceArtifact(FieldInstanceArtifact fieldInstanceArtifact, String path) {
     Map<SchemaProperties, Object> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.VALUE, fieldInstanceArtifact.jsonLdValue());
-    fieldValue.put(SchemaProperties.ID, fieldInstanceArtifact.jsonLdId());
-    fieldValue.put(SchemaProperties.LABEL, fieldInstanceArtifact.label());
+    fieldValue.put(SchemaProperties.VALUE, fieldInstanceArtifact.jsonLdValue().orElse(null));
+    fieldValue.put(SchemaProperties.ID, fieldInstanceArtifact.jsonLdId().orElse(null));
+    fieldValue.put(SchemaProperties.LABEL, fieldInstanceArtifact.label().orElse(null));
     values.put(path, fieldValue);
   }
 }

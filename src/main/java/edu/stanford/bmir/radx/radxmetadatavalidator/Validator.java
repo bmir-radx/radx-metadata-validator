@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.CedarSchemaValidatorComponent;
 import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.RequiredFieldValidatorComponent;
 import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.SchemaValidatorComponent;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.SchemaValidatorComponent2;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
 import org.metadatacenter.artifacts.model.reader.ArtifactParseException;
@@ -67,8 +68,8 @@ public class Validator {
       } catch (ArtifactParseException e){
         String errorMessage = e.getMessage();
         String pointer = e.getPath();
-        //TODO: modify the validation name
-        consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.JSON_VALIDATION, errorMessage, pointer));
+        //TODO: modify the validation name?
+        consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.ARTIFACT_SCHEMA_VALIDATION, errorMessage, pointer));
       }
     } catch (JsonParseException e) {
       String errorMessage = e.getMessage();

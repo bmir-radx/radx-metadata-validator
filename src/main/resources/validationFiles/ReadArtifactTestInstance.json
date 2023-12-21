@@ -42,7 +42,7 @@
     "Element B": "https://schema.metadatacenter.org/properties/e2fc7710-060b-4036-9491-b5e1e067e80c"
   },
   "Text Field": {
-    "@value": "This is a text field"
+
   },
   "Numeric Field": {
     "@value": "2",

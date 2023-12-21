@@ -38,30 +38,27 @@ public class SchemaValidatorComponent {
     parseProcessingReportMessages(report, handler);
   }
 
-  public String extractProcessingReportMessages(ProcessingReport report) {
-    StringBuilder msg = new StringBuilder();
-    if (report.isSuccess()) {
-      msg.append("The instance you uploaded is valid. \n");}
-
-    for (final ProcessingMessage reportLine : report) {
-      msg.append(reportLine.getMessage()).append("\n");
-    }
-    return msg.toString();
-  }
-
   public void parseProcessingReportMessages(ProcessingReport report, Consumer<ValidationResult> handler){
     for (ProcessingMessage message : report) {
       var logLevel = message.getLogLevel().toString();
       var messageContent = message.getMessage();
       var jsonNode = message.asJson();
       var schemaNode = jsonNode.path(SCHEMA);
-      //TODO: need to modify the pointer?
-      var pointer = schemaNode.path(POINTER).toString();
+      var pointer = normalizePointer(schemaNode.path(POINTER).toString());
       if (logLevel.equals(WARNING)) {
         handler.accept(new ValidationResult(ValidationLevel.WARNING, ValidationName.SCHEMA_VALIDATION, messageContent, pointer));
       } else if (logLevel.equals(ERROR)) {
         handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, messageContent, pointer));
       }
+    }
+  }
+
+  private String normalizePointer(String pointer){
+    pointer = pointer.trim();
+    if(pointer.startsWith("\"/properties")){
+      return pointer.replaceFirst("/properties", "");
+    } else{
+      return pointer;
     }
   }
 }

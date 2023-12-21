@@ -32,8 +32,8 @@ public class RadxMetadataValidatorApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		// java-schema-validator
 		var validator = context.getBean(Validator.class);
-		Path template = Path.of("validationFiles/ControlledTermsTemplate.json");
-		Path instance = Path.of("validationFiles/DataTypeInstance.json");
+		Path template = Path.of("validationFiles/ReadArtifactTestTemplate.json");
+		Path instance = Path.of("validationFiles/ReadArtifactTestInstance.json");
 		var report = validator.validateInstance(template, instance);
 
 		var validationReportWriter = context.getBean(ValidationReportWriter.class);

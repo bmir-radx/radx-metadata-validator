@@ -15,10 +15,10 @@ import java.util.function.Consumer;
 public class RequiredFieldValidatorComponent {
   public void validate(TemplateReporter valueConstraintsReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<ValidationResult> handler){
     var values = valuesReporter.getValues();
-    //Iterate the valueConstraintsReporter
-    for (Map.Entry<String, Map<SchemaProperties, Object>> entry : values.entrySet()) {
-      String path = entry.getKey();
-      Map<SchemaProperties, Object> fieldValue = entry.getValue();
+    //Iterate the valuesReporter
+    for (Map.Entry<String, Map<SchemaProperties, Object>> fieldEntry : values.entrySet()) {
+      String path = fieldEntry.getKey();
+      Map<SchemaProperties, Object> fieldValue = fieldEntry.getValue();
       var valueConstraint = valueConstraintsReporter.getValueConstraints(path);
       //If it is required
       if(valueConstraint.isPresent()){
@@ -29,7 +29,7 @@ public class RequiredFieldValidatorComponent {
               handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "The field is required but got null", path));
             }
           } else if (valueConstraint.get().isControlledTermValueConstraint()){             //if it is controlled term, check @label and @id
-            if (fieldValue.get(SchemaProperties.LABEL) == null){
+            if (fieldValue.get(SchemaProperties.LABEL) == null || fieldValue.get(SchemaProperties.ID) == null){
               handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "The field is required but got null", path));
             }
           } else {
