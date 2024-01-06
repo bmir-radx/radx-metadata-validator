@@ -24,8 +24,8 @@ public class TemplateInstanceValuesReporter {
 
       Map<SchemaProperties, Object> innerMap = pointer.getValue();
       for (Map.Entry<SchemaProperties, Object> property : innerMap.entrySet()) {
-        System.out.println("  Property: " + property.getKey());
-        System.out.println("  Value: " + property.getValue());
+        System.out.println(" -Property: " + property.getKey());
+        System.out.println(" -Value: " + property.getValue());
       }
     }
   }

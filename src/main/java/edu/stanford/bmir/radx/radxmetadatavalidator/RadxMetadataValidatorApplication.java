@@ -30,7 +30,6 @@ public class RadxMetadataValidatorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		// java-schema-validator
 		var validator = context.getBean(Validator.class);
 		Path template = Path.of("validationFiles/ReadArtifactTestTemplate.json");
 		Path instance = Path.of("validationFiles/ReadArtifactTestInstance.json");
@@ -42,55 +41,6 @@ public class RadxMetadataValidatorApplication implements CommandLineRunner {
 
 		var validateCommand = context.getBean(ValidateCommand.class);
 		exitCode = new CommandLine(validateCommand, iFactory).execute(args);
-
-		// cedar-artifact-library
-//		var schemaArtifactCreator = context.getBean(SchemaArtifactCreator.class);
-//		TemplateSchemaArtifact templateSchemaArtifact = schemaArtifactCreator.createTemplateArtifact((ObjectNode) templateSchema);
-//		System.out.println("Element names: " + templateSchemaArtifact.getElementNames());
-//		System.out.println("Child names: " + templateSchemaArtifact.getChildNames());
-//		var elementSchemaArtifact = templateSchemaArtifact.getElementSchemaArtifact("Element A");
-//		System.out.println(elementSchemaArtifact.getFieldNames()) ;
-//		var fieldSchemaArtifact = elementSchemaArtifact.getFieldSchemaArtifact("Field A in Element A");
-//		System.out.println("Is requried: " + fieldSchemaArtifact.requiredValue());
-//		System.out.println("Min length: " + fieldSchemaArtifact.minLength());
-//		System.out.println("regex: " + fieldSchemaArtifact.regex());
-//		System.out.println("Type: " + fieldSchemaArtifact.jsonSchemaType());
-//		System.out.println("Value Constrains: " + fieldSchemaArtifact.valueConstraints());
-//		System.out.println("Is static: " + fieldSchemaArtifact.isStatic());
-
-//		var fieldSchemaArtifact2 = templateSchemaArtifact.getFieldSchemaArtifact("Numeric Field");
-//		System.out.println(fieldSchemaArtifact2.valueConstraints());
-//
-//
-//		TemplateInstanceArtifact templateInstanceArtifact = schemaArtifactCreator.createTemplateInstanceArtifact((ObjectNode) templateInstance);
-//		var fieldInstancesMap = templateInstanceArtifact.fieldInstances();
-//		fieldInstancesMap.forEach((fieldInstance, fieldInstanceArtifactList)-> {
-//			System.out.println("field name: ---------" + fieldInstance);
-//			fieldInstanceArtifactList.forEach((fieldInstanceArtifact) ->{
-//			fieldInstanceArtifact.jsonLdValue();
-//			fieldInstanceArtifact.label();
-//			});
-//		});
-//
-//		System.out.println("field instances map: " + fieldInstancesMap);
-//
-//		var elementInstancesMap = templateInstanceArtifact.elementInstances();
-//		elementInstancesMap.forEach((name, elementSchemaArtifactList)-> {
-//			System.out.println("element name: ---------" + name);
-//			elementSchemaArtifactList.forEach(System.out::println);
-//		});
-
-//		System.out.println("element instances map: " + elementInstancesMap);
-
-		//load constraints
-//		var constrainsMapper = context.getBean(ConstraintsMapper.class);
-//		System.out.println("Field Constraints:-----------------------" + constrainsMapper.getFieldConstraints(templateSchemaArtifact));
-//		System.out.println("Element Constraints: ---------------------" + constrainsMapper.getElementConstraints(templateSchemaArtifact));
-
-
-		// cedar-model-validation-library
-//		CedarValidator cedarValidator = new CedarValidator();
-//		System.out.println(cedarValidator.validateTemplateInstance(templateInstance, templateSchema));
 	}
 
 	public int getExitCode() {

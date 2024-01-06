@@ -24,7 +24,7 @@ public class RequiredFieldValidatorComponent {
       if(valueConstraint.isPresent()){
         if(valueConstraint.get().requiredValue()){
           // If it is link type, check @id
-          if (!valueConstraint.get().isLinkValueConstraint()){
+          if (valueConstraint.get().isLinkValueConstraint()){
             if(fieldValue.get(SchemaProperties.ID) == null){
               handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "The field is required but got null", path));
             }

@@ -36,17 +36,21 @@
     "skos:notation": {
       "@type": "xsd:string"
     },
-    "Untitled": "https://schema.metadatacenter.org/properties/5c31cd36-43de-4f9f-9092-e9c439044b0c"
+    "Text": "https://schema.metadatacenter.org/properties/5c31cd36-43de-4f9f-9092-e9c439044b0c",
+    "Link": "https://schema.metadatacenter.org/properties/4e6652ec-2cf6-4c45-86c3-8d2424061167",
+    "Controlled term": "https://schema.metadatacenter.org/properties/20e30881-7514-4dce-ad91-d471dfab03e7"
   },
-  "Untitled": {
+  "Text": {
     "@value": null
   },
+  "Link": {},
+  "Controlled term": {},
   "schema:isBasedOn": "https://repo.metadatacenter.org/templates/6e60fd0d-00bc-45cf-9df5-966f855e5e04",
   "schema:name": "Required metadata",
   "schema:description": "",
-  "pav:createdOn": "2023-12-06T12:16:47-08:00",
+  "pav:createdOn": "2024-01-04T14:17:55-08:00",
   "pav:createdBy": "https://metadatacenter.org/users/6124554b-9c83-443c-8207-241d75b82f44",
-  "pav:lastUpdatedOn": "2023-12-06T12:16:47-08:00",
+  "pav:lastUpdatedOn": "2024-01-04T14:17:55-08:00",
   "oslc:modifiedBy": "https://metadatacenter.org/users/6124554b-9c83-443c-8207-241d75b82f44",
-  "@id": "https://repo.metadatacenter.org/template-instances/ba53deb6-e453-4e25-b424-f5f52194d07a"
+  "@id": "https://repo.metadatacenter.org/template-instances/71d4accb-8b1b-4851-a2f0-ea4e6c9f6c5e"
 }

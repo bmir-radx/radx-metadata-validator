@@ -43,19 +43,7 @@ public class ValidateCommand implements Callable<Integer> {
     var out = getOutputStream();
     var report = validator.validateInstance(template, instance);
 
-
-//    JsonNode templateNode = JsonLoader.loadJson(String.valueOf(template));
-//    JsonNode instanceNode = JsonLoader.loadJson(String.valueOf(instance));
-//    ProcessingReport report = schemaValidatorComponent.validateAgainstSchema(templateNode, instanceNode);
-//    schemaValidatorComponent.parseProcessingReportMessages(report);
-//    var errors = schemaValidatorComponent.getErrors();
-//    var warnings = schemaValidatorComponent.getWarnings();
-//    var validationLevel = schemaValidatorComponent.getValidationLevel();
-
     validationReportWriter.writeReport(report, out);
-
-
-//    out.write(parsedReport.getBytes());
 
     if(out != System.out) {
       out.close();

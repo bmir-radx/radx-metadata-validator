@@ -37,11 +37,11 @@ public class Validator {
     Consumer<ValidationResult> consumer = results::add;
 
     try{
-      //Check the provided files are JSON file and get the templateNode and instanceNode
+      //validate the provided files are JSON file and get the templateNode and instanceNode
       var templateNode = JsonLoader.loadJson(String.valueOf(templateFilePath));
       var instanceNode = JsonLoader.loadJson(String.valueOf(instanceFilePath));
 
-      //Check the template is CEDAR model template
+      //validate the template is CEDAR model template
       cedarSchemaValidatorComponent.validate(templateNode, consumer);
 
       try{
@@ -50,20 +50,19 @@ public class Validator {
         TemplateSchemaArtifact templateSchemaArtifact = jsonSchemaArtifactReader.readTemplateSchemaArtifact((ObjectNode) templateNode);
         TemplateReporter templateValueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
-
         //Read instance and get values map
         TemplateInstanceArtifact templateInstanceArtifact = jsonSchemaArtifactReader.readTemplateInstanceArtifact((ObjectNode) instanceNode);
         TemplateInstanceValuesReporter templateInstanceValuesReporter = new TemplateInstanceValuesReporter(templateInstanceArtifact);
-        templateInstanceValuesReporter.printValues(templateInstanceValuesReporter.getValues());
+//        templateInstanceValuesReporter.printValues(templateInstanceValuesReporter.getValues());
 
-        //TODO: Check the schema:isBasedOn of the instance matches template ID?
+        //TODO: validate the schema:isBasedOn of the instance matches template ID?
         var templateID = templateSchemaArtifact.jsonLdId();
         var instanceID = templateInstanceArtifact.isBasedOn();
 
         //Compare instance JSON schema against template's
         schemaValidatorComponent.validateAgainstSchema(templateNode, instanceNode, consumer);
 
-        //Check required fields
+        //validate required fields
         requiredFieldValidatorComponent.validate(templateValueConstraintsReporter, templateInstanceValuesReporter, consumer);
       } catch (ArtifactParseException e){
         String errorMessage = e.getMessage();

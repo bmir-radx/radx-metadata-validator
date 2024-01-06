@@ -28,7 +28,6 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
 
   @Override
   public void visitElementInstanceArtifact(ElementInstanceArtifact elementInstanceArtifact, String path) {
-
   }
 
   @Override
