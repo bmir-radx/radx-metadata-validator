@@ -1,10 +1,8 @@
 package edu.stanford.bmir.radx.radxmetadatavalidator;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.CedarSchemaValidatorComponent;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.RequiredFieldValidatorComponent;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.SchemaValidatorComponent;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.SchemaValidatorComponent2;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.*;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
 import org.metadatacenter.artifacts.model.reader.ArtifactParseException;
@@ -22,13 +20,15 @@ public class Validator {
   private final SchemaValidatorComponent schemaValidatorComponent;
   private final CedarSchemaValidatorComponent cedarSchemaValidatorComponent;
   private final RequiredFieldValidatorComponent requiredFieldValidatorComponent;
+  private final DataTypeValidatorComponent dataTypeValidatorComponent;
 
   public Validator(SchemaValidatorComponent schemaValidatorComponent,
                    CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
-                   RequiredFieldValidatorComponent requiredFieldValidatorComponent) {
+                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
+    this.dataTypeValidatorComponent = dataTypeValidatorComponent;
   }
 
 
@@ -44,7 +44,7 @@ public class Validator {
       //validate the template is CEDAR model template
       cedarSchemaValidatorComponent.validate(templateNode, consumer);
 
-      try{
+      if(results.isEmpty()){
         //Read template and get valueConstraints map
         JsonSchemaArtifactReader jsonSchemaArtifactReader = new JsonSchemaArtifactReader();
         TemplateSchemaArtifact templateSchemaArtifact = jsonSchemaArtifactReader.readTemplateSchemaArtifact((ObjectNode) templateNode);
@@ -53,7 +53,6 @@ public class Validator {
         //Read instance and get values map
         TemplateInstanceArtifact templateInstanceArtifact = jsonSchemaArtifactReader.readTemplateInstanceArtifact((ObjectNode) instanceNode);
         TemplateInstanceValuesReporter templateInstanceValuesReporter = new TemplateInstanceValuesReporter(templateInstanceArtifact);
-//        templateInstanceValuesReporter.printValues(templateInstanceValuesReporter.getValues());
 
         //TODO: validate the schema:isBasedOn of the instance matches template ID?
         var templateID = templateSchemaArtifact.jsonLdId();
@@ -62,17 +61,26 @@ public class Validator {
         //Compare instance JSON schema against template's
         schemaValidatorComponent.validateAgainstSchema(templateNode, instanceNode, consumer);
 
-        //validate required fields
-        requiredFieldValidatorComponent.validate(templateValueConstraintsReporter, templateInstanceValuesReporter, consumer);
-      } catch (ArtifactParseException e){
-        String errorMessage = e.getMessage();
-        String pointer = e.getPath();
-        //TODO: modify the validation name?
-        consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.ARTIFACT_SCHEMA_VALIDATION, errorMessage, pointer));
+        if(results.isEmpty()){
+          //validate required fields
+          requiredFieldValidatorComponent.validate(templateValueConstraintsReporter, templateInstanceValuesReporter, consumer);
+
+          //validate data type
+          dataTypeValidatorComponent.validate(templateValueConstraintsReporter, templateInstanceValuesReporter, consumer);
+        }
+
       }
     } catch (JsonParseException e) {
+      consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.JSON_VALIDATION, e.getMessage(), ""));
+    } catch (ArtifactParseException e) {
       String errorMessage = e.getMessage();
-      consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.JSON_VALIDATION, errorMessage, ""));
+      String pointer = e.getPath();
+      //TODO: modify the validation name?
+      consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.ARTIFACT_SCHEMA_VALIDATION, errorMessage, pointer));
+    } catch (ProcessingException e){
+      consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, e.getMessage(), ""));
+    } catch (Exception e){
+      consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.CEDAR_MODEL_VALIDATION, e.getMessage(), ""));
     }
 
     var comparator = Comparator.comparing(ValidationResult::validationLevel)
