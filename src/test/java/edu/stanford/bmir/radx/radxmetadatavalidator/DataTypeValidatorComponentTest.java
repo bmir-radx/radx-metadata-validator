@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
 
 public class DataTypeValidatorComponentTest {
   private List<ValidationResult> results;

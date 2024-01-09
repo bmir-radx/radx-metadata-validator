@@ -54,6 +54,7 @@ public class Validator {
         TemplateInstanceArtifact templateInstanceArtifact = jsonSchemaArtifactReader.readTemplateInstanceArtifact((ObjectNode) instanceNode);
         TemplateInstanceValuesReporter templateInstanceValuesReporter = new TemplateInstanceValuesReporter(templateInstanceArtifact);
 
+
         //TODO: validate the schema:isBasedOn of the instance matches template ID?
         var templateID = templateSchemaArtifact.jsonLdId();
         var instanceID = templateInstanceArtifact.isBasedOn();
@@ -80,7 +81,9 @@ public class Validator {
     } catch (ProcessingException e){
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, e.getMessage(), ""));
     } catch (Exception e){
-      consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.CEDAR_MODEL_VALIDATION, e.getMessage(), ""));
+      for (StackTraceElement element : e.getStackTrace()) {
+        System.out.println(element.toString());
+      }
     }
 
     var comparator = Comparator.comparing(ValidationResult::validationLevel)

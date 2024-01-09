@@ -39,7 +39,7 @@ public class SchemaValidatorComponent2 {
       var message = validationMessage.getMessage();
       var schemaPath = validationMessage.getSchemaPath();
       var code = validationMessage.getCode();
-//      System.out.println("Code" + code + " Path " + path + " schema path: " + schemaPath + " message: " + message);
+      System.out.println("Code" + code + " Path " + path + " schema path: " + schemaPath + " message: " + message);
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, message, schemaPath));
     }
   }

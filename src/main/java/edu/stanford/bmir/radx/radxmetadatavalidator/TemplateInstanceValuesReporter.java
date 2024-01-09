@@ -6,16 +6,22 @@ import java.util.Map;
 
 public class TemplateInstanceValuesReporter {
   private final Map<String, Map<SchemaProperties, Object>> values;
+  private final Map<String, Integer> cardinals;
 
   public TemplateInstanceValuesReporter(TemplateInstanceArtifact templateInstanceArtifact){
     ValuesVisitor valuesVisitor = new ValuesVisitor();
     templateInstanceArtifact.accept(valuesVisitor);
 
     values = Map.copyOf(valuesVisitor.getValues());
+    cardinals = Map.copyOf(valuesVisitor.getCardinals());
   }
 
   public Map<String, Map<SchemaProperties, Object>> getValues(){
     return this.values;
+  }
+
+  public Map<String, Integer> getCardinals() {
+    return cardinals;
   }
 
   public void printValues(Map<String, Map<SchemaProperties, Object>> values){

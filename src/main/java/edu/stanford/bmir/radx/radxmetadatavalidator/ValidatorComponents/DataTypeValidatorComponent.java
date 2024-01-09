@@ -36,7 +36,7 @@ public class DataTypeValidatorComponent {
           //If it is text field, validate regex, length and literals
           if (valueConstraint.get().isTextValueConstraint()){
             validateTextField(value, valueConstraint.get(), handler, path);
-          //If it is numeric filed, validate range, data type and @type value
+          //If it is numeric filed, validate range, data type, decimal place and @type value
           } else if (valueConstraint.get().isNumericValueConstraint()) {
             validateNumericField(value, type, valueConstraint.get(), handler, path);
           //If it is temporal field, validate temporal data type and @type value
@@ -45,6 +45,7 @@ public class DataTypeValidatorComponent {
           }
         }
 
+        //If it is link field, validate input is valid URL
         var id = fieldValue.get(SchemaProperties.ID);
         if (id != null){
           if (valueConstraint.get().isLinkValueConstraint()){
