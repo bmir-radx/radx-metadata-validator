@@ -1,17 +1,11 @@
 package edu.stanford.bmir.radx.radxmetadatavalidator;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jsonschema.core.report.ProcessingReport;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.SchemaValidatorComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import picocli.CommandLine;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @SpringBootApplication
 public class RadxMetadataValidatorApplication implements CommandLineRunner {
@@ -30,15 +24,6 @@ public class RadxMetadataValidatorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		var validator = context.getBean(Validator.class);
-		Path template = Path.of("validationFiles/ReadArtifactTestTemplate.json");
-		Path instance = Path.of("validationFiles/ReadArtifactTestInstance.json");
-		var report = validator.validateInstance(template, instance);
-
-		var validationReportWriter = context.getBean(ValidationReportWriter.class);
-		var out = Files.newOutputStream(Path.of("target/output.txt"));
-		validationReportWriter.writeReport(report, out);
-
 		var validateCommand = context.getBean(ValidateCommand.class);
 		exitCode = new CommandLine(validateCommand, iFactory).execute(args);
 	}

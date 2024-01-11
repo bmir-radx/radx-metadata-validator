@@ -23,19 +23,20 @@ public class RequiredFieldValidatorComponent {
       //If it is required
       if(valueConstraint.isPresent()){
         if(valueConstraint.get().requiredValue()){
+          String errorMessage = "The field is required but got null";
           // If it is link type, check @id
           if (valueConstraint.get().isLinkValueConstraint()){
             if(fieldValue.get(SchemaProperties.ID) == null){
-              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "The field is required but got null", path));
+              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, errorMessage, path));
             }
           } else if (valueConstraint.get().isControlledTermValueConstraint()){             //if it is controlled term, check @label and @id
             if (fieldValue.get(SchemaProperties.LABEL) == null || fieldValue.get(SchemaProperties.ID) == null){
-              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "The field is required but got null", path));
+              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, errorMessage, path));
             }
           } else {
             //For others, check @value
             if (fieldValue.get(SchemaProperties.VALUE) == null){
-              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "The field is required but got null", path));
+              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, errorMessage, path));
             }
           }
         }
