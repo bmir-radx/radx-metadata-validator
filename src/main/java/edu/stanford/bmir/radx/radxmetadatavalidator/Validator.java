@@ -1,8 +1,12 @@
 package edu.stanford.bmir.radx.radxmetadatavalidator;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.*;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.CedarSchemaValidatorComponent;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.DataTypeValidatorComponent;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.RequiredFieldValidatorComponent;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.SchemaValidatorComponent;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
 import org.metadatacenter.artifacts.model.reader.ArtifactParseException;
@@ -35,10 +39,15 @@ public class Validator {
   public ValidationReport validateInstance(Path templateFilePath, Path instanceFilePath) throws Exception {
     var results = new ArrayList<ValidationResult>();
     Consumer<ValidationResult> consumer = results::add;
+    JsonNode templateNode;
 
     try{
       //validate the provided files are JSON file and get the templateNode and instanceNode
-      var templateNode = JsonLoader.loadJson(String.valueOf(templateFilePath));
+      if(templateFilePath != null) {
+        templateNode = JsonLoader.loadJson(String.valueOf(templateFilePath));
+      } else {
+        templateNode = JsonLoader.loadJson((Constants.RADX_TEMPLATE_SCHEMA_PATH));
+      }
       var instanceNode = JsonLoader.loadJson(String.valueOf(instanceFilePath));
 
       //validate the template is CEDAR model template

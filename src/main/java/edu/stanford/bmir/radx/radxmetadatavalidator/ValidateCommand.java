@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 public class ValidateCommand implements Callable<Integer> {
   private final Validator validator;
   private final ValidationReportWriter validationReportWriter;
-  @Option(names = "--template", required = true, description = "Path to the JSON template file.")
+  @Option(names = "--template", description = "Path to the JSON template file.")
   private Path template;
 
   @Option(names = "--instance", required = true, description = "Path to the JSON instance file.")
