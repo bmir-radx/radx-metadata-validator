@@ -3,10 +3,7 @@ package edu.stanford.bmir.radx.radxmetadatavalidator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.CedarSchemaValidatorComponent;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.DataTypeValidatorComponent;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.RequiredFieldValidatorComponent;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.SchemaValidatorComponent;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.*;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
 import org.metadatacenter.artifacts.model.reader.ArtifactParseException;
@@ -63,13 +60,12 @@ public class Validator {
         TemplateInstanceArtifact templateInstanceArtifact = jsonSchemaArtifactReader.readTemplateInstanceArtifact((ObjectNode) instanceNode);
         TemplateInstanceValuesReporter templateInstanceValuesReporter = new TemplateInstanceValuesReporter(templateInstanceArtifact);
 
-
-        //TODO: validate the schema:isBasedOn of the instance matches template ID?
+        //TODO: Sanitation check - validate the schema:isBasedOn of the instance matches template ID
         var templateID = templateSchemaArtifact.jsonLdId();
         var instanceID = templateInstanceArtifact.isBasedOn();
 
         //Compare instance JSON schema against template's
-        schemaValidatorComponent.validateAgainstSchema(templateNode, instanceNode, consumer);
+        schemaValidatorComponent.validate(templateNode, instanceNode, consumer);
 
         if(results.isEmpty()){
           //validate required fields

@@ -24,6 +24,15 @@ public class RadxMetadataValidatorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+//		var validator = context.getBean(Validator.class);
+//		Path template = Path.of("validationFiles/ControlledTermsTemplate.json");
+//		Path instance = Path.of("validationFiles/ControlledTermsInstance.json");
+//		var report = validator.validateInstance(template, instance);
+//
+//		var validationReportWriter = context.getBean(ValidationReportWriter.class);
+//		var out = Files.newOutputStream(Path.of("target/output.txt"));
+//		validationReportWriter.writeReport(report, out);
+
 		var validateCommand = context.getBean(ValidateCommand.class);
 		exitCode = new CommandLine(validateCommand, iFactory).execute(args);
 	}

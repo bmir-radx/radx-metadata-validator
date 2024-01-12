@@ -15,13 +15,13 @@ import java.util.concurrent.Callable;
 public class ValidateCommand implements Callable<Integer> {
   private final Validator validator;
   private final ValidationReportWriter validationReportWriter;
-  @Option(names = "--template", description = "Path to the JSON template file.")
+  @Option(names = "--template", description = "Path to the JSON template file. This is optional. If it is not provided then the Radx Metadata Specification template will be utilized by default.")
   private Path template;
 
-  @Option(names = "--instance", required = true, description = "Path to the JSON instance file.")
+  @Option(names = "--instance", required = true, description = "Path to the JSON instance file that you want to validate.")
   private Path instance;
 
-  @Option(names = "--out", description = "Path to an output file where the validation report will be written.")
+  @Option(names = "--out", description = "Path to an output file where the validation report will be written. This is optional. If it is not provided then the report will be written to stdout.")
   private Path out;
 
   public ValidateCommand(Validator validator, ValidationReportWriter validationReportWriter) {
@@ -43,6 +43,7 @@ public class ValidateCommand implements Callable<Integer> {
     var out = getOutputStream();
     var report = validator.validateInstance(template, instance);
 
+    validationReportWriter.writeReportHeader(out);
     validationReportWriter.writeReport(report, out);
 
     if(out != System.out) {

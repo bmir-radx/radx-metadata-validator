@@ -221,6 +221,7 @@ public class DataTypeValidatorComponent {
     var id = fieldValue.get(SchemaProperties.ID);
     var label = fieldValue.get(SchemaProperties.LABEL);
 
+    //TODO: check the present of @id and @rdfs:label
     // Check if label is not null
     if (label == null) {
       String message = "\"rdfs:label\" can not be null";

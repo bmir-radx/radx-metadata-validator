@@ -6,8 +6,6 @@ import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
-import edu.stanford.bmir.radx.radxmetadatavalidator.Constants;
-import edu.stanford.bmir.radx.radxmetadatavalidator.JsonLoader;
 import edu.stanford.bmir.radx.radxmetadatavalidator.ValidationLevel;
 import edu.stanford.bmir.radx.radxmetadatavalidator.ValidationName;
 import edu.stanford.bmir.radx.radxmetadatavalidator.ValidationResult;
@@ -23,16 +21,7 @@ public class SchemaValidatorComponent {
   private final String SCHEMA = "schema";
   private final String POINTER = "pointer";
 
-  static{
-    schema = JsonLoader.loadJson(Constants.RADX_TEMPLATE_SCHEMA_PATH);
-  }
-
-
-  public void validate(JsonNode instance, Consumer<ValidationResult> handler) throws ProcessingException {
-    validateAgainstSchema(schema, instance, handler);
-  }
-
-  public void validateAgainstSchema(JsonNode schema, JsonNode instance, Consumer<ValidationResult> handler) throws ProcessingException {
+  public void validate(JsonNode schema, JsonNode instance, Consumer<ValidationResult> handler) throws ProcessingException {
     JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
     var report = validator.validate(schema, instance);
     parseProcessingReportMessages(report, handler);
