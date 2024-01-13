@@ -3,9 +3,10 @@ package edu.stanford.bmir.radx.radxmetadatavalidator;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class TemplateInstanceValuesReporter {
-  private final Map<String, Map<SchemaProperties, Object>> values;
+  private final Map<String, Map<SchemaProperties, Optional<?>>> values;
   private final Map<String, Integer> cardinals;
 
   public TemplateInstanceValuesReporter(TemplateInstanceArtifact templateInstanceArtifact){
@@ -16,7 +17,7 @@ public class TemplateInstanceValuesReporter {
     cardinals = Map.copyOf(valuesVisitor.getCardinals());
   }
 
-  public Map<String, Map<SchemaProperties, Object>> getValues(){
+  public Map<String, Map<SchemaProperties, Optional<?>>> getValues(){
     return this.values;
   }
 

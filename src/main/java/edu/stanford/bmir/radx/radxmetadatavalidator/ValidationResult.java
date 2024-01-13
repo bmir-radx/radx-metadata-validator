@@ -1,8 +1,8 @@
 package edu.stanford.bmir.radx.radxmetadatavalidator;
 
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidationLevel;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidationName;
 import jakarta.annotation.Nonnull;
+
+import java.util.Objects;
 
 public class ValidationResult {
   private ValidationLevel validationLevel;
@@ -58,5 +58,21 @@ public class ValidationResult {
   @Nonnull
   public String pointer() {
     return this.pointer;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    ValidationResult other = (ValidationResult) obj;
+    return Objects.equals(validationLevel, other.validationLevel) &&
+        Objects.equals(validationName, other.validationName) &&
+        Objects.equals(message, other.message) &&
+        Objects.equals(pointer, other.pointer);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(validationLevel, validationName, message, pointer);
   }
 }

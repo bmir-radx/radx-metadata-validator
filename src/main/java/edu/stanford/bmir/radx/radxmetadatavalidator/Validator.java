@@ -3,7 +3,10 @@ package edu.stanford.bmir.radx.radxmetadatavalidator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.*;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.CedarSchemaValidatorComponent;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.DataTypeValidatorComponent;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.RequiredFieldValidatorComponent;
+import edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents.SchemaValidatorComponent;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
 import org.metadatacenter.artifacts.model.reader.ArtifactParseException;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.function.Consumer;
 
 @Component
@@ -34,7 +38,8 @@ public class Validator {
 
 
   public ValidationReport validateInstance(Path templateFilePath, Path instanceFilePath) throws Exception {
-    var results = new ArrayList<ValidationResult>();
+//    var results = new ArrayList<ValidationResult>();
+    var results = new HashSet<ValidationResult>();
     Consumer<ValidationResult> consumer = results::add;
     JsonNode templateNode;
 
@@ -50,7 +55,7 @@ public class Validator {
       //validate the template is CEDAR model template
       cedarSchemaValidatorComponent.validate(templateNode, consumer);
 
-      if(results.isEmpty()){
+      if(passValidation(results)){
         //Read template and get valueConstraints map
         JsonSchemaArtifactReader jsonSchemaArtifactReader = new JsonSchemaArtifactReader();
         TemplateSchemaArtifact templateSchemaArtifact = jsonSchemaArtifactReader.readTemplateSchemaArtifact((ObjectNode) templateNode);
@@ -67,7 +72,7 @@ public class Validator {
         //Compare instance JSON schema against template's
         schemaValidatorComponent.validate(templateNode, instanceNode, consumer);
 
-        if(results.isEmpty()){
+        if(passValidation(results)){
           //validate required fields
           requiredFieldValidatorComponent.validate(templateValueConstraintsReporter, templateInstanceValuesReporter, consumer);
 
@@ -92,10 +97,20 @@ public class Validator {
     }
 
     var comparator = Comparator.comparing(ValidationResult::validationLevel)
-        .thenComparing(ValidationResult::validationName)
-        .thenComparing(ValidationResult::pointer);
+        .thenComparing(ValidationResult::pointer)
+        .thenComparing(ValidationResult::validationName);
 
-    results.sort(comparator);
-    return new ValidationReport(results);
+    var resultsList = new ArrayList<>(results);
+    resultsList.sort(comparator);
+    return new ValidationReport(resultsList);
+  }
+
+  private boolean passValidation(HashSet<ValidationResult> results){
+    for(var result : results){
+      if (result.validationLevel() == ValidationLevel.ERROR){
+        return false;
+      }
+    }
+    return true;
   }
 }

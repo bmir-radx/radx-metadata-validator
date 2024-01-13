@@ -1,6 +1,7 @@
 package edu.stanford.bmir.radx.radxmetadatavalidator.ValidatorComponents;
 
 import edu.stanford.bmir.radx.radxmetadatavalidator.*;
+import org.metadatacenter.artifacts.model.core.fields.FieldInputType;
 import org.metadatacenter.artifacts.model.core.fields.constraints.ValueConstraints;
 import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.springframework.stereotype.Component;
@@ -14,50 +15,81 @@ import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class DataTypeValidatorComponent {
   private final TextFieldValidationUtil textFieldValidationUtil;
   private final NumericFieldValidationUtil numericFieldValidationUtil;
+  private final FieldSchemaValidationHelper fieldSchemaValidationHelper;
 
-  public DataTypeValidatorComponent(TextFieldValidationUtil textFieldValidationUtil, NumericFieldValidationUtil numericFieldValidationUtil) {
+  public DataTypeValidatorComponent(TextFieldValidationUtil textFieldValidationUtil, NumericFieldValidationUtil numericFieldValidationUtil, FieldSchemaValidationHelper fieldSchemaValidationHelper) {
     this.textFieldValidationUtil = textFieldValidationUtil;
     this.numericFieldValidationUtil = numericFieldValidationUtil;
+    this.fieldSchemaValidationHelper = fieldSchemaValidationHelper;
   }
 
-  public void validate(TemplateReporter valueConstraintsReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<ValidationResult> handler){
+  public void validate(TemplateReporter templateReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<ValidationResult> handler){
     var values = valuesReporter.getValues();
 
-    for (Map.Entry<String, Map<SchemaProperties, Object>> FieldEntry : values.entrySet()) {
+    for (Map.Entry<String, Map<SchemaProperties, Optional<?>>> FieldEntry : values.entrySet()) {
       String path = FieldEntry.getKey();
-      Map<SchemaProperties, Object> fieldValue = FieldEntry.getValue();
-      var valueConstraint = valueConstraintsReporter.getValueConstraints(path);
-
-      if(valueConstraint.isPresent()){
+      Map<SchemaProperties, Optional<?>> fieldValue = FieldEntry.getValue();
+      var fieldSchemaArtifact = templateReporter.getFieldSchema(path);
+      var valueConstraint = templateReporter.getValueConstraints(path);
+      if (fieldSchemaArtifact.isPresent() && valueConstraint.isPresent()){
+        var fieldInputType = fieldSchemaArtifact.get().fieldUi().inputType();
         var value = fieldValue.get(SchemaProperties.VALUE);
         var type = fieldValue.get(SchemaProperties.TYPE);
-        if (value != null) {
-          //If it is text field, validate regex, length and literals
-          if (valueConstraint.get().isTextValueConstraint()){
-            validateTextField(value, valueConstraint.get(), handler, path);
-          //If it is numeric filed, validate range, data type, decimal place and @type value
-          } else if (valueConstraint.get().isNumericValueConstraint()) {
-            validateNumericField(value, type, valueConstraint.get(), handler, path);
-          //If it is temporal field, validate temporal data type and @type value
-          } else if (valueConstraint.get().isTemporalValueConstraint()){
-            validateTemporalField(value, type, valueConstraint.get(), handler, path);
-          }
-        }
-
-        //If it is link field, validate input is valid URL
         var id = fieldValue.get(SchemaProperties.ID);
-        if (id != null){
-          if (valueConstraint.get().isLinkValueConstraint()){
+        var label = fieldValue.get(SchemaProperties.LABEL);
+
+        //if it is text field or paragraph, validate regex, length, schema
+        //TODO: field instance @type?
+        if (fieldInputType == FieldInputType.TEXTFIELD || fieldInputType == FieldInputType.TEXTAREA){
+          if(value.isPresent()){
+            validateTextField(value.get(), valueConstraint.get(), handler, path);
+            fieldSchemaValidationHelper.validateTextField(id, label, handler, path);
+          }
+        //if it is numeric field, validate range, data type, decimal place and @type value, schema
+        } else if (fieldInputType == FieldInputType.NUMERIC) {
+          if(value.isPresent()){
+            validateNumericField(value.get(), type, valueConstraint.get(), handler, path);
+            fieldSchemaValidationHelper.validateNumericAndTemporalField(id, label, handler, path);
+          }
+        //if it is temporal field, validate temporal data type and @type value, schema
+        } else if (fieldInputType == FieldInputType.TEMPORAL) {
+          if(value.isPresent()){
+            validateTemporalField(value.get(), type, valueConstraint.get(), handler, path);
+            fieldSchemaValidationHelper.validateNumericAndTemporalField(id, label, handler, path);
+          }
+        //if it is email field, validate regex
+        } else if (fieldInputType == FieldInputType.EMAIL){
+          if(value.isPresent()){
+            validateEmailField(value.get(), handler, path);
+            fieldSchemaValidationHelper.validateTextField(id, label, handler, path);
+          }
+        //if it is link field, validate input is valid URL and no @value, rdfs:label and @type
+        } else if (fieldInputType == FieldInputType.LINK) {
+          if(id.isPresent()){
             validateLinkField(id.toString(), handler, path);
+            fieldSchemaValidationHelper.validateLinkField(value, label, handler, path);
+          }
+        //if it is multiple choice, list field, or checkbox field, validate literals
+        } else if (fieldInputType == FieldInputType.RADIO || fieldInputType == FieldInputType.CHECKBOX || fieldInputType == FieldInputType.LIST) {
+          if(value.isPresent()){
+            validateLiterals(value, valueConstraint.get(), handler, path);
+            fieldSchemaValidationHelper.validateTextField(id, label, handler, path);
           }
         }
 
+        //TODO: if it is phone field
+        //TODO:if it is attribute value
+
+        // if it is controlled terms, validate schema
         if (valueConstraint.get().isControlledTermValueConstraint()){
           //TODO: validate controlled terms
 //          var controlledTermConstraint = valueConstraint.get().asControlledTermValueConstraints();
@@ -74,32 +106,32 @@ public class DataTypeValidatorComponent {
       //validate regex
       if(!textFieldValidationUtil.matchRegex(textConstraint.regex(), textValue)){
         var regex = textConstraint.regex();
-
         String message = String.format("%s does not follow the regex (%s)", textValue, textConstraint.regex().orElse(""));
         handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
       }
       //validate length range
       var length = textValue.length();
       if(!textFieldValidationUtil.lengthIsInRange(textConstraint.minLength(), textConstraint.maxLength(), length)){
-        var inRange = textFieldValidationUtil.lengthIsInRange(textConstraint.minLength(), textConstraint.maxLength(), length);
         String message = String.format("Input string length (%d) is out of range [%d, %d]", length, textConstraint.minLength().orElse(0), textConstraint.maxLength().orElse(Integer.MAX_VALUE));
         handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
-      }
-      //validate literals
-      var literals = textConstraint.literals();
-      if(literals.size() > 0){
-        if(!textFieldValidationUtil.validLiteral(literals, textValue)){
-          String message = String.format("%s does not exist in the given list: %s", textValue, literals);
-          handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
-        }
       }
     } else { //The value is not a string
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Expected a value of type String", path));
     }
   }
 
+  public void validateLiterals(Object value, ValueConstraints valueConstraint, Consumer<ValidationResult> handler, String path){
+    var literals = valueConstraint.asTextValueConstraints().literals();
+      if(literals.size() > 0){
+        if(!textFieldValidationUtil.validLiteral(literals, value.toString())){
+          String message = String.format("%s does not exist in the given list: %s", value, literals);
+          handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
+        }
+      }
+  }
 
-  public void validateNumericField(Object value, Object type, ValueConstraints valueConstraint, Consumer<ValidationResult> handler, String path) {
+
+  public void validateNumericField(Object value, Optional<?> type, ValueConstraints valueConstraint, Consumer<ValidationResult> handler, String path) {
     var numericConstraint = valueConstraint.asNumericValueConstraints();
     if (value instanceof String numericValueString) {
       //validate it's a valid number
@@ -127,10 +159,14 @@ public class DataTypeValidatorComponent {
     }
 
     //validate @type value
-    if (type instanceof String numbericTypeString) {
-      validateTypeValue(numbericTypeString, numericConstraint.numberType().getText(), handler, path);
-    } else {
-      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Expected a value of type String for @type", path));
+    if(type.isPresent()){
+      if (type.get() instanceof String numbericTypeString) {
+        validateTypeValue(numbericTypeString, numericConstraint.numberType().getText(), handler, path);
+      } else {
+        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Expected a value of type String for @type", path));
+      }
+    } else{
+      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@type is expected in the numeric field", path));
     }
   }
 
@@ -167,7 +203,7 @@ public class DataTypeValidatorComponent {
     }
   }
 
-  public void validateTemporalField(Object value, Object type, ValueConstraints valueConstraint, Consumer<ValidationResult> handler, String path){
+  public void validateTemporalField(Object value, Optional<?> type, ValueConstraints valueConstraint, Consumer<ValidationResult> handler, String path){
     var temporalConstraint = valueConstraint.asTemporalValueConstraints();
     var temporalDatatype = temporalConstraint.temporalType();
     //validate @value value
@@ -194,11 +230,16 @@ public class DataTypeValidatorComponent {
     }
 
     //validate @type value
-    if(type instanceof String typeValue){
-      validateTypeValue(typeValue, temporalDatatype.getText(), handler, path);
-    }else{
-      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Expected a value of type String for @type", path));
+    if (type.isPresent()){
+      if(type.get() instanceof String typeValue){
+        validateTypeValue(typeValue, temporalDatatype.getText(), handler, path);
+      }else{
+        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Expected a value of type String for @type", path));
+      }
+    } else{
+      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@type is expected in the numeric field", path));
     }
+
   }
 
   public void validateLinkField(String id, Consumer<ValidationResult> handler, String path) {
@@ -217,7 +258,7 @@ public class DataTypeValidatorComponent {
     }
   }
 
-  public void validateControlledTermsField(Map<SchemaProperties, Object> fieldValue, Consumer<ValidationResult> handler, String path){
+  public void validateControlledTermsField(Map<SchemaProperties, Optional<?>> fieldValue, Consumer<ValidationResult> handler, String path){
     var id = fieldValue.get(SchemaProperties.ID);
     var label = fieldValue.get(SchemaProperties.LABEL);
 
@@ -239,6 +280,20 @@ public class DataTypeValidatorComponent {
     } else {
       String message = "\"@id\" can not be null";
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
+    }
+  }
+
+  public void validateEmailField(Object value, Consumer<ValidationResult> handler, String path){
+    if(value instanceof String email){
+      String email_regex =
+          "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+      Pattern email_pattern = Pattern.compile(email_regex);
+      Matcher matcher = email_pattern.matcher(email);
+      if(!matcher.matches()){
+        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "The provided email is not a valid email", path));
+      }
+    } else{
+      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Expected a value of type String for @type", path));
     }
   }
 }

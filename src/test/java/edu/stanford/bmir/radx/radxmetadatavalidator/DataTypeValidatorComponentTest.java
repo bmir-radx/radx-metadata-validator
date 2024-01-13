@@ -15,10 +15,7 @@ import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
@@ -38,7 +35,8 @@ public class DataTypeValidatorComponentTest {
     consumer = results::add;
     TextFieldValidationUtil textFieldValidationUtil = new TextFieldValidationUtil();
     NumericFieldValidationUtil numericFieldValidationUtil = new NumericFieldValidationUtil();
-    validator = new DataTypeValidatorComponent(textFieldValidationUtil, numericFieldValidationUtil);
+    FieldSchemaValidationHelper fieldSchemaValidationHelper = new FieldSchemaValidationHelper();
+    validator = new DataTypeValidatorComponent(textFieldValidationUtil, numericFieldValidationUtil, fieldSchemaValidationHelper);
   }
 
   @Test
@@ -62,7 +60,7 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateTextFieldWithInvalidLiteral(){
+  void testValidateLiteralsWithInvalidLiteral(){
     var value = "radx";
     TextValueConstraints textValueConstraints = TextValueConstraints.builder()
         .withChoice("cedar", false)
@@ -70,12 +68,12 @@ public class DataTypeValidatorComponentTest {
         .withChoice("protege", false)
         .build().asTextValueConstraints();
 
-    validator.validateTextField(value, textValueConstraints, consumer, "");
+    validator.validateLiterals(value, textValueConstraints, consumer, "");
     assertEquals(1, results.size());
   }
 
   @Test
-  void testValidateTextFieldWithValidLiteral(){
+  void testValidateLiteralsWithValidLiteral(){
     var value = "cedar";
     TextValueConstraints textValueConstraints = TextValueConstraints.builder()
         .withChoice("cedar", false)
@@ -83,7 +81,7 @@ public class DataTypeValidatorComponentTest {
         .withChoice("protege", false)
         .build().asTextValueConstraints();
 
-    validator.validateTextField(value, textValueConstraints, consumer, "");
+    validator.validateLiterals(value, textValueConstraints, consumer, "");
     assertEquals(0, results.size());
   }
 
@@ -119,7 +117,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateNumericFieldWithInvalidNumber(){
     var value = "3sr3";
-    var type = "xsd:decimal";
+    var type = Optional.of("xsd:decimal");
     XsdNumericDatatype numberType = XsdNumericDatatype.DECIMAL;
     NumericValueConstraints numericValueConstraints = NumericValueConstraints.builder()
         .withNumberType(numberType)
@@ -131,7 +129,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateNumericFieldWithIncorrectType(){
     var value = "50.2";
-    var type = "xsd:decimal";
+    var type = Optional.of("xsd:decimal");
     XsdNumericDatatype numberType = XsdNumericDatatype.DOUBLE;
     NumericValueConstraints numericValueConstraints = NumericValueConstraints.builder()
         .withNumberType(numberType)
@@ -143,7 +141,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateNumericFieldOutOfRange(){
     var value = "-50.27";
-    var type = "xsd:decimal";
+    var type = Optional.of("xsd:decimal");
 
     XsdNumericDatatype numberType = XsdNumericDatatype.DECIMAL;
     Number minValue = 0;
@@ -165,14 +163,14 @@ public class DataTypeValidatorComponentTest {
     NumericValueConstraints numericValueConstraints = NumericValueConstraints.builder()
         .withNumberType(numberType)
         .build();
-    validator.validateNumericField(value, null, numericValueConstraints, consumer, "");
+    validator.validateNumericField(value, Optional.empty(), numericValueConstraints, consumer, "");
     assertEquals(1, results.size());
   }
 
   @Test
   void testValidateDoubleNumericField(){
     var value = "-50.27";
-    var type = "xsd:decimal";
+    var type = Optional.of("xsd:decimal");
 
     boolean requiredValue = false;
     boolean multipleChoice= false;
@@ -200,7 +198,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateDecimalNumericField(){
     var value = "3sf3";
-    var type = "xsd:decimal";
+    var type = Optional.of("xsd:decimal");
 
     boolean requiredValue = false;
     boolean multipleChoice= false;
@@ -227,7 +225,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateIntegerNumericField(){
     var value = "-50.27";
-    var type = "xsd:int";
+    var type = Optional.of("xsd:int");
     boolean requiredValue = false;
     boolean multipleChoice= false;
     XsdNumericDatatype numberType = XsdNumericDatatype.INTEGER;
@@ -251,7 +249,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateValidNumericField(){
     var value = "50.27";
-    var type = "xsd:decimal";
+    var type = Optional.of("xsd:decimal");
     boolean requiredValue = false;
     boolean multipleChoice= false;
     XsdNumericDatatype numberType = XsdNumericDatatype.DECIMAL;
@@ -278,7 +276,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateInvalidTimeField(){
     var value = "07:00:00";
-    var type = "xsd:time";
+    var type = Optional.of("xsd:time");
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.TIME)
         .build();
@@ -289,7 +287,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateValidTimeField(){
     var value = "01:00:00-11:00";
-    var type = "xsd:time";
+    var type = Optional.of("xsd:time");
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.TIME)
         .build();
@@ -300,7 +298,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateInvalidDateField(){
     var value = "2024/01/01";
-    var type = "xsd:date";
+    var type = Optional.of("xsd:date");
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.DATE)
         .build();
@@ -311,7 +309,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateValidDateField(){
     var value = "2024-01-01";
-    var type = "xsd:date";
+    var type = Optional.of("xsd:date");
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.DATE)
         .build();
@@ -322,7 +320,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateInvalidDateTimeField(){
     var value = "2024-01-02T15:27:29";
-    var type = "xsd:dateTime";
+    var type = Optional.of("xsd:dateTime");
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.DATETIME)
         .build();
@@ -333,7 +331,7 @@ public class DataTypeValidatorComponentTest {
   @Test
   void testValidateValidDateTimeField(){
     var value = "2024-01-02T15:27:29-08:00";
-    var type = "xsd:dateTime";
+    var type = Optional.of("xsd:dateTime");
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.DATETIME)
         .build();
@@ -347,7 +345,7 @@ public class DataTypeValidatorComponentTest {
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.DATETIME)
         .build();
-    validator.validateTemporalField(value, null, temporalValueConstraints, consumer, "");
+    validator.validateTemporalField(value, Optional.empty(), temporalValueConstraints, consumer, "");
     assertEquals(1, results.size());
   }
 
@@ -364,6 +362,21 @@ public class DataTypeValidatorComponentTest {
     validator.validateLinkField(id, consumer, "");
     assertEquals(0, results.size());
   }
+
+  @Test
+  void testValidateEmailFieldWithValidEmail() {
+    String validEmail = "test@example.com";
+    validator.validateEmailField(validEmail, consumer, "emailPath");
+    assertEquals(0, results.size());
+  }
+
+  @Test
+  void testValidateEmailFieldWithInvalidEmail() {
+    String validEmail = "test_example.com";
+    validator.validateEmailField(validEmail, consumer, "emailPath");
+    assertEquals(1, results.size());
+  }
+
 
   @Test
   void testValidateWithTextField(){
@@ -385,9 +398,48 @@ public class DataTypeValidatorComponentTest {
 
     String fieldPath = "/" + fieldName;
     String textFieldValue = "1234567890";
-    Map<String, Map<SchemaProperties, Object>> values = new HashMap<>();
-    Map<SchemaProperties, Object> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.VALUE, textFieldValue);
+    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
+    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
+    fieldValue.put(SchemaProperties.VALUE, Optional.of(textFieldValue));
+    fieldValue.put(SchemaProperties.ID, Optional.empty());
+    fieldValue.put(SchemaProperties.LABEL, Optional.empty());
+    fieldValue.put(SchemaProperties.TYPE, Optional.empty());
+    values.put(fieldPath, fieldValue);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+    assertEquals(0, results.size());
+  }
+
+  @Test
+  void testValidateWithNumericField(){
+    String fieldName = "numeric field";
+    String templateName = "My template";
+    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.numericFieldBuilder()
+        .withName(fieldName)
+        .withRequiredValue(true)
+        .withDecimalPlaces(2)
+        .withNumericType(XsdNumericDatatype.DECIMAL)
+        .withMinValue(0)
+        .withMaxValue(100)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(textFieldSchemaArtifact)
+        .build();
+
+    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+
+    String fieldPath = "/" + fieldName;
+    String numericFieldValue = "50.23";
+    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
+    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
+    fieldValue.put(SchemaProperties.VALUE, Optional.of(numericFieldValue));
+    fieldValue.put(SchemaProperties.ID, Optional.empty());
+    fieldValue.put(SchemaProperties.LABEL, Optional.empty());
+    fieldValue.put(SchemaProperties.TYPE, Optional.of("xsd:decimal"));
     values.put(fieldPath, fieldValue);
 
     when(valuesReporter.getValues()).thenReturn(values);

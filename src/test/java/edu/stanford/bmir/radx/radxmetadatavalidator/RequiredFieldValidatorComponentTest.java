@@ -9,10 +9,7 @@ import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
@@ -53,9 +50,9 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + textFieldName;
-    Map<String, Map<SchemaProperties, Object>> values = new HashMap<>();
-    Map<SchemaProperties, Object> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.VALUE, null); // Simulate missing value
+    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
+    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
+    fieldValue.put(SchemaProperties.VALUE, Optional.empty()); // Simulate missing value
     values.put(fieldPath, fieldValue);
 
     when(valuesReporter.getValues()).thenReturn(values);
@@ -83,9 +80,9 @@ public class RequiredFieldValidatorComponentTest {
 
     String fieldPath = "/" + textFieldName;
     String textFieldValue = "text value";
-    Map<String, Map<SchemaProperties, Object>> values = new HashMap<>();
-    Map<SchemaProperties, Object> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.VALUE, textFieldValue);
+    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
+    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
+    fieldValue.put(SchemaProperties.VALUE, Optional.of(textFieldValue));
     values.put(fieldPath, fieldValue);
 
     when(valuesReporter.getValues()).thenReturn(values);
@@ -112,9 +109,9 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + linkFieldName;
-    Map<String, Map<SchemaProperties, Object>> values = new HashMap<>();
-    Map<SchemaProperties, Object> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.ID, null);
+    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
+    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
+    fieldValue.put(SchemaProperties.ID, Optional.empty());
     values.put(fieldPath, fieldValue);
 
     when(valuesReporter.getValues()).thenReturn(values);
@@ -141,9 +138,9 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + linkFieldName;
-    Map<String, Map<SchemaProperties, Object>> values = new HashMap<>();
-    Map<SchemaProperties, Object> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.ID, "https://example.com");
+    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
+    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
+    fieldValue.put(SchemaProperties.ID, Optional.of("https://example.com"));
     values.put(fieldPath, fieldValue);
 
     when(valuesReporter.getValues()).thenReturn(values);
@@ -170,10 +167,10 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + fieldName;
-    Map<String, Map<SchemaProperties, Object>> values = new HashMap<>();
-    Map<SchemaProperties, Object> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.ID, "http://purl.bioontology.org/ontology/LNC/LP286655-8");
-    fieldValue.put(SchemaProperties.LABEL, "Neutrophils/leukocytes");
+    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
+    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
+    fieldValue.put(SchemaProperties.ID, Optional.of("http://purl.bioontology.org/ontology/LNC/LP286655-8"));
+    fieldValue.put(SchemaProperties.LABEL, Optional.of("Neutrophils/leukocytes"));
     values.put(fieldPath, fieldValue);
 
     when(valuesReporter.getValues()).thenReturn(values);
@@ -200,10 +197,10 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + fieldName;
-    Map<String, Map<SchemaProperties, Object>> values = new HashMap<>();
-    Map<SchemaProperties, Object> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.ID, null);
-    fieldValue.put(SchemaProperties.LABEL, "Neutrophils/leukocytes");
+    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
+    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
+    fieldValue.put(SchemaProperties.ID, Optional.empty());
+    fieldValue.put(SchemaProperties.LABEL, Optional.of("Neutrophils/leukocytes"));
     values.put(fieldPath, fieldValue);
 
     when(valuesReporter.getValues()).thenReturn(values);
@@ -230,10 +227,10 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + fieldName;
-    Map<String, Map<SchemaProperties, Object>> values = new HashMap<>();
-    Map<SchemaProperties, Object> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.ID, "http://purl.bioontology.org/ontology/LNC/LP286655-8");
-    fieldValue.put(SchemaProperties.LABEL, null);
+    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
+    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
+    fieldValue.put(SchemaProperties.ID, Optional.of("http://purl.bioontology.org/ontology/LNC/LP286655-8"));
+    fieldValue.put(SchemaProperties.LABEL, Optional.empty());
     values.put(fieldPath, fieldValue);
 
     when(valuesReporter.getValues()).thenReturn(values);
