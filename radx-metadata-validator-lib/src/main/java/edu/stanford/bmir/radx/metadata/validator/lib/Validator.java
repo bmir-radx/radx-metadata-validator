@@ -59,7 +59,7 @@ public class Validator {
         //Read template and get valueConstraints map
         JsonSchemaArtifactReader jsonSchemaArtifactReader = new JsonSchemaArtifactReader();
         TemplateSchemaArtifact templateSchemaArtifact = jsonSchemaArtifactReader.readTemplateSchemaArtifact((ObjectNode) templateNode);
-        TemplateReporter templateValueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+        TemplateReporter templateReporter = new TemplateReporter(templateSchemaArtifact);
 
         //Read instance and get values map
         TemplateInstanceArtifact templateInstanceArtifact = jsonSchemaArtifactReader.readTemplateInstanceArtifact((ObjectNode) instanceNode);
@@ -74,10 +74,10 @@ public class Validator {
 
         if(passValidation(results)){
           //validate required fields
-          requiredFieldValidatorComponent.validate(templateValueConstraintsReporter, templateInstanceValuesReporter, consumer);
+          requiredFieldValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
 
           //validate data type
-          dataTypeValidatorComponent.validate(templateValueConstraintsReporter, templateInstanceValuesReporter, consumer);
+          dataTypeValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
         }
 
       }

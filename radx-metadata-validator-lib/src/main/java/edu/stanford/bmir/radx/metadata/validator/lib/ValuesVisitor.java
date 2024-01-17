@@ -13,19 +13,25 @@ import java.util.Map;
 @Component
 public class ValuesVisitor implements InstanceArtifactVisitor {
   private final Map<String, FieldValues> values;
-  private final Map<String, Integer> cardinals;
+  private final Map<String, Integer> fieldCardinals;
+  private final Map<String, Integer> elementCardinals;
 
   public ValuesVisitor() {
     this.values = new HashMap<>();
-    this.cardinals = new HashMap<>();
+    this.fieldCardinals = new HashMap<>();
+    this.elementCardinals = new HashMap<>();
   }
 
   public Map<String, FieldValues> getValues() {
     return this.values;
   }
 
-  public Map<String, Integer> getCardinals() {
-    return cardinals;
+  public Map<String, Integer> getFieldCardinals() {
+    return fieldCardinals;
+  }
+
+  public Map<String, Integer> getElementCardinals() {
+    return elementCardinals;
   }
 
   @Override
@@ -57,7 +63,7 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
       String fieldName = entry.getKey();
       String childBasePath = path + "/" + fieldName;
       int size = entry.getValue().size();
-      cardinals.put(childBasePath, size);
+      fieldCardinals.put(childBasePath, size);
     }
   }
 
@@ -66,7 +72,7 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
       String elementName = entry.getKey();
       String childBasePath = "/" + elementName;
       int size = entry.getValue().size();
-      cardinals.put(childBasePath, size);
+      elementCardinals.put(childBasePath, size);
     }
   }
 }
