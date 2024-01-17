@@ -32,7 +32,7 @@ For example:
 
 ### Value Constraint Validation
 - Validates other value constraints, which include:
-    - Required value validation: Checks that all necessary data fields are present.
+    - Required value validation: Checks that all required data fields are present.
     - Data type validation: Ensures that the data types of the values in the metadata instance match those specified in the template.
 
 ### Output File Format
@@ -45,4 +45,3 @@ The output of the RADx Metadata Validator is a CSV file with the following forma
 
 ![Validation Report](ValidationReport.png)
 
-If the `outputFilePath` is not provided, the validation report will be printed out to the console in a similar format.
