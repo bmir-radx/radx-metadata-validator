@@ -1,4 +1,4 @@
-package edu.stanford.bmir.radx.metadata;
+package edu.stanford.bmir.radx.metadata.validator.lib;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.FieldValues;
 import edu.stanford.bmir.radx.metadata.validator.lib.TemplateInstanceValuesReporter;

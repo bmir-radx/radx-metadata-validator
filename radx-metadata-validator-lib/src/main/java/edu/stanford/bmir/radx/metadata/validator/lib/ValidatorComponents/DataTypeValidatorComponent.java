@@ -26,6 +26,7 @@ public class DataTypeValidatorComponent {
   private final TextFieldValidationUtil textFieldValidationUtil;
   private final NumericFieldValidationUtil numericFieldValidationUtil;
   private final FieldSchemaValidationHelper fieldSchemaValidationHelper;
+  private final String XSD_IRI = "http://www.w3.org/2001/XMLSchema#";
 
   public DataTypeValidatorComponent(TextFieldValidationUtil textFieldValidationUtil, NumericFieldValidationUtil numericFieldValidationUtil, FieldSchemaValidationHelper fieldSchemaValidationHelper) {
     this.textFieldValidationUtil = textFieldValidationUtil;
@@ -98,10 +99,8 @@ public class DataTypeValidatorComponent {
   public void validateTextField(Object value, ValueConstraints valueConstraint, Consumer<ValidationResult> handler, String path){
     var textConstraint = valueConstraint.asTextValueConstraints();
     if(value instanceof String textValue){
-      var match = textFieldValidationUtil.matchRegex(textConstraint.regex(), textValue);
       //validate regex
       if(!textFieldValidationUtil.matchRegex(textConstraint.regex(), textValue)){
-        var regex = textConstraint.regex();
         String message = String.format("%s does not follow the regex (%s)", textValue, textConstraint.regex().orElse(""));
         handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
       }
@@ -156,12 +155,7 @@ public class DataTypeValidatorComponent {
 
     //validate @type value
     if(type.size() > 1){
-//      if (type.get() instanceof String numbericTypeString) {
-//        validateTypeValue(numbericTypeString, numericConstraint.numberType().getText(), handler, path);
-//      } else {
-//        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Expected a value of type String for @type", path));
-//      }
-      validateTypeValue(type.get(0).toString(), numericConstraint.numberType().getText(), handler, path);
+      validateTypeValue(type.get(0), numericConstraint.numberType().getText(), handler, path);
     } else{
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@type is expected in the numeric field", path));
     }
@@ -174,7 +168,6 @@ public class DataTypeValidatorComponent {
       return true;
       //TODO: only allow format yyyy-MM-dd (2024-01-01), don't allow 2024/01/01?
     } catch (DateTimeParseException e) {
-//      throw new JsonParseException("Input value %s is not a valid Date");
       return false;
     }
   }
@@ -184,18 +177,15 @@ public class DataTypeValidatorComponent {
       OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
       return true;
     } catch (DateTimeParseException e) {
-//      throw new JsonParseException("Input value %s is not a valid DateTime");
       return false;
     }
   }
 
   private boolean isValidTime(String value) {
-    //TODO: return boolean and add throw error at signature
     try {
       OffsetTime.parse(value, DateTimeFormatter.ISO_OFFSET_TIME);
       return true;
     } catch (DateTimeParseException e) {
-//      throw new JsonParseException("Input value %s is not a valid Time");
       return false;
     }
   }
@@ -228,12 +218,7 @@ public class DataTypeValidatorComponent {
 
     //validate @type value
     if (type.size() > 0){
-//      if(type.get() instanceof String typeValue){
-//        validateTypeValue(typeValue, temporalDatatype.getText(), handler, path);
-//      }else{
-//        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Expected a value of type String for @type", path));
-//      }
-      validateTypeValue(type.get(0).toString(), temporalDatatype.getText(), handler, path);
+      validateTypeValue(type.get(0), temporalDatatype.getText(), handler, path);
     } else{
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@type is expected in the numeric field", path));
     }
@@ -248,15 +233,15 @@ public class DataTypeValidatorComponent {
     }
   }
 
-  private void validateTypeValue(String inputType, String typeConstraint, Consumer<ValidationResult> handler, String path){
-    if(!inputType.equals(typeConstraint)){
+  private void validateTypeValue(URI inputType, String typeConstraint, Consumer<ValidationResult> handler, String path){
+    var typeConstraintUri = URI.create(XSD_IRI + typeConstraint.substring(typeConstraint.indexOf(":") + 1));
+    if(!inputType.equals(typeConstraintUri)){
       String message = String.format("Expected %s for @type", typeConstraint);
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
     }
   }
 
   public void validateControlledTermsField(Optional<URI> id, Consumer<ValidationResult> handler, String path){
-
     // Check if id is not null and a valid URI
     if (id.isPresent()) {
       try {
