@@ -1,6 +1,6 @@
 package edu.stanford.bmir.radx.metadata;
 
-import edu.stanford.bmir.radx.metadata.validator.lib.SchemaProperties;
+import edu.stanford.bmir.radx.metadata.validator.lib.FieldValues;
 import edu.stanford.bmir.radx.metadata.validator.lib.TemplateInstanceValuesReporter;
 import edu.stanford.bmir.radx.metadata.validator.lib.ValidationResult;
 import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.RequiredFieldValidatorComponent;
@@ -12,6 +12,8 @@ import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -53,10 +55,11 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + textFieldName;
-    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
-    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.VALUE, Optional.empty()); // Simulate missing value
-    values.put(fieldPath, fieldValue);
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.empty(), Optional.empty(), Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 
@@ -81,12 +84,14 @@ public class RequiredFieldValidatorComponentTest {
 
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
+
     String fieldPath = "/" + textFieldName;
     String textFieldValue = "text value";
-    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
-    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.VALUE, Optional.of(textFieldValue));
-    values.put(fieldPath, fieldValue);
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.empty(), Optional.of(textFieldValue), Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 
@@ -112,10 +117,11 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + linkFieldName;
-    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
-    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.ID, Optional.empty());
-    values.put(fieldPath, fieldValue);
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.empty(), Optional.empty(), Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 
@@ -125,7 +131,7 @@ public class RequiredFieldValidatorComponentTest {
   }
 
   @Test
-  void testValidateRequiredLinkFieldPresent() {
+  void testValidateRequiredLinkFieldPresent() throws URISyntaxException {
     String linkFieldName = "link field";
     String templateName = "My template";
     FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.linkFieldBuilder()
@@ -141,10 +147,11 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + linkFieldName;
-    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
-    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.ID, Optional.of("https://example.com"));
-    values.put(fieldPath, fieldValue);
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.of(new URI("https://example.com")), Optional.empty(), Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 
@@ -154,7 +161,7 @@ public class RequiredFieldValidatorComponentTest {
   }
 
   @Test
-  void testValidateRequiredControlledTermsFieldPresent() {
+  void testValidateRequiredControlledTermsFieldPresent() throws URISyntaxException {
     String fieldName = "controlled terms field";
     String templateName = "My template";
     FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
@@ -170,11 +177,11 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + fieldName;
-    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
-    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.ID, Optional.of("http://purl.bioontology.org/ontology/LNC/LP286655-8"));
-    fieldValue.put(SchemaProperties.LABEL, Optional.of("Neutrophils/leukocytes"));
-    values.put(fieldPath, fieldValue);
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.of(new URI("http://purl.bioontology.org/ontology/LNC/LP286655-8")), Optional.empty(), Optional.of("Neutrophils/leukocytes"));
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 
@@ -200,11 +207,11 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + fieldName;
-    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
-    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.ID, Optional.empty());
-    fieldValue.put(SchemaProperties.LABEL, Optional.of("Neutrophils/leukocytes"));
-    values.put(fieldPath, fieldValue);
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.empty(), Optional.empty(), Optional.of("Neutrophils/leukocytes"));
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 
@@ -214,7 +221,7 @@ public class RequiredFieldValidatorComponentTest {
   }
 
   @Test
-  void testValidateRequiredControlledTermsFieldLabelMissing() {
+  void testValidateRequiredControlledTermsFieldLabelMissing() throws URISyntaxException {
     String fieldName = "controlled terms field";
     String templateName = "My template";
     FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
@@ -230,11 +237,11 @@ public class RequiredFieldValidatorComponentTest {
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
     String fieldPath = "/" + fieldName;
-    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
-    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.ID, Optional.of("http://purl.bioontology.org/ontology/LNC/LP286655-8"));
-    fieldValue.put(SchemaProperties.LABEL, Optional.empty());
-    values.put(fieldPath, fieldValue);
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.of(new URI("http://purl.bioontology.org/ontology/LNC/LP286655-8")), Optional.empty(), Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 

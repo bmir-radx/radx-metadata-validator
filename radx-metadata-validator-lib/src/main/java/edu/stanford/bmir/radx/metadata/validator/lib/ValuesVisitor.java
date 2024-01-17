@@ -9,11 +9,10 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 public class ValuesVisitor implements InstanceArtifactVisitor {
-  private final Map<String, Map<SchemaProperties, Optional<?>>> values;
+  private final Map<String, FieldValues> values;
   private final Map<String, Integer> cardinals;
 
   public ValuesVisitor() {
@@ -21,7 +20,7 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
     this.cardinals = new HashMap<>();
   }
 
-  public Map<String, Map<SchemaProperties, Optional<?>>> getValues() {
+  public Map<String, FieldValues> getValues() {
     return this.values;
   }
 
@@ -47,12 +46,10 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
 
   @Override
   public void visitFieldInstanceArtifact(FieldInstanceArtifact fieldInstanceArtifact, String path) {
-    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.VALUE, fieldInstanceArtifact.jsonLdValue());
-    fieldValue.put(SchemaProperties.ID, fieldInstanceArtifact.jsonLdId());
-    fieldValue.put(SchemaProperties.LABEL, fieldInstanceArtifact.label());
-
-    values.put(path, fieldValue);
+    values.put(path, new FieldValues(fieldInstanceArtifact.jsonLdTypes(),
+            fieldInstanceArtifact.jsonLdId(),
+            fieldInstanceArtifact.jsonLdValue(),
+            fieldInstanceArtifact.prefLabel()));
   }
 
   private void parseFieldInstances(Map<String, List<FieldInstanceArtifact>> fieldInstances, String path){

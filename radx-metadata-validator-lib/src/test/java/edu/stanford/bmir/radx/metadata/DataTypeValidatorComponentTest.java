@@ -16,6 +16,8 @@ import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -116,9 +118,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateNumericFieldWithInvalidNumber(){
+  void testValidateNumericFieldWithInvalidNumber() throws URISyntaxException {
     var value = "3sr3";
-    var type = Optional.of("xsd:decimal");
+    var type = List.of(new URI("xsd:decimal"));
     XsdNumericDatatype numberType = XsdNumericDatatype.DECIMAL;
     NumericValueConstraints numericValueConstraints = NumericValueConstraints.builder()
         .withNumberType(numberType)
@@ -128,9 +130,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateNumericFieldWithIncorrectType(){
+  void testValidateNumericFieldWithIncorrectType() throws URISyntaxException {
     var value = "50.2";
-    var type = Optional.of("xsd:decimal");
+    var type = List.of(new URI("xsd:decimal"));
     XsdNumericDatatype numberType = XsdNumericDatatype.DOUBLE;
     NumericValueConstraints numericValueConstraints = NumericValueConstraints.builder()
         .withNumberType(numberType)
@@ -140,9 +142,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateNumericFieldOutOfRange(){
+  void testValidateNumericFieldOutOfRange() throws URISyntaxException {
     var value = "-50.27";
-    var type = Optional.of("xsd:decimal");
+    var type = List.of(new URI("xsd:decimal"));
 
     XsdNumericDatatype numberType = XsdNumericDatatype.DECIMAL;
     Number minValue = 0;
@@ -164,14 +166,14 @@ public class DataTypeValidatorComponentTest {
     NumericValueConstraints numericValueConstraints = NumericValueConstraints.builder()
         .withNumberType(numberType)
         .build();
-    validator.validateNumericField(value, Optional.empty(), numericValueConstraints, consumer, "");
+    validator.validateNumericField(value, List.of(), numericValueConstraints, consumer, "");
     assertEquals(1, results.size());
   }
 
   @Test
-  void testValidateDoubleNumericField(){
+  void testValidateDoubleNumericField() throws URISyntaxException {
     var value = "-50.27";
-    var type = Optional.of("xsd:decimal");
+    var type = List.of(new URI("xsd:decimal"));
 
     boolean requiredValue = false;
     boolean multipleChoice= false;
@@ -197,9 +199,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateDecimalNumericField(){
+  void testValidateDecimalNumericField() throws URISyntaxException {
     var value = "3sf3";
-    var type = Optional.of("xsd:decimal");
+    var type = List.of(new URI("xsd:decimal"));
 
     boolean requiredValue = false;
     boolean multipleChoice= false;
@@ -224,9 +226,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateIntegerNumericField(){
+  void testValidateIntegerNumericField() throws URISyntaxException {
     var value = "-50.27";
-    var type = Optional.of("xsd:int");
+    var type = List.of(new URI("xsd:int"));
     boolean requiredValue = false;
     boolean multipleChoice= false;
     XsdNumericDatatype numberType = XsdNumericDatatype.INTEGER;
@@ -248,9 +250,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateValidNumericField(){
+  void testValidateValidNumericField() throws URISyntaxException {
     var value = "50.27";
-    var type = Optional.of("xsd:decimal");
+    var type = List.of(new URI("xsd:decimal"));
     boolean requiredValue = false;
     boolean multipleChoice= false;
     XsdNumericDatatype numberType = XsdNumericDatatype.DECIMAL;
@@ -275,9 +277,9 @@ public class DataTypeValidatorComponentTest {
 
 
   @Test
-  void testValidateInvalidTimeField(){
+  void testValidateInvalidTimeField() throws URISyntaxException {
     var value = "07:00:00";
-    var type = Optional.of("xsd:time");
+    var type = List.of(new URI("xsd:time"));
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.TIME)
         .build();
@@ -286,9 +288,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateValidTimeField(){
+  void testValidateValidTimeField() throws URISyntaxException {
     var value = "01:00:00-11:00";
-    var type = Optional.of("xsd:time");
+    var type = List.of(new URI("xsd:time"));
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.TIME)
         .build();
@@ -297,9 +299,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateInvalidDateField(){
+  void testValidateInvalidDateField() throws URISyntaxException {
     var value = "2024/01/01";
-    var type = Optional.of("xsd:date");
+    var type = List.of(new URI("xsd:date"));
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.DATE)
         .build();
@@ -308,9 +310,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateValidDateField(){
+  void testValidateValidDateField() throws URISyntaxException {
     var value = "2024-01-01";
-    var type = Optional.of("xsd:date");
+    var type = List.of(new URI("xsd:date"));
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.DATE)
         .build();
@@ -319,9 +321,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateInvalidDateTimeField(){
+  void testValidateInvalidDateTimeField() throws URISyntaxException {
     var value = "2024-01-02T15:27:29";
-    var type = Optional.of("xsd:dateTime");
+    var type = List.of(new URI("xsd:dateTime"));
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.DATETIME)
         .build();
@@ -330,9 +332,9 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateValidDateTimeField(){
+  void testValidateValidDateTimeField() throws URISyntaxException {
     var value = "2024-01-02T15:27:29-08:00";
-    var type = Optional.of("xsd:dateTime");
+    var type = List.of(new URI("xsd:dateTime"));
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.DATETIME)
         .build();
@@ -346,7 +348,7 @@ public class DataTypeValidatorComponentTest {
     TemporalValueConstraints temporalValueConstraints = TemporalValueConstraints.builder()
         .withTemporalType(XsdTemporalDatatype.DATETIME)
         .build();
-    validator.validateTemporalField(value, Optional.empty(), temporalValueConstraints, consumer, "");
+    validator.validateTemporalField(value, List.of(), temporalValueConstraints, consumer, "");
     assertEquals(1, results.size());
   }
 
@@ -399,13 +401,10 @@ public class DataTypeValidatorComponentTest {
 
     String fieldPath = "/" + fieldName;
     String textFieldValue = "1234567890";
-    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
-    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.VALUE, Optional.of(textFieldValue));
-    fieldValue.put(SchemaProperties.ID, Optional.empty());
-    fieldValue.put(SchemaProperties.LABEL, Optional.empty());
-    fieldValue.put(SchemaProperties.TYPE, Optional.empty());
-    values.put(fieldPath, fieldValue);
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.empty(), Optional.of(textFieldValue), Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 
@@ -414,7 +413,7 @@ public class DataTypeValidatorComponentTest {
   }
 
   @Test
-  void testValidateWithNumericField(){
+  void testValidateWithNumericField() throws URISyntaxException {
     String fieldName = "numeric field";
     String templateName = "My template";
     FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.numericFieldBuilder()
@@ -435,13 +434,13 @@ public class DataTypeValidatorComponentTest {
 
     String fieldPath = "/" + fieldName;
     String numericFieldValue = "50.23";
-    Map<String, Map<SchemaProperties, Optional<?>>> values = new HashMap<>();
-    Map<SchemaProperties, Optional<?>> fieldValue = new HashMap<>();
-    fieldValue.put(SchemaProperties.VALUE, Optional.of(numericFieldValue));
-    fieldValue.put(SchemaProperties.ID, Optional.empty());
-    fieldValue.put(SchemaProperties.LABEL, Optional.empty());
-    fieldValue.put(SchemaProperties.TYPE, Optional.of("xsd:decimal"));
-    values.put(fieldPath, fieldValue);
+    FieldValues fieldValues = new FieldValues(
+        List.of(new URI("http://www.w3.org/2001/XMLSchema#/decimal")),
+        Optional.empty(),
+        Optional.of(numericFieldValue),
+        Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 
