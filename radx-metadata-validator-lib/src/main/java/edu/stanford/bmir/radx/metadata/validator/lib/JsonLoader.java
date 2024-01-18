@@ -16,6 +16,8 @@ public class JsonLoader {
                 JsonLoader.class.getClassLoader().getResourceAsStream(jsonFilePath)));
         } catch (IOException e) {
             throw new JsonParseException("The provided file " + jsonFilePath + " is not a valid JSON file.");
+        } catch (NullPointerException e){
+            throw new JsonParseException("The file could not be found.");
         }
     }
 }
