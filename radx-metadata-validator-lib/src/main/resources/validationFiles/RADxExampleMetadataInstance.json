@@ -1,0 +1,616 @@
+{
+  "Data Characteristics Summary": {
+    "Data Characteristics Table in CSV": {
+      "@value": null
+    },
+    "Data Characteristics Table in HTML": {
+      "@value": null
+    },
+    "Data Characteristics Table in Key-Value Pairs": [],
+    "@context": {
+      "Data Characteristics Table in HTML": "https://schema.metadatacenter.org/properties/f48a2164-fb1a-4232-b7ef-5f8c985685ae",
+      "Data Characteristics Table in CSV": "https://schema.metadatacenter.org/properties/2ecd7522-f5ec-4a35-903f-f2b087a6065c",
+      "Data Characteristics Table in Key-Value Pairs": "https://schema.metadatacenter.org/properties/0ea00320-9557-43c1-81af-ab23bc7b9142"
+    },
+    "@id": "https://repo.metadatacenter.org/template-element-instances/4ff4d951-a878-4027-a9f6-5bd731f96d8f"
+  },
+  "Auxiliary Metadata": {
+    "Data File Descriptive Attribute": [],
+    "@context": {
+      "Data File Descriptive Attribute": "https://schema.metadatacenter.org/properties/c3a9553f-6062-40f3-a854-fe045938ba6f",
+      "Additional Commentary": "https://schema.metadatacenter.org/properties/248a9fce-664b-4dff-bf56-da55b239e65f"
+    },
+    "Additional Commentary": [
+      {
+        "@value": null
+      }
+    ],
+    "@id": "https://repo.metadatacenter.org/template-element-instances/ebec71b7-04c3-4e8d-a011-035b15d901f6"
+  },
+  "Data File Process Version": [
+    {
+      "Version Identifier of Process": {
+        "@value": null
+      },
+      "Process Unique Identifier": {
+        "@value": null
+      },
+      "Execution Identifier of Process": {
+        "@value": null
+      },
+      "@context": {
+        "Process Name": "https://schema.metadatacenter.org/properties/feb434c4-424d-4fe7-aa66-ab68c5e54217",
+        "Process Unique Identifier": "https://schema.metadatacenter.org/properties/5399bf9a-7b19-42fc-b5e3-a0f70e73689a",
+        "Version Identifier of Process": "https://schema.metadatacenter.org/properties/fa192c4d-c96c-48c8-85c3-68adf8ee45e5",
+        "Execution Identifier of Process": "https://schema.metadatacenter.org/properties/7411041d-9560-49b8-8159-5442a09de7e7"
+      },
+      "Process Name": {
+        "@value": null
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/c31a3403-19fa-4184-9101-fdb354856b94"
+    }
+  ],
+  "Data File Vertical Coverage": [
+    {
+      "Vertical Extent Minimum Value": {
+        "@value": null,
+        "@type": "xsd:float"
+      },
+      "Vertical Extent Datum": {
+        "@value": null
+      },
+      "Vertical Extent Maximum Value": {
+        "@value": null,
+        "@type": "xsd:float"
+      },
+      "Vertical Extent Datum Identifier": {},
+      "@context": {
+        "Vertical Extent Minimum Value": "http://vocab.fairdatacollective.org/gdmt/hasVerticalExtentMinimumValue",
+        "Vertical Extent Maximum Value": "http://vocab.fairdatacollective.org/gdmt/hasVerticalExtentMaximumValue",
+        "Vertical Extent Unit": "http://vocab.fairdatacollective.org/gdmt/hasVerticalExtentUnit",
+        "Vertical Extent Datum": "http://vocab.fairdatacollective.org/gdmt/hasVerticalExtentDatum",
+        "Vertical Extent Datum Identifier": "http://vocab.fairdatacollective.org/gdmt/hasVerticalExtentDatumIRI"
+      },
+      "Vertical Extent Unit": {
+        "@value": null
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/ae32397d-f7e8-4c06-8e1d-bde4ddebdc55"
+    }
+  ],
+  "Data File Related Resource": [
+    {
+      "Related Resource Identifier Type": {},
+      "Related Resource Identifier": {
+        "@value": null
+      },
+      "Resource Type Category": {},
+      "@context": {
+        "Related Resource Identifier": "http://purl.org/dc/terms/identifier",
+        "Related Resource Identifier Type": "http://schema.org/propertyID",
+        "Resource Type Category": "http://purl.org/dc/elements/1.1/type",
+        "Relation of Data File to Resource": "http://rs.tdwg.org/dwc/terms/relationshipOfResource"
+      },
+      "Relation of Data File to Resource": {
+        "@value": null
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/2ae69304-4cc0-4aa3-9db5-aed0ddf1db4b"
+    }
+  ],
+  "Data File Description": [
+    {
+      "@context": {
+        "Data File Description": "http://purl.org/dc/terms/description",
+        "Description Language": "http://purl.org/dc/terms/language"
+      },
+      "Description Language": {},
+      "Data File Description": {
+        "@value": null
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/6f73a77e-25b0-48cf-9922-d2b7ff6ed648"
+    }
+  ],
+  "Data File Funding Source": [
+    {
+      "Award Title": {
+        "@value": null
+      },
+      "Award Page Identifier": {},
+      "Funder Identifier": {
+        "@value": null
+      },
+      "Funder Identifier Scheme Identifier": {},
+      "Funder Name": {
+        "@value": null
+      },
+      "Award Local Identifier": {
+        "@value": null
+      },
+      "Funder Identifier Scheme": {},
+      "@context": {
+        "Award Title": "http://vocab.fairdatacollective.org/gdmt/hasAwardTitle",
+        "Award Page Identifier": "http://vocab.fairdatacollective.org/gdmt/hasAwardPageIRI",
+        "Award Local Identifier": "http://vocab.fairdatacollective.org/gdmt/hasAwardLocalIdentifier",
+        "Funder Name": "http://vocab.fairdatacollective.org/gdmt/hasFunderName",
+        "Funder Identifier": "http://vocab.fairdatacollective.org/gdmt/hasFunderIdentifier",
+        "Funder Identifier Scheme": "http://vocab.fairdatacollective.org/gdmt/hasFunderIdentifierScheme",
+        "Funder Identifier Scheme Identifier": "http://vocab.fairdatacollective.org/gdmt/hasFunderIdentifierSchemeIRI"
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/1d8c0103-28a9-426c-90e5-b3f665fe51b0"
+    }
+  ],
+  "Data Source Stream": [
+    {
+      "Data Stream Identifier": {
+        "@value": null
+      },
+      "Data Stream Scheme": {},
+      "Data Stream Name": {
+        "@value": null
+      },
+      "@context": {
+        "Data Stream Name": "http://vocab.fairdatacollective.org/gdmt/hasDataStream",
+        "Data Stream Identifier": "http://vocab.fairdatacollective.org/gdmt/hasDataStreamIRI",
+        "Data Stream Scheme": "http://vocab.fairdatacollective.org/gdmt/hasDataStreamScheme",
+        "Data Stream Scheme Identifier": "http://vocab.fairdatacollective.org/gdmt/hasDataStreamSchemeIRI"
+      },
+      "Data Stream Scheme Identifier": {},
+      "@id": "https://repo.metadatacenter.org/template-element-instances/0434ae69-7630-47c6-a594-120e2eb38a7e"
+    }
+  ],
+  "Data File Language": {
+    "Primary Language": {},
+    "@context": {
+      "Primary Language": "http://vocab.fairdatacollective.org/gdmt/hasPrimaryLanguage",
+      "Other Language": "http://purl.org/dc/terms/language"
+    },
+    "Other Language": [
+      {}
+    ],
+    "@id": "https://repo.metadatacenter.org/template-element-instances/c82abc1b-4959-4374-b352-3914b6625410"
+  },
+  "Data File Creator": [
+    {
+      "Creator Identifier Scheme Identifier": {},
+      "Creator Role": {},
+      "Creator Type": {
+        "@id": "http://vocab.fairdatacollective.org/gdmt/Organization",
+        "rdfs:label": "Organization"
+      },
+      "Creator Identifier": {
+        "@value": null
+      },
+      "Creator Affiliation Identifier Scheme Identifier": {},
+      "Creator Identifier Scheme": {},
+      "Creator Family Name": {
+        "@value": null
+      },
+      "@context": {
+        "Creator Type": "http://vocab.fairdatacollective.org/gdmt/hasCreatorType",
+        "Creator Name": "http://purl.org/dc/terms/creator",
+        "Creator Given Name": "http://xmlns.com/foaf/0.1/givenName",
+        "Creator Family Name": "http://xmlns.com/foaf/0.1/familyName",
+        "Creator Identifier": "http://vocab.fairdatacollective.org/gdmt/hasCreatorIdentifier",
+        "Creator Identifier Scheme": "http://vocab.fairdatacollective.org/gdmt/hasCreatorIdentifierScheme",
+        "Creator Identifier Scheme Identifier": "https://schema.metadatacenter.org/properties/cffc1d3a-abb7-4d1b-b523-76948f3452a9",
+        "Creator Affiliation": "http://vocab.fairdatacollective.org/gdmt/hasCreatorAffiliation",
+        "Creator Affiliation Identifier": "http://vocab.fairdatacollective.org/gdmt/hasCreatorAffiliationIdentifier",
+        "Creator Affiliation Identifier Scheme": "http://vocab.fairdatacollective.org/gdmt/hasCreatorAffiliationIdentifierScheme",
+        "Creator Affiliation Identifier Scheme Identifier": "https://schema.metadatacenter.org/properties/e8678031-13bc-44d2-a80e-b7af75bfa4d5",
+        "Creator Email": "http://xmlns.com/foaf/0.1/mbox",
+        "Creator Role": "http://vocab.fairdatacollective.org/gdmt/hasCreatorRole"
+      },
+      "Creator Affiliation Identifier": {
+        "@value": null
+      },
+      "Creator Given Name": {
+        "@value": null
+      },
+      "Creator Email": {
+        "@value": null
+      },
+      "Creator Name": {
+        "@value": null
+      },
+      "Creator Affiliation": {
+        "@value": null
+      },
+      "Creator Affiliation Identifier Scheme": {},
+      "@id": "https://repo.metadatacenter.org/template-element-instances/c9f9b227-f13d-4cd7-943b-b0651e393169"
+    }
+  ],
+  "Data File Version": {
+    "@context": {
+      "Version": "http://schema.org/version"
+    },
+    "Version": {
+      "@value": null
+    },
+    "@id": "https://repo.metadatacenter.org/template-element-instances/e9c5b03f-2451-4924-83c3-d5884cd2b65c"
+  },
+  "Data File Rights": [
+    {
+      "License Name": {},
+      "License Identifier": {},
+      "@context": {
+        "License Name": "http://vocab.fairdatacollective.org/gdmt/hasLicenseName",
+        "License Identifier": "http://vocab.fairdatacollective.org/gdmt/hasLicenseIdentifier",
+        "License Text": "http://purl.org/dc/terms/rights"
+      },
+      "License Text": {
+        "@value": null
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/5d53fa83-1971-4a12-82cb-9bd999db3656"
+    }
+  ],
+  "Data File Parent Study": [
+    {
+      "Study Identifier Scheme": {},
+      "Study End Date": {
+        "@value": null,
+        "@type": "xsd:date"
+      },
+      "Study Start Date": {
+        "@value": null,
+        "@type": "xsd:date"
+      },
+      "Study Local Identifier": {
+        "@value": null
+      },
+      "Study Identifier": {
+        "@value": null
+      },
+      "Study Identifier Scheme Identifier": {},
+      "@context": {
+        "Study Local Identifier": "https://schema.metadatacenter.org/properties/437aa34a-63dd-4b17-8529-bef37c10e7d7",
+        "Study Identifier": "https://schema.metadatacenter.org/properties/bfeef781-7d46-425b-8c6c-5727361104bb",
+        "Study Identifier Scheme": "https://schema.metadatacenter.org/properties/0128c4b0-7962-4dd1-b445-3df29c6eec26",
+        "Study Identifier Scheme Identifier": "https://schema.metadatacenter.org/properties/f3526909-340f-41c2-adf4-e06a6bccb9c9",
+        "Study Name": "https://schema.metadatacenter.org/properties/d6177674-f67b-464a-af13-e9f590d98cc7",
+        "Study Start Date": "https://schema.metadatacenter.org/properties/3cc5cb74-d84a-4f84-9667-a565a2c2a999",
+        "Study End Date": "https://schema.metadatacenter.org/properties/3c161e48-00a2-4fbd-b668-015c16541673"
+      },
+      "Study Name": {
+        "@value": null
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/f690f963-d088-4c2b-b08d-896c365007c2"
+    }
+  ],
+  "Data File Temporal Coverage": [
+    {
+      "Temporal Extent Minimum Value": {
+        "@value": null,
+        "@type": "xsd:date"
+      },
+      "Temporal Extent Maximum Value": {
+        "@value": null,
+        "@type": "xsd:date"
+      },
+      "Temporal Resolution": {
+        "@value": null
+      },
+      "Duration": {
+        "@value": null
+      },
+      "@context": {
+        "Temporal Extent Minimum Value": "http://vocab.fairdatacollective.org/gdmt/hasTemporalExtentMinimumValue",
+        "Temporal Extent Maximum Value": "http://vocab.fairdatacollective.org/gdmt/hasTemporalExtentMaximumValue",
+        "Temporal Resolution": "http://vocab.fairdatacollective.org/gdmt/hasTemporalResolution",
+        "Duration": "http://schema.org/duration"
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/610392ca-cd31-4619-b1d7-f143674ce85e"
+    }
+  ],
+  "@context": {
+    "schema": "http://schema.org/",
+    "Data Characteristics Summary": "https://schema.metadatacenter.org/properties/857e5338-c698-48a4-af29-a2d049bc8152",
+    "Auxiliary Metadata": "https://schema.metadatacenter.org/properties/b604db75-3cad-422d-8b85-5bb363635134",
+    "Data File Process Version": "https://schema.metadatacenter.org/properties/c14dea39-018f-49c4-ba44-6254a88fd173",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "Data File Vertical Coverage": "https://schema.metadatacenter.org/properties/13f51100-1cf8-451a-b7a0-52932377171e",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "Data File Related Resource": "https://schema.metadatacenter.org/properties/848dc135-9068-4a5b-ba8c-98a5994f9d59",
+    "Data File Description": "https://schema.metadatacenter.org/properties/595ca75a-a61e-45f8-964c-a2d00c1874b4",
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "Data File Funding Source": "https://schema.metadatacenter.org/properties/fe98b0dc-7056-44d1-b0a7-4b02ef8ccc6f",
+    "Data Source Stream": "https://schema.metadatacenter.org/properties/b012de2c-549b-4c51-b0be-2e0bb12bf9cb",
+    "Data File Language": "https://schema.metadatacenter.org/properties/a690b6b3-230b-4ef9-91a7-ce56209368ab",
+    "rdfs:label": {
+      "@type": "xsd:string"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    },
+    "skos:notation": {
+      "@type": "xsd:string"
+    },
+    "Data File Creator": "https://schema.metadatacenter.org/properties/1926be54-a337-491a-9613-929176770ad3",
+    "Data File Version": "https://schema.metadatacenter.org/properties/6e0d575a-f73d-4fe8-997d-26c35ac5630b",
+    "Data File Rights": "https://schema.metadatacenter.org/properties/a61a2f7e-b26c-4773-b0fe-4b426e7b1f6e",
+    "pav": "http://purl.org/pav/",
+    "Data File Parent Study": "https://schema.metadatacenter.org/properties/6927832f-a6c4-4ff3-8e36-88d43401ae40",
+    "Data File Temporal Coverage": "https://schema.metadatacenter.org/properties/150a6aa5-9d67-41f6-b02e-212cf2fdbd3d",
+    "Date": "https://schema.metadatacenter.org/properties/cf0b53d3-495f-408d-9109-411785903323",
+    "oslc": "http://open-services.net/ns/core#",
+    "Resource Type": "https://schema.metadatacenter.org/properties/f01ed633-83ff-42ff-8449-a85267d46077",
+    "Data File Spatial Coverage": "https://schema.metadatacenter.org/properties/9767716e-1651-4a48-9a45-6d69bab4a39d",
+    "Data File Identifier": "https://schema.metadatacenter.org/properties/d2d5081f-566e-4125-8cd7-b5ce78c7a4a6",
+    "Data File Distribution": "https://schema.metadatacenter.org/properties/1282a865-396b-467a-bc08-7d7942925a91",
+    "Data Source": "https://schema.metadatacenter.org/properties/08608e7f-1d8d-49a7-94ad-33e8e7da45b0",
+    "schema:isBasedOn": {
+      "@type": "@id"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "Data File Title": "https://schema.metadatacenter.org/properties/7a9a025e-076c-4ae1-a05a-8729d791b460",
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "Data File Contributor": "https://schema.metadatacenter.org/properties/fa095d1a-9352-4036-a310-e2eec826eeb2",
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "pav:derivedFrom": {
+      "@type": "@id"
+    },
+    "Data File Subjects and Keywords": "https://schema.metadatacenter.org/properties/d5a2dc1d-5403-4bf2-b42d-ae52a09a43c6"
+  },
+  "Date": [
+    {
+      "Data File Date Type": {},
+      "@context": {
+        "Data File Date Type": "http://vocab.fairdatacollective.org/gdmt/hasDatasetDateType",
+        "Data File Date": "http://vocab.fairdatacollective.org/gdmt/hasDatasetDate"
+      },
+      "Data File Date": {
+        "@value": null,
+        "@type": "xsd:date"
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/3ab6cfb1-5842-4b46-a4c0-651f272e5213"
+    }
+  ],
+  "Resource Type": {
+    "Resource Type Category": {},
+    "@context": {
+      "Resource Type Category": "http://purl.org/dc/terms/type",
+      "Resource Type Detail": "http://purl.org/dc/elements/1.1/type"
+    },
+    "Resource Type Detail": {
+      "@value": null
+    },
+    "@id": "https://repo.metadatacenter.org/template-element-instances/c522202d-0106-45ad-9686-1756ea52ccbe"
+  },
+  "Data File Spatial Coverage": [
+    {
+      "Southernmost Latitude": {
+        "@value": null
+      },
+      "Westernmost Longitude": {
+        "@value": null
+      },
+      "Northernmost Latitude": {
+        "@value": null
+      },
+      "Easternmost Longitude": {
+        "@value": null
+      },
+      "@context": {
+        "Northernmost Latitude": "http://vocab.fairdatacollective.org/gdmt/hasNorthBoundLatitude",
+        "Southernmost Latitude": "http://vocab.fairdatacollective.org/gdmt/hasSouthBoundLatitude",
+        "Westernmost Longitude": "http://vocab.fairdatacollective.org/gdmt/hasWestBoundLongitude",
+        "Easternmost Longitude": "http://vocab.fairdatacollective.org/gdmt/hasEastBoundLongitude",
+        "Data File Shape Coverage": "https://schema.metadatacenter.org/properties/5f364583-bd6b-4c71-bcc2-8ec297117bb5"
+      },
+      "Data File Shape Coverage": [
+        {
+          "Point Number": {
+            "@value": null,
+            "@type": "xsd:int"
+          },
+          "Latitude": {
+            "@value": null
+          },
+          "@context": {
+            "Point Number": "https://schema.metadatacenter.org/properties/b4b39b09-26e6-4c2a-b3cb-17c37169ae77",
+            "Latitude": "https://schema.metadatacenter.org/properties/f088e6f4-4d3b-48c8-9a9a-449c5c9c88d5",
+            "Longitude": "https://schema.metadatacenter.org/properties/6f0931c5-3fdd-4a93-9e88-e5fbd76ed071"
+          },
+          "Longitude": {
+            "@value": null
+          },
+          "@id": "https://repo.metadatacenter.org/template-element-instances/8fe43999-96e9-42cc-b15b-0640177a7fd2"
+        }
+      ],
+      "@id": "https://repo.metadatacenter.org/template-element-instances/08a0f034-44e7-41f0-be37-0b19f038c840"
+    }
+  ],
+  "Data File Identifier": {
+    "Data File Identifier Type": {
+      "@value": null
+    },
+    "Data File Name ": {
+      "@value": null
+    },
+    "Data File Identifier": {
+      "@value": null
+    },
+    "@context": {
+      "Data File Identifier": "http://purl.org/dc/terms/identifier",
+      "Data File Identifier Type": "http://schema.org/propertyID",
+      "Data File Name ": "https://schema.metadatacenter.org/properties/f0a901ca-59ca-4104-815f-923eaee313d9"
+    },
+    "@id": "https://repo.metadatacenter.org/template-element-instances/77749b22-e19a-49bd-97c7-af857062021d"
+  },
+  "Data File Distribution": [
+    {
+      "Distribution Publisher Identifier Scheme Identifier": {},
+      "Data File Publication Date": {
+        "Data File Publication Date": {
+          "@value": null,
+          "@type": "xsd:date"
+        },
+        "@context": {
+          "Data File Publication Date": "https://schema.metadatacenter.org/properties/93f8d4b7-08b0-4cad-bbf2-081ff71e9ebd",
+          "Publication Date Type": "https://schema.metadatacenter.org/properties/d267c041-a23d-48b2-aeac-2ad909086940"
+        },
+        "Publication Date Type": {},
+        "@id": "https://repo.metadatacenter.org/template-element-instances/7d2e6e84-fbbb-47b7-9e55-4417d43fe389"
+      },
+      "Distribution Publisher Identifier": {
+        "@value": null
+      },
+      "Distribution Access Configuration": {
+        "@value": null
+      },
+      "Distribution Format": {
+        "@value": null
+      },
+      "@context": {
+        "Data File Publication Date": "https://schema.metadatacenter.org/properties/93f8d4b7-08b0-4cad-bbf2-081ff71e9ebd",
+        "Publication Date Type": "https://schema.metadatacenter.org/properties/d267c041-a23d-48b2-aeac-2ad909086940"
+      },
+      "Distribution Media Type": {},
+      "Distribution Identifier": {
+        "@value": null
+      },
+      "Distribution Identifier Type": {},
+      "Distribution Publisher": {
+        "@value": null
+      },
+      "Distribution Size": {
+        "@value": null
+      },
+      "Distribution Publisher Identifier Scheme": {},
+      "Distribution Access Protocol": {
+        "@value": null
+      },
+      "Distribution Query Statement": {
+        "@value": null
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/1a81e4ef-604a-4e5a-9b9b-eb65c4d50f3c"
+    }
+  ],
+  "Data Source": [
+    {
+      "Data Source Identifier": {
+        "@value": null
+      },
+      "Data Source Scheme Identifier": {},
+      "Data Source Name": {
+        "@value": null
+      },
+      "@context": {
+        "Data Source Name": "http://vocab.fairdatacollective.org/gdmt/hasDataSource",
+        "Data Source Identifier": "http://vocab.fairdatacollective.org/gdmt/hasDataSourceIRI",
+        "Data Source Scheme": "http://vocab.fairdatacollective.org/gdmt/hasDataSourceScheme",
+        "Data Source Scheme Identifier": "http://vocab.fairdatacollective.org/gdmt/hasDataSourceSchemeIRI"
+      },
+      "Data Source Scheme": {},
+      "@id": "https://repo.metadatacenter.org/template-element-instances/c095f320-8f2b-4a4f-a0aa-2aa4ffb9fc7b"
+    }
+  ],
+  "Data File Title": [
+    {
+      "Title Language": {
+        "@id": "https://www.omg.org/spec/LCC/Languages/LaISO639-1-LanguageCodes/de",
+        "rdfs:label": "de"
+      },
+      "@context": {
+        "Data File Title": "http://purl.org/dc/elements/1.1/title",
+        "Title Language": "http://purl.org/dc/terms/language"
+      },
+      "Data File Title": {
+        "@value": "Testing Instance"
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/2d284be1-e31a-486c-982d-9d13506334e8"
+    }
+  ],
+  "Data File Contributor": [
+    {
+      "Contributor Identifier": {
+        "@value": null
+      },
+      "Contributor Email": {
+        "@value": null
+      },
+      "Contributor Name": {
+        "@value": null
+      },
+      "Contributor Affiliation Identifier Scheme Identifier": {},
+      "Contributor Type": {},
+      "Contributor Affiliation Identifier Scheme": {},
+      "Contributor Affiliation Identifier": {
+        "@value": null
+      },
+      "Contributor Role": {},
+      "@context": {
+        "Contributor Type": "http://vocab.fairdatacollective.org/gdmt/hasContributorType",
+        "Contributor Name": "http://vocab.fairdatacollective.org/gdmt/hasContributorNameInfo",
+        "Contributor Given Name": "http://xmlns.com/foaf/0.1/givenName",
+        "Contributor Family Name": "http://xmlns.com/foaf/0.1/familyName",
+        "Contributor Identifier": "http://vocab.fairdatacollective.org/gdmt/hasContributorIdentifier",
+        "Contributor Identifier Scheme": "http://vocab.fairdatacollective.org/gdmt/hasContributorIdentifierScheme",
+        "Contributor Identifier Scheme Identifier": "https://schema.metadatacenter.org/properties/ca5a8523-a6b4-4dbd-a35c-91e0278bf8d2",
+        "Contributor Affiliation": "http://vocab.fairdatacollective.org/gdmt/hasContributorAffiliation",
+        "Contributor Affiliation Identifier": "http://vocab.fairdatacollective.org/gdmt/hasContributorAffiliationIdentifier",
+        "Contributor Affiliation Identifier Scheme": "http://vocab.fairdatacollective.org/gdmt/hasContributorAffiliationIdentifierScheme",
+        "Contributor Affiliation Identifier Scheme Identifier": "https://schema.metadatacenter.org/properties/9719c516-7873-4794-a532-5bbbf0f70f22",
+        "Contributor Email": "http://xmlns.com/foaf/0.1/mbox",
+        "Contributor Role": "http://vocab.fairdatacollective.org/gdmt/hasContributorRole"
+      },
+      "Contributor Family Name": {
+        "@value": null
+      },
+      "Contributor Identifier Scheme": {},
+      "Contributor Given Name": {
+        "@value": null
+      },
+      "Contributor Affiliation": {
+        "@value": null
+      },
+      "Contributor Identifier Scheme Identifier": {},
+      "@id": "https://repo.metadatacenter.org/template-element-instances/36e577b0-74e8-4b76-ac2c-8ccfa726a9b5"
+    }
+  ],
+  "Data File Subjects and Keywords": [
+    {
+      "Subject Identifier Scheme Identifier": {
+        "@value": null
+      },
+      "Keyword": {
+        "@value": null
+      },
+      "Subject Identifier": {
+        "@value": null
+      },
+      "Subject Identifier Scheme": {
+        "@value": null
+      },
+      "@context": {
+        "Subject Label": "http://purl.org/dc/terms/subject",
+        "Subject Identifier": "http://vocab.fairdatacollective.org/gdmt/hasSubjectIRI",
+        "Subject Identifier Scheme": "http://vocab.fairdatacollective.org/gdmt/hasSubjectScheme",
+        "Subject Identifier Scheme Identifier": "http://vocab.fairdatacollective.org/gdmt/hasSubjectSchemeIRI",
+        "Keyword": "http://www.w3.org/ns/dcat#keyword"
+      },
+      "Subject Label": {
+        "@value": null
+      },
+      "@id": "https://repo.metadatacenter.org/template-element-instances/e98fba5e-bfd0-4753-9fed-70904d5b44a1"
+    }
+  ],
+  "schema:isBasedOn": "https://repo.metadatacenter.org/templates/cf6488d9-a971-4be1-8444-de8c1c157156",
+  "schema:name": "RADx Metadata Specification metadata",
+  "schema:description": "Template generated by CEDARCSV",
+  "pav:createdOn": "2023-12-05T14:58:17-08:00",
+  "pav:createdBy": "https://metadatacenter.org/users/6124554b-9c83-443c-8207-241d75b82f44",
+  "pav:lastUpdatedOn": "2023-12-05T14:58:17-08:00",
+  "oslc:modifiedBy": "https://metadatacenter.org/users/6124554b-9c83-443c-8207-241d75b82f44",
+  "@id": "https://repo.metadatacenter.org/template-instances/c2b472d7-2115-4c38-8cad-6f5330eab1b4"
+}
