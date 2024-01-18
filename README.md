@@ -17,7 +17,7 @@ The RADx Metadata Validator accepts the following command line arguments:
 
 For example:
 
-`java -jar radx-metadata-validator-app-1.0.0.jar --template validationFiles/RADxTemplate.json --instance validationFiles/RADxInstance.json --out output.csv`
+`java -jar radx-metadata-validator-app-1.0.0.jar --template validationFiles/RADxMetadataSpecification.json --instance validationFiles/RADxExampleMetadataInstance.json --out output.csv`
 
 ### JSON File Validation
 - Validates that the provided files are in proper JSON format. This is a preliminary check to ensure that the files are syntactically correct as per JSON standards.
