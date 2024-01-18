@@ -38,10 +38,12 @@ For example:
 ### Output File Format
 The output of the RADx Metadata Validator is a CSV file with the following format:
 
-- **Level**: Indicates the level of validation message, which can be either `ERROR` or `WARNING`. If there are no `ERROR` results, it indicates that the instance has passed the validation.
+The report's final validation status appears at the top. A `SUCCESS` indicates that the instance has passed validation without any `ERROR` results. In the presence of any `ERROR` results, the status will be `FAILURE`.
+
+- **Level**: Indicates the level of validation message, which can be either `ERROR` or `WARNING`.
 - **Path**: Specifies the location within the file where the validation issue was found.
 - **Validation Type**: Specifies which validation step (e.g., JSON Validation, CEDAR Model Validation, Schema Validation, Requirement Validation, Data Type Validation) generated the message.
 - **Message**: Describes the validation error or warning message.
 
-![Validation Report](ValidationReport.png)
+![Validation Report](ValidationReportWithFinalResult.png)
 

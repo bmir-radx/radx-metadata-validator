@@ -49,7 +49,7 @@
     "Controlled Terms": "https://schema.metadatacenter.org/properties/f5198f26-2579-4b5b-bd20-4b04dc85d2f2"
   },
   "Text": {
-    "@value": null
+    "@value": "this is a text"
   },
   "DateTime": {
     "@value": null,

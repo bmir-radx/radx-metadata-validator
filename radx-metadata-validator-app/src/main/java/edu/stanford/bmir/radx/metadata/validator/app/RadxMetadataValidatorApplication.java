@@ -30,12 +30,14 @@ public class RadxMetadataValidatorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		var validator = context.getBean(Validator.class);
-		Path template = Path.of("validationFiles/MultipleTemplate.json");
-		Path instance = Path.of("validationFiles/MultipleInstance.json");
+		Path template = Path.of("validationFiles/RADxMetadataSpecification.json");
+		Path instance = Path.of("validationFiles/RADxExampleMetadataInstance.json");
 		var report = validator.validateInstance(template, instance);
 
 		var validationReportWriter = context.getBean(ValidationReportWriter.class);
 		var out = Files.newOutputStream(Path.of("output.csv"));
+		validationReportWriter.writeValidationResult(report, out);
+		validationReportWriter.writeReportHeader(out);
 		validationReportWriter.writeReport(report, out);
 
 //		var validateCommand = context.getBean(ValidateCommand.class);

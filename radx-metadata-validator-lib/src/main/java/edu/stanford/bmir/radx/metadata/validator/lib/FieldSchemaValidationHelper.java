@@ -50,11 +50,11 @@ public class FieldSchemaValidationHelper {
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "\"@type\" is not allowed for controlled terms field", path));
     }
 
-    if(jsonLdId.isEmpty()){
+    if(jsonLdId.isEmpty() && label.isPresent()){
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "\"@id\" is expected for controlled terms field", path));
     }
 
-    if(label.isEmpty()){
+    if(label.isEmpty() && jsonLdId.isPresent()){
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "\"rdfs:label\" is expected for controlled terms field", path));
     }
   }

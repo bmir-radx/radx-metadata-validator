@@ -45,8 +45,10 @@ public class ValidateCommand implements Callable<Integer> {
     var out = getOutputStream();
     var report = validator.validateInstance(template, instance);
 
+    validationReportWriter.writeValidationResult(report, out);
     validationReportWriter.writeReportHeader(out);
     validationReportWriter.writeReport(report, out);
+
 
     if(out != System.out) {
       out.close();

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
@@ -16,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +49,7 @@ public class DataTypeValidatorComponent {
 
         // if it is controlled terms, validate schema and @id is a valid URI
         if (valueConstraint.get().isControlledTermValueConstraint()){
-          validateControlledTermsField(id, handler, path);
+//          validateControlledTermsField(id, handler, path);
           fieldSchemaValidationHelper.validateControlledTermField(id, label, value, type, handler, path);
           //if it is text field or paragraph, validate regex, length, schema
         } else if (fieldInputType == FieldInputType.TEXTFIELD || fieldInputType == FieldInputType.TEXTAREA){
@@ -232,17 +230,17 @@ public class DataTypeValidatorComponent {
     }
   }
 
-  public void validateControlledTermsField(Optional<URI> id, Consumer<ValidationResult> handler, String path){
-    // Check if id is not null and a valid URI
-    if (id.isPresent()) {
-      try {
-        new URI(id.toString());
-      } catch (URISyntaxException e) {
-        String message = "Input of \"@id\" is not a valid URI";
-        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
-      }
-    }
-  }
+//  public void validateControlledTermsField(Optional<URI> id, Consumer<ValidationResult> handler, String path){
+//    // Check if id is not null and a valid URI
+//    if (id.isPresent()) {
+//      try {
+//        new URI(id.toString());
+//      } catch (URISyntaxException e) {
+//        String message = "Input of \"@id\" is not a valid URI";
+//        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
+//      }
+//    }
+//  }
 
   public void validateEmailField(Object value, Consumer<ValidationResult> handler, String path){
     if(value instanceof String email){

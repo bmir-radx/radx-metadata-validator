@@ -172,7 +172,10 @@
     {
       "Creator Identifier Scheme Identifier": {},
       "Creator Role": {},
-      "Creator Type": {},
+      "Creator Type": {
+        "@id": "http://vocab.fairdatacollective.org/gdmt/Organization",
+        "rdfs:label": "Organization"
+      },
       "Creator Identifier": {
         "@value": null
       },
@@ -515,8 +518,8 @@
   "Data File Title": [
     {
       "Title Language": {
-        "@id": "https://www.omg.org/spec/LCC/Languages/LaISO639-1-LanguageCodes/en",
-        "rdfs:label": "[en]"
+        "@id": "https://www.omg.org/spec/LCC/Languages/LaISO639-1-LanguageCodes/de",
+        "rdfs:label": "de"
       },
       "@context": {
         "Data File Title": "http://purl.org/dc/elements/1.1/title",

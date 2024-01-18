@@ -38,4 +38,18 @@ public class ValidationReportWriter {
     var validationType = r.validationName();
     return List.of(level, path, validationType, message);
   }
+
+  public void writeValidationResult(ValidationReport report, OutputStream outputStream) throws IOException {
+    var resultWriter = new CSVPrinter(new PrintStream(outputStream, true, StandardCharsets.UTF_8), CSVFormat.DEFAULT);
+    boolean hasError = report.results().stream()
+        .anyMatch(r -> r.validationLevel().equals(ValidationLevel.ERROR));
+
+    if(!hasError){
+      resultWriter.printRecord("Validation Result: SUCCESS");
+    } else{
+      resultWriter.printRecord("Validation Result: FAILURE");
+    }
+
+    resultWriter.printRecord();
+  }
 }

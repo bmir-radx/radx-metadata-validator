@@ -70,7 +70,8 @@
         {
           "@value": "nested field"
         }
-      ]
+      ],
+      "@id": "https://repo.metadatacenter.org/template-element-instances/ff0a66da-eedf-4d6e-93eb-3efd9bf3529d"
     }
   ],
   "schema:isBasedOn": "https://repo.metadatacenter.org/templates/e71707de-5765-4a4d-be18-11bf4adb56b3",
@@ -78,7 +79,7 @@
   "schema:description": "",
   "pav:createdOn": "2024-01-17T12:26:16-08:00",
   "pav:createdBy": "https://metadatacenter.org/users/6124554b-9c83-443c-8207-241d75b82f44",
-  "pav:lastUpdatedOn": "2024-01-17T12:26:16-08:00",
+  "pav:lastUpdatedOn": "2024-01-17T12:29:49-08:00",
   "oslc:modifiedBy": "https://metadatacenter.org/users/6124554b-9c83-443c-8207-241d75b82f44",
   "@id": "https://repo.metadatacenter.org/template-instances/2d2e72bb-1064-4c3b-b839-1549ec4799c0"
 }
