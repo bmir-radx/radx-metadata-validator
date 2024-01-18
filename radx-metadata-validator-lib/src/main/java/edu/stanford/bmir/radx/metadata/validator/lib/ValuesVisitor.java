@@ -55,7 +55,7 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
     values.put(path, new FieldValues(fieldInstanceArtifact.jsonLdTypes(),
             fieldInstanceArtifact.jsonLdId(),
             fieldInstanceArtifact.jsonLdValue(),
-            fieldInstanceArtifact.prefLabel()));
+            fieldInstanceArtifact.label()));
   }
 
   private void parseFieldInstances(Map<String, List<FieldInstanceArtifact>> fieldInstances, String path){
