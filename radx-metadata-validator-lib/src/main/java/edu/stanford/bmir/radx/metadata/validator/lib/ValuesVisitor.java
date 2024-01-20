@@ -13,25 +13,25 @@ import java.util.Map;
 @Component
 public class ValuesVisitor implements InstanceArtifactVisitor {
   private final Map<String, FieldValues> values;
-  private final Map<String, Integer> fieldCardinals;
-  private final Map<String, Integer> elementCardinals;
+  private final Map<String, Integer> fieldCardinalities;
+  private final Map<String, Integer> elementCardinalities;
 
   public ValuesVisitor() {
     this.values = new HashMap<>();
-    this.fieldCardinals = new HashMap<>();
-    this.elementCardinals = new HashMap<>();
+    this.fieldCardinalities = new HashMap<>();
+    this.elementCardinalities = new HashMap<>();
   }
 
   public Map<String, FieldValues> getValues() {
     return this.values;
   }
 
-  public Map<String, Integer> getFieldCardinals() {
-    return fieldCardinals;
+  public Map<String, Integer> getFieldCardinalities() {
+    return fieldCardinalities;
   }
 
-  public Map<String, Integer> getElementCardinals() {
-    return elementCardinals;
+  public Map<String, Integer> getElementCardinalities() {
+    return elementCardinalities;
   }
 
   @Override
@@ -63,7 +63,7 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
       String fieldName = entry.getKey();
       String childBasePath = path + "/" + fieldName;
       int size = entry.getValue().size();
-      fieldCardinals.put(childBasePath, size);
+      fieldCardinalities.put(childBasePath, size);
     }
   }
 
@@ -72,7 +72,7 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
       String elementName = entry.getKey();
       String childBasePath = "/" + elementName;
       int size = entry.getValue().size();
-      elementCardinals.put(childBasePath, size);
+      elementCardinalities.put(childBasePath, size);
     }
   }
 }

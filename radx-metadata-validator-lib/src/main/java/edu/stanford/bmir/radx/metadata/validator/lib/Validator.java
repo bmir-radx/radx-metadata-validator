@@ -26,14 +26,16 @@ public class Validator {
   private final CedarSchemaValidatorComponent cedarSchemaValidatorComponent;
   private final RequiredFieldValidatorComponent requiredFieldValidatorComponent;
   private final DataTypeValidatorComponent dataTypeValidatorComponent;
+  private final SanitationChecker sanitationChecker;
 
   public Validator(SchemaValidatorComponent schemaValidatorComponent,
                    CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
-                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent) {
+                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, SanitationChecker sanitationChecker) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
     this.dataTypeValidatorComponent = dataTypeValidatorComponent;
+    this.sanitationChecker = sanitationChecker;
   }
 
 
@@ -65,9 +67,8 @@ public class Validator {
         TemplateInstanceArtifact templateInstanceArtifact = jsonSchemaArtifactReader.readTemplateInstanceArtifact((ObjectNode) instanceNode);
         TemplateInstanceValuesReporter templateInstanceValuesReporter = new TemplateInstanceValuesReporter(templateInstanceArtifact);
 
-        //TODO: Sanitation check - validate the schema:isBasedOn of the instance matches template ID
-        var templateID = templateSchemaArtifact.jsonLdId();
-        var instanceID = templateInstanceArtifact.isBasedOn();
+        // Check if the instance's "isBasedOn" equals to template id
+        sanitationChecker.validate(templateSchemaArtifact, templateInstanceArtifact, consumer);
 
         //Compare instance JSON schema against template's
         schemaValidatorComponent.validate(templateNode, instanceNode, consumer);
@@ -79,14 +80,12 @@ public class Validator {
           //validate data type
           dataTypeValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
         }
-
       }
     } catch (JsonParseException e) {
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.JSON_VALIDATION, e.getMessage(), ""));
     } catch (ArtifactParseException e) {
       String errorMessage = e.getMessage();
       String pointer = e.getPath();
-      //TODO: modify the validation name?
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.ARTIFACT_SCHEMA_VALIDATION, errorMessage, pointer));
     } catch (ProcessingException e){
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, e.getMessage(), ""));
