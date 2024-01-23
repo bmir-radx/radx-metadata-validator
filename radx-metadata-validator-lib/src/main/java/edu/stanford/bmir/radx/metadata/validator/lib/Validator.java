@@ -78,7 +78,7 @@ public class Validator {
           requiredFieldValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
 
           //validate data type
-          dataTypeValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
+          dataTypeValidatorComponent.validate(templateInstanceArtifact, templateReporter, templateInstanceValuesReporter, consumer);
         }
       }
     } catch (JsonParseException e) {

@@ -1,6 +1,7 @@
 package edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.*;
+import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.fields.FieldInputType;
 import org.metadatacenter.artifacts.model.core.fields.constraints.ValueConstraints;
 import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
@@ -34,7 +35,7 @@ public class DataTypeValidatorComponent {
     this.fieldSchemaValidationHelper = fieldSchemaValidationHelper;
   }
 
-  public void validate(TemplateReporter templateReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<ValidationResult> handler){
+  public void validate(TemplateInstanceArtifact templateInstanceArtifact, TemplateReporter templateReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<ValidationResult> handler){
     var values = valuesReporter.getValues();
 
     for (Map.Entry<String, FieldValues> FieldEntry : values.entrySet()) {
@@ -89,6 +90,9 @@ public class DataTypeValidatorComponent {
             validateLiterals(value.get(), valueConstraint.get(), handler, path);
             fieldSchemaValidationHelper.validateTextField(id, label, type, handler, path);
           }
+        //if it is attribute value, validate the schema
+        } else if(fieldInputType == FieldInputType.ATTRIBUTE_VALUE){
+
         }
         //TODO: if it is phone field
         //TODO:if it is attribute value
@@ -181,31 +185,31 @@ public class DataTypeValidatorComponent {
     }
   }
 
-  public void validateTemporalField(Object value, List<URI> type, ValueConstraints valueConstraint, Consumer<ValidationResult> handler, String path){
+  public void validateTemporalField(String value, List<URI> type, ValueConstraints valueConstraint, Consumer<ValidationResult> handler, String path){
     var temporalConstraint = valueConstraint.asTemporalValueConstraints();
     var temporalDatatype = temporalConstraint.temporalType();
     //validate @value value
-    if (value instanceof String temporalValue) {
-      switch (temporalDatatype) {
-        case DATE:
-          if(!isValidDate(temporalValue)){
-            handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Input value \"%s\" is not a valid Date", path));
-          }
-          break;
-        case DATETIME:
-          if(!isValidDateTime(temporalValue)){
-            handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Input value \"%s\" is not a valid DateTime", path));
-          }
-          break;
-        case TIME:
-          if(!isValidTime(temporalValue)){
-            handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Input value \"%s\" is not a valid Time", path));
-          }
-          break;
-      }
-    } else {
-      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "Expected a value of type String for @value", path));
+    switch (temporalDatatype) {
+      case DATE:
+        if(!isValidDate(value)){
+          String message = String.format("Input value \"%s\" is not a valid Date", value);
+          handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
+        }
+        break;
+      case DATETIME:
+        if(!isValidDateTime(value)){
+          String message = String.format("Input value \"%s\" is not a valid DateTime", value);
+          handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
+        }
+        break;
+      case TIME:
+        if(!isValidTime(value)){
+          String message = String.format("Input value \"%s\" is not a valid Time", value);
+          handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
+        }
+        break;
     }
+
 
     //validate @type value
     if (type.size() > 0){
