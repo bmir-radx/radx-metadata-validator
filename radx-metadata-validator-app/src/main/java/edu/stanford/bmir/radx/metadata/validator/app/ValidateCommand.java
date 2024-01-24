@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 @Component
-@Command(name = "validate")
+@Command(name = "validate", mixinStandardHelpOptions = true)
 public class ValidateCommand implements Callable<Integer> {
   private final Validator validator;
   private final ValidationReportWriter validationReportWriter;
