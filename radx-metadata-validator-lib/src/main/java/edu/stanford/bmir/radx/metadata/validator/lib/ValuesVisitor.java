@@ -6,6 +6,7 @@ import org.metadatacenter.artifacts.model.core.InstanceArtifactVisitor;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,13 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
   private final Map<String, FieldValues> values;
   private final Map<String, Integer> fieldCardinalities;
   private final Map<String, Integer> elementCardinalities;
+  private final List<AttributeValueFieldValues> attributeValueFields;
 
   public ValuesVisitor() {
     this.values = new HashMap<>();
     this.fieldCardinalities = new HashMap<>();
     this.elementCardinalities = new HashMap<>();
+    this.attributeValueFields = new ArrayList<>();
   }
 
   public Map<String, FieldValues> getValues() {
@@ -32,6 +35,10 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
 
   public Map<String, Integer> getElementCardinalities() {
     return elementCardinalities;
+  }
+
+  public List<AttributeValueFieldValues> getAttributeValueFields() {
+    return attributeValueFields;
   }
 
   @Override
@@ -56,6 +63,16 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
             fieldInstanceArtifact.jsonLdId(),
             fieldInstanceArtifact.jsonLdValue(),
             fieldInstanceArtifact.label()));
+  }
+
+  @Override
+  public void visitAttributeValueFieldInstanceArtifact(FieldInstanceArtifact fieldInstanceArtifact, String s, String s1) {
+    attributeValueFields.add(new AttributeValueFieldValues(s, s1,
+        new FieldValues(fieldInstanceArtifact.jsonLdTypes(),
+            fieldInstanceArtifact.jsonLdId(),
+            fieldInstanceArtifact.jsonLdValue(),
+            fieldInstanceArtifact.label())
+    ));
   }
 
   private void parseFieldInstances(Map<String, List<FieldInstanceArtifact>> fieldInstances, String path){

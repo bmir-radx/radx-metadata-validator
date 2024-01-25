@@ -1,7 +1,6 @@
 package edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.*;
-import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.fields.FieldInputType;
 import org.metadatacenter.artifacts.model.core.fields.constraints.ValueConstraints;
 import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
@@ -26,16 +25,18 @@ import java.util.regex.Pattern;
 public class DataTypeValidatorComponent {
   private final TextFieldValidationUtil textFieldValidationUtil;
   private final NumericFieldValidationUtil numericFieldValidationUtil;
+  private final AttributeValueValidationUtil attributeValueValidationUtil;
   private final FieldSchemaValidationHelper fieldSchemaValidationHelper;
   private final String XSD_IRI = "http://www.w3.org/2001/XMLSchema#";
 
-  public DataTypeValidatorComponent(TextFieldValidationUtil textFieldValidationUtil, NumericFieldValidationUtil numericFieldValidationUtil, FieldSchemaValidationHelper fieldSchemaValidationHelper) {
+  public DataTypeValidatorComponent(TextFieldValidationUtil textFieldValidationUtil, NumericFieldValidationUtil numericFieldValidationUtil, AttributeValueValidationUtil attributeValueValidationUtil, FieldSchemaValidationHelper fieldSchemaValidationHelper) {
     this.textFieldValidationUtil = textFieldValidationUtil;
     this.numericFieldValidationUtil = numericFieldValidationUtil;
+    this.attributeValueValidationUtil = attributeValueValidationUtil;
     this.fieldSchemaValidationHelper = fieldSchemaValidationHelper;
   }
 
-  public void validate(TemplateInstanceArtifact templateInstanceArtifact, TemplateReporter templateReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<ValidationResult> handler){
+  public void validate(TemplateReporter templateReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<ValidationResult> handler){
     var values = valuesReporter.getValues();
 
     for (Map.Entry<String, FieldValues> FieldEntry : values.entrySet()) {
@@ -90,14 +91,12 @@ public class DataTypeValidatorComponent {
             validateLiterals(value.get(), valueConstraint.get(), handler, path);
             fieldSchemaValidationHelper.validateTextField(id, label, type, handler, path);
           }
-        //if it is attribute value, validate the schema
-        } else if(fieldInputType == FieldInputType.ATTRIBUTE_VALUE){
-
         }
-        //TODO: if it is phone field
-        //TODO:if it is attribute value
       }
     }
+
+    //if it is attribute value, validate the schema
+    attributeValueValidationUtil.validateAttributeValueField(templateReporter, valuesReporter.getAttributeValueFields(), handler);
   }
 
   public void validateTextField(String value, ValueConstraints valueConstraint, Consumer<ValidationResult> handler, String path){

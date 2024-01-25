@@ -3,10 +3,7 @@ package edu.stanford.bmir.radx.metadata.validator.lib;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.RequiredFieldValidatorComponent;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.CedarSchemaValidatorComponent;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.DataTypeValidatorComponent;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.SchemaValidatorComponent;
+import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.*;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
 import org.metadatacenter.artifacts.model.reader.ArtifactParseException;
@@ -26,21 +23,22 @@ public class Validator {
   private final CedarSchemaValidatorComponent cedarSchemaValidatorComponent;
   private final RequiredFieldValidatorComponent requiredFieldValidatorComponent;
   private final DataTypeValidatorComponent dataTypeValidatorComponent;
+  private final CardinalityValidatorComponent cardinalityValidatorComponent;
   private final SanitationChecker sanitationChecker;
 
   public Validator(SchemaValidatorComponent schemaValidatorComponent,
                    CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
-                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, SanitationChecker sanitationChecker) {
+                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, CardinalityValidatorComponent cardinalityValidatorComponent, SanitationChecker sanitationChecker) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
     this.dataTypeValidatorComponent = dataTypeValidatorComponent;
+    this.cardinalityValidatorComponent = cardinalityValidatorComponent;
     this.sanitationChecker = sanitationChecker;
   }
 
 
   public ValidationReport validateInstance(Path templateFilePath, Path instanceFilePath) throws Exception {
-//    var results = new ArrayList<ValidationResult>();
     var results = new HashSet<ValidationResult>();
     Consumer<ValidationResult> consumer = results::add;
     JsonNode templateNode;
@@ -78,7 +76,10 @@ public class Validator {
           requiredFieldValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
 
           //validate data type
-          dataTypeValidatorComponent.validate(templateInstanceArtifact, templateReporter, templateInstanceValuesReporter, consumer);
+          dataTypeValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
+
+          //validate cardinality
+          cardinalityValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
         }
       }
     } catch (JsonParseException e) {
@@ -90,6 +91,7 @@ public class Validator {
     } catch (ProcessingException e){
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, e.getMessage(), ""));
     } catch (Exception e){
+      consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.UNKNOWN, e.getMessage(), ""));
       for (StackTraceElement element : e.getStackTrace()) {
         System.out.println(element.toString());
       }

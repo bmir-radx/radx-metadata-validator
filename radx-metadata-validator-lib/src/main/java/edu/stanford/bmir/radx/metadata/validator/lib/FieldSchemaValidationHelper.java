@@ -9,16 +9,23 @@ import java.util.function.Consumer;
 
 @Component
 public class FieldSchemaValidationHelper {
-  public void validateTextField(Optional<URI> jsonLdId, Optional<String> label, List<URI> jsonLdType, Consumer<ValidationResult> handler, String path){
+  public void validateValueOnlyField(Optional<URI> jsonLdId, Optional<String> label, List<URI> jsonLdType, Consumer<ValidationResult> handler, String path, String type){
     if(jsonLdId.isPresent()){
-      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "\"@id\" is not allowed for text type field", path));
+      String errorMessage = String.format("\"@id\" is not allowed for %s field",type);
+      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, errorMessage, path));
     }
     if(label.isPresent()){
-      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "\"rdfs:label\" is not allowed for text type field", path));
+      String errorMessage = String.format("\"@id\" is not allowed for %s field",type);
+      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, errorMessage, path));
     }
     if(jsonLdType.size() > 1){
-      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "\"@type\" is not allowed for text type field", path));
+      String errorMessage = String.format("\"@id\" is not allowed for %s field",type);
+      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, errorMessage, path));
     }
+  }
+
+  public void validateTextField(Optional<URI> jsonLdId, Optional<String> label, List<URI> jsonLdType, Consumer<ValidationResult> handler, String path){
+    validateValueOnlyField(jsonLdId, label, jsonLdType, handler, path, "Text");
   }
 
   public void validateLinkField(Optional<String> jsonLdValue, Optional<String> label, List<URI> jsonLdType, Consumer<ValidationResult> handler, String path){
@@ -57,5 +64,9 @@ public class FieldSchemaValidationHelper {
     if(label.isEmpty() && jsonLdId.isPresent()){
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "\"rdfs:label\" is expected for controlled terms field", path));
     }
+  }
+
+  public void validateAttributeValueField(Optional<URI> jsonLdId, Optional<String> label, List<URI> jsonLdType, Consumer<ValidationResult> handler, String path){
+    validateValueOnlyField(jsonLdId, label, jsonLdType, handler, path, "Attribute Value");
   }
 }
