@@ -1,8 +1,5 @@
 package edu.stanford.bmir.radx.metadata.validator.lib;
 
-import edu.stanford.bmir.radx.metadata.validator.lib.FieldValues;
-import edu.stanford.bmir.radx.metadata.validator.lib.TemplateInstanceValuesReporter;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidationResult;
 import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.RequiredFieldValidatorComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,6 +66,36 @@ public class RequiredFieldValidatorComponentTest {
   }
 
   @Test
+  void testValidateRequiredTextFieldEmptyString() {
+    String textFieldName = "text field";
+    String templateName = "My template";
+    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.textFieldBuilder()
+        .withName(textFieldName)
+        .withRequiredValue(true)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(textFieldSchemaArtifact)
+        .build();
+
+    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+
+    String fieldPath = "/" + textFieldName;
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.empty(), Optional.of(""), Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+
+    assertEquals(1, results.size());
+  }
+
+  @Test
   void testValidateRequiredTextFieldPresent() {
     String textFieldName = "text field";
     String templateName = "My template";
@@ -120,6 +147,36 @@ public class RequiredFieldValidatorComponentTest {
 
     FieldValues fieldValues = new FieldValues(
         List.of(), Optional.empty(), Optional.empty(), Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+
+    assertEquals(1, results.size());
+  }
+
+  @Test
+  void testValidateRequiredLinkFieldemptyString() throws URISyntaxException {
+    String linkFieldName = "link field";
+    String templateName = "My template";
+    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.linkFieldBuilder()
+        .withName(linkFieldName)
+        .withRequiredValue(true)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(linkFieldSchemaArtifact)
+        .build();
+
+    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+
+    String fieldPath = "/" + linkFieldName;
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.of(new URI("")), Optional.empty(), Optional.empty());
     Map<String, FieldValues> values = new HashMap<>();
     values.put(fieldPath, fieldValues);
 

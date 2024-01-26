@@ -22,7 +22,7 @@ public class RequiredFieldValidatorComponent {
       //If it is required
       if(valueConstraint.isPresent()){
         if(valueConstraint.get().requiredValue()){
-          String errorMessage = "The field is required but got null";
+          String errorMessage = "The field is required but a null value is received";
           // If it is link type, check @id
           if (valueConstraint.get().isLinkValueConstraint()){
             if(jsonLdId.isEmpty() || jsonLdId.get().toString().equals("")){
@@ -30,10 +30,10 @@ public class RequiredFieldValidatorComponent {
             }
           } else if (valueConstraint.get().isControlledTermValueConstraint()){//if it is controlled term, check @label and @id
             if (jsonLdLabel.isEmpty() || jsonLdLabel.get().equals("")){
-              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "rdfs:label  is required but got null", path));
+              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "rdfs:label is required but a null value is received", path));
             }
             if (jsonLdId.isEmpty() || jsonLdId.get().toString().equals("")){
-              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "@id  is required but got null", path));
+              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "@id is required but a null value is received", path));
             }
           } else {
             //For others, check @value

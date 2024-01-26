@@ -1,6 +1,5 @@
 package edu.stanford.bmir.radx.metadata.validator.lib;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.*;
@@ -41,15 +40,10 @@ public class Validator {
   public ValidationReport validateInstance(Path templateFilePath, Path instanceFilePath) throws Exception {
     var results = new HashSet<ValidationResult>();
     Consumer<ValidationResult> consumer = results::add;
-    JsonNode templateNode;
 
     try{
       //validate the provided files are JSON file and get the templateNode and instanceNode
-      if(templateFilePath != null) {
-        templateNode = JsonLoader.loadJson(String.valueOf(templateFilePath));
-      } else {
-        templateNode = JsonLoader.loadJson((Constants.RADX_TEMPLATE_SCHEMA_PATH));
-      }
+      var templateNode = JsonLoader.loadJson(String.valueOf(templateFilePath));
       var instanceNode = JsonLoader.loadJson(String.valueOf(instanceFilePath));
 
       //validate the template is CEDAR model template

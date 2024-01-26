@@ -4,16 +4,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Objects;
 
 @Component
 public class JsonLoader {
     public static JsonNode loadJson(String jsonFilePath) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readTree(Objects.requireNonNull(
-                JsonLoader.class.getClassLoader().getResourceAsStream(jsonFilePath)));
+            File file = new File(jsonFilePath);
+            if(!file.exists()){
+                throw new JsonParseException("File not found: " + jsonFilePath);
+            }
+//            return objectMapper.readTree(Objects.requireNonNull(
+//                JsonLoader.class.getClassLoader().getResourceAsStream(jsonFilePath)));
+            return objectMapper.readTree(new FileInputStream((file)));
         } catch (IOException e) {
             throw new JsonParseException("The provided file " + jsonFilePath + " is not a valid JSON file.");
         }

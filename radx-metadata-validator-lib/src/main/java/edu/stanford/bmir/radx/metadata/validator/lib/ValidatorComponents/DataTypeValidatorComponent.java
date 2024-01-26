@@ -227,9 +227,7 @@ public class DataTypeValidatorComponent {
   }
 
   public void validateTypeValue(URI inputType, String typeConstraint, Consumer<ValidationResult> handler, String path){
-    String xsdIri = "http://www.w3.org/2001/XMLSchema#";
-    String xsdPrefix = "xsd:";
-    String semanticInputType = inputType.toString().replace(xsdIri, xsdPrefix);
+    String semanticInputType = inputType.toString().replace(Constants.XSD_IRI, Constants.XSD_PREFIX);
     if(!semanticInputType.equals(typeConstraint)){
       String message = String.format("Expected \"%s\" for @type, but \"%s\" is given", typeConstraint, semanticInputType);
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
