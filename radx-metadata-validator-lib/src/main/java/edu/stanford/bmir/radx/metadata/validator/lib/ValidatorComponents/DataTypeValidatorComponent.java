@@ -103,7 +103,7 @@ public class DataTypeValidatorComponent {
     var textConstraint = valueConstraint.asTextValueConstraints();
     //validate regex
     if(!textFieldValidationUtil.matchRegex(textConstraint.regex(), value)){
-      String message = String.format("%s does not follow the regex (%s)", value, textConstraint.regex().orElse(""));
+      String message = String.format("\"%s\" does not follow the regex (%s)", value, textConstraint.regex().orElse(""));
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
     }
     //validate length range
@@ -230,7 +230,7 @@ public class DataTypeValidatorComponent {
   public void validateTypeValue(URI inputType, String typeConstraint, Consumer<ValidationResult> handler, String path){
     var typeConstraintUri = URI.create(XSD_IRI + typeConstraint.substring(typeConstraint.indexOf(":") + 1));
     if(!inputType.equals(typeConstraintUri)){
-      String message = String.format("Expected %s for @type", typeConstraint);
+      String message = String.format("Expected \"%s\" for @type, but \"%s\" is given", typeConstraint, inputType);
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
     }
   }
@@ -241,7 +241,7 @@ public class DataTypeValidatorComponent {
       try {
         new URI(id.get().toString());
       } catch (URISyntaxException e) {
-        String message = "Input of \"@id\" is not a valid URI";
+        String message = String.format("Input @id \"%s\" is not a valid URI", id.get());
         handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
       }
     }

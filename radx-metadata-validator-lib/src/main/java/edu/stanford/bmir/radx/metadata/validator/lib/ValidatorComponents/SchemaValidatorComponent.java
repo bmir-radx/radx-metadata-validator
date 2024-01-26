@@ -34,9 +34,7 @@ public class SchemaValidatorComponent {
       var jsonNode = message.asJson();
       var schemaNode = jsonNode.path(SCHEMA);
       var pointer = normalizePointer(schemaNode.path(POINTER).toString());
-      if (logLevel.equals(WARNING)) {
-        handler.accept(new ValidationResult(ValidationLevel.WARNING, ValidationName.SCHEMA_VALIDATION, messageContent, pointer));
-      } else if (logLevel.equals(ERROR)) {
+      if (logLevel.equals(ERROR)) {
         handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, messageContent, pointer));
       }
     }
