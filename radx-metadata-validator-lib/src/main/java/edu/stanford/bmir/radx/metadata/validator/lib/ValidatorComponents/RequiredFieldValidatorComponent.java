@@ -15,6 +15,9 @@ public class RequiredFieldValidatorComponent {
     for (Map.Entry<String, FieldValues> fieldEntry : values.entrySet()) {
       String path = fieldEntry.getKey();
       FieldValues fieldValues = fieldEntry.getValue();
+      var jsonLdValue = fieldValues.jsonLdValue();
+      var jsonLdId = fieldValues.jsonLdId();
+      var jsonLdLabel = fieldValues.label();
       var valueConstraint = templateReporter.getValueConstraints(path);
       //If it is required
       if(valueConstraint.isPresent()){
@@ -22,16 +25,19 @@ public class RequiredFieldValidatorComponent {
           String errorMessage = "The field is required but got null";
           // If it is link type, check @id
           if (valueConstraint.get().isLinkValueConstraint()){
-            if(fieldValues.jsonLdId().isEmpty()){
+            if(jsonLdId.isEmpty() || jsonLdId.get().toString().equals("")){
               handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, errorMessage, path));
             }
-          } else if (valueConstraint.get().isControlledTermValueConstraint()){             //if it is controlled term, check @label and @id
-            if (fieldValues.label().isEmpty() || fieldValues.jsonLdId().isEmpty()){
-              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, errorMessage, path));
+          } else if (valueConstraint.get().isControlledTermValueConstraint()){//if it is controlled term, check @label and @id
+            if (jsonLdLabel.isEmpty() || jsonLdLabel.get().equals("")){
+              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "rdfs:label  is required but got null", path));
+            }
+            if (jsonLdId.isEmpty() || jsonLdId.get().toString().equals("")){
+              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, "@id  is required but got null", path));
             }
           } else {
             //For others, check @value
-            if (fieldValues.jsonLdValue().isEmpty()){
+            if (jsonLdValue.isEmpty() || jsonLdValue.get().equals("")){
               handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, errorMessage, path));
             }
           }

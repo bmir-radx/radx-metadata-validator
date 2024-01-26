@@ -1,16 +1,11 @@
 package edu.stanford.bmir.radx.metadata.validator.app;
 
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidationReportWriter;
-import edu.stanford.bmir.radx.metadata.validator.lib.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import picocli.CommandLine;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @SpringBootApplication(scanBasePackages = "edu.stanford.bmir.radx.metadata.validator")
 public class RadxMetadataValidatorApplication implements CommandLineRunner {
@@ -29,19 +24,8 @@ public class RadxMetadataValidatorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		var validator = context.getBean(Validator.class);
-		Path template = Path.of("validationFiles/AttributeValuesTemplate.json");
-		Path instance = Path.of("validationFiles/AttributeValuesInstance.json");
-		var report = validator.validateInstance(template, instance);
-
-		var validationReportWriter = context.getBean(ValidationReportWriter.class);
-		var out = Files.newOutputStream(Path.of("output.csv"));
-		validationReportWriter.writeValidationResult(report, out);
-		validationReportWriter.writeReportHeader(out);
-		validationReportWriter.writeReport(report, out);
-
-//		var validateCommand = context.getBean(ValidateCommand.class);
-//		exitCode = new CommandLine(validateCommand, iFactory).execute(args);
+		var validateCommand = context.getBean(ValidateCommand.class);
+		exitCode = new CommandLine(validateCommand, iFactory).execute(args);
 	}
 
 	public int getExitCode() {

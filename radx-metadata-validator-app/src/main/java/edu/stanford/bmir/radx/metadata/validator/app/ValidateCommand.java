@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 public class ValidateCommand implements Callable<Integer> {
   private final Validator validator;
   private final ValidationReportWriter validationReportWriter;
-  @Option(names = "--template", description = "Path to the JSON template file. This is optional. If it is not provided then the Radx Metadata Specification template will be utilized by default.")
+  @Option(names = "--template", description = "Path to the JSON template file. This is optional. If it is not provided then the Radx Metadata Specification will be utilized by default.")
   private Path template;
 
   @Option(names = "--instance", required = true, description = "Path to the JSON instance file that you want to validate.")
@@ -45,7 +45,6 @@ public class ValidateCommand implements Callable<Integer> {
     var out = getOutputStream();
     var report = validator.validateInstance(template, instance);
 
-    validationReportWriter.writeValidationResult(report, out);
     validationReportWriter.writeReportHeader(out);
     validationReportWriter.writeReport(report, out);
 

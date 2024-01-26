@@ -13,7 +13,7 @@ public class ValidationReportWriter {
 
   public void writeReportHeader(OutputStream outputStream) throws IOException {
     var resultWriter = new CSVPrinter(new PrintStream(outputStream, true, StandardCharsets.UTF_8), CSVFormat.DEFAULT);
-    resultWriter.printRecord("Level", "Path", "Validation Type", "Message");
+    resultWriter.printRecord("LEVEL", "PATH", "VALIDATION TYPE", "MESSAGE");
   }
 
   public void writeReport(ValidationReport report, OutputStream outputStream) throws IOException {
@@ -37,19 +37,5 @@ public class ValidationReportWriter {
     var message = r.message();
     var validationType = r.validationName();
     return List.of(level, path, validationType, message);
-  }
-
-  public void writeValidationResult(ValidationReport report, OutputStream outputStream) throws IOException {
-    var resultWriter = new CSVPrinter(new PrintStream(outputStream, true, StandardCharsets.UTF_8), CSVFormat.DEFAULT);
-    boolean hasError = report.results().stream()
-        .anyMatch(r -> r.validationLevel().equals(ValidationLevel.ERROR));
-
-    if(!hasError){
-      resultWriter.printRecord("Validation Result: SUCCESS");
-    } else{
-      resultWriter.printRecord("Validation Result: FAILURE");
-    }
-
-    resultWriter.printRecord();
   }
 }
