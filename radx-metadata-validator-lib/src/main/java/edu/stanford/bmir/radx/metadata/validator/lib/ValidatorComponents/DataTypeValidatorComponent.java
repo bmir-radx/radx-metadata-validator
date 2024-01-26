@@ -27,7 +27,6 @@ public class DataTypeValidatorComponent {
   private final NumericFieldValidationUtil numericFieldValidationUtil;
   private final AttributeValueValidationUtil attributeValueValidationUtil;
   private final FieldSchemaValidationHelper fieldSchemaValidationHelper;
-  private final String XSD_IRI = "http://www.w3.org/2001/XMLSchema#";
 
   public DataTypeValidatorComponent(TextFieldValidationUtil textFieldValidationUtil, NumericFieldValidationUtil numericFieldValidationUtil, AttributeValueValidationUtil attributeValueValidationUtil, FieldSchemaValidationHelper fieldSchemaValidationHelper) {
     this.textFieldValidationUtil = textFieldValidationUtil;
@@ -228,9 +227,11 @@ public class DataTypeValidatorComponent {
   }
 
   public void validateTypeValue(URI inputType, String typeConstraint, Consumer<ValidationResult> handler, String path){
-    var typeConstraintUri = URI.create(XSD_IRI + typeConstraint.substring(typeConstraint.indexOf(":") + 1));
-    if(!inputType.equals(typeConstraintUri)){
-      String message = String.format("Expected \"%s\" for @type, but \"%s\" is given", typeConstraint, inputType);
+    String xsdIri = "http://www.w3.org/2001/XMLSchema#";
+    String xsdPrefix = "xsd:";
+    String semanticInputType = inputType.toString().replace(xsdIri, xsdPrefix);
+    if(!semanticInputType.equals(typeConstraint)){
+      String message = String.format("Expected \"%s\" for @type, but \"%s\" is given", typeConstraint, semanticInputType);
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
     }
   }
