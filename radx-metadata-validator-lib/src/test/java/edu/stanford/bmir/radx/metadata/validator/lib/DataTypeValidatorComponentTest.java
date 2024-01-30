@@ -3,22 +3,27 @@ package edu.stanford.bmir.radx.metadata.validator.lib;
 import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.DataTypeValidatorComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.metadatacenter.artifacts.model.core.FieldSchemaArtifact;
+import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
+import org.metadatacenter.artifacts.model.core.fields.InputTimeFormat;
+import org.metadatacenter.artifacts.model.core.fields.TemporalGranularity;
 import org.metadatacenter.artifacts.model.core.fields.XsdNumericDatatype;
 import org.metadatacenter.artifacts.model.core.fields.XsdTemporalDatatype;
 import org.metadatacenter.artifacts.model.core.fields.constraints.NumericValueConstraints;
 import org.metadatacenter.artifacts.model.core.fields.constraints.TemporalValueConstraints;
 import org.metadatacenter.artifacts.model.core.fields.constraints.TextValueConstraints;
 import org.metadatacenter.artifacts.model.core.fields.constraints.ValueConstraints;
+import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class DataTypeValidatorComponentTest {
   private DataTypeValidatorComponent validator;
@@ -385,209 +390,209 @@ public class DataTypeValidatorComponentTest {
   }
 
 
-//  @Test
-//  void testValidateWithValidTextField(){
-//    String fieldName = "text field";
-//    String templateName = "My template";
-//    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.textFieldBuilder()
-//        .withName(fieldName)
-//        .withRequiredValue(true)
-//        .withRegex("^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")
-//        .withMinLength(2)
-//        .build();
-//
-//    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
-//        .withName(templateName)
-//        .withFieldSchema(textFieldSchemaArtifact)
-//        .build();
-//
-//    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
-//
-//    String fieldPath = "/" + fieldName;
-//    String textFieldValue = "1234567890";
-//    FieldValues fieldValues = new FieldValues(
-//        List.of(), Optional.empty(), Optional.of(textFieldValue), Optional.empty());
-//    Map<String, FieldValues> values = new HashMap<>();
-//    values.put(fieldPath, fieldValues);
-//
-//    when(valuesReporter.getValues()).thenReturn(values);
-//
-//    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
-//    assertEquals(0, results.size());
-//  }
-//
-//  @Test
-//  void testValidateWithInvalidTextField(){
-//    String fieldName = "text field";
-//    String templateName = "My template";
-//    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.textFieldBuilder()
-//        .withName(fieldName)
-//        .withRequiredValue(true)
-//        .withRegex("^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")
-//        .withMinLength(2)
-//        .build();
-//
-//    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
-//        .withName(templateName)
-//        .withFieldSchema(textFieldSchemaArtifact)
-//        .build();
-//
-//    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
-//
-//    String fieldPath = "/" + fieldName;
-//    String textFieldValue = "a";
-//    FieldValues fieldValues = new FieldValues(
-//        List.of(), Optional.empty(), Optional.of(textFieldValue), Optional.of("label"));
-//    Map<String, FieldValues> values = new HashMap<>();
-//    values.put(fieldPath, fieldValues);
-//
-//    when(valuesReporter.getValues()).thenReturn(values);
-//
-//    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
-//    assertEquals(3, results.size());
-//  }
-//
-//  @Test
-//  void testValidateWithValidNumericField() throws URISyntaxException {
-//    String fieldName = "numeric field";
-//    String templateName = "My template";
-//    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.numericFieldBuilder()
-//        .withName(fieldName)
-//        .withRequiredValue(true)
-//        .withDecimalPlaces(2)
-//        .withNumericType(XsdNumericDatatype.DECIMAL)
-//        .withMinValue(0)
-//        .withMaxValue(100)
-//        .build();
-//
-//    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
-//        .withName(templateName)
-//        .withFieldSchema(textFieldSchemaArtifact)
-//        .build();
-//
-//    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
-//
-//    String fieldPath = "/" + fieldName;
-//    String numericFieldValue = "50.23";
-//    FieldValues fieldValues = new FieldValues(
-//        List.of(new URI("http://www.w3.org/2001/XMLSchema#/decimal")),
-//        Optional.empty(),
-//        Optional.of(numericFieldValue),
-//        Optional.empty());
-//    Map<String, FieldValues> values = new HashMap<>();
-//    values.put(fieldPath, fieldValues);
-//
-//    when(valuesReporter.getValues()).thenReturn(values);
-//
-//    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
-//    assertEquals(0, results.size());
-//  }
-//
-//  @Test
-//  void testValidateWithInvalidNumericField() throws URISyntaxException {
-//    String fieldName = "numeric field";
-//    String templateName = "My template";
-//    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.numericFieldBuilder()
-//        .withName(fieldName)
-//        .withRequiredValue(true)
-//        .withDecimalPlaces(2)
-//        .withNumericType(XsdNumericDatatype.DECIMAL)
-//        .withMinValue(0)
-//        .withMaxValue(100)
-//        .build();
-//
-//    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
-//        .withName(templateName)
-//        .withFieldSchema(textFieldSchemaArtifact)
-//        .build();
-//
-//    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
-//
-//    String fieldPath = "/" + fieldName;
-//    String numericFieldValue = "-50.236";
-//    FieldValues fieldValues = new FieldValues(
-//        List.of(new URI("http://www.w3.org/2001/XMLSchema#/int")),
-//        Optional.empty(),
-//        Optional.of(numericFieldValue),
-//        Optional.of("label"));
-//    Map<String, FieldValues> values = new HashMap<>();
-//    values.put(fieldPath, fieldValues);
-//
-//    when(valuesReporter.getValues()).thenReturn(values);
-//
-//    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
-//    assertEquals(4, results.size());
-//  }
-//
-//  @Test
-//  void testValidateWithValidTemporalField() throws URISyntaxException {
-//    String fieldName = "Temporal field";
-//    String templateName = "My template";
-//    FieldSchemaArtifact temporalFieldArtifact = FieldSchemaArtifact.temporalFieldBuilder()
-//        .withName(fieldName)
-//        .withRequiredValue(true)
-//        .withTemporalType(XsdTemporalDatatype.DATETIME)
-//        .withTemporalGranularity(TemporalGranularity.YEAR)
-//        .withTimeZoneEnabled(true)
-//        .withInputTimeFormat(InputTimeFormat.TWENTY_FOUR_HOUR)
-//        .build();
-//
-//    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
-//        .withName(templateName)
-//        .withFieldSchema(temporalFieldArtifact)
-//        .build();
-//
-//    var templateReporter = new TemplateReporter(templateSchemaArtifact);
-//
-//    String fieldPath = "/" + fieldName;
-//    String temporalFieldValue = "2024-01-17T11:01:01-12:00";
-//    FieldValues fieldValues = new FieldValues(
-//        List.of(new URI("http://www.w3.org/2001/XMLSchema#dateTime")),
-//        Optional.empty(),
-//        Optional.of(temporalFieldValue),
-//        Optional.empty());
-//    Map<String, FieldValues> values = new HashMap<>();
-//    values.put(fieldPath, fieldValues);
-//
-//    when(valuesReporter.getValues()).thenReturn(values);
-//
-//    validator.validate(templateReporter, valuesReporter, consumer);
-//    assertEquals(0, results.size());
-//  }
-//
-//  @Test
-//  void testValidateWithInvalidTemporalField() throws URISyntaxException {
-//    String fieldName = "Temporal field";
-//    String templateName = "My template";
-//    FieldSchemaArtifact temporalFieldArtifact = FieldSchemaArtifact.temporalFieldBuilder()
-//        .withName(fieldName)
-//        .withRequiredValue(true)
-//        .withTemporalType(XsdTemporalDatatype.DATETIME)
-//        .withTemporalGranularity(TemporalGranularity.YEAR)
-//        .withTimeZoneEnabled(true)
-//        .withInputTimeFormat(InputTimeFormat.TWENTY_FOUR_HOUR)
-//        .build();
-//
-//    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
-//        .withName(templateName)
-//        .withFieldSchema(temporalFieldArtifact)
-//        .build();
-//
-//    var templateReporter = new TemplateReporter(templateSchemaArtifact);
-//
-//    String fieldPath = "/" + fieldName;
-//    String temporalFieldValue = "2024-01-17T11:01:01";
-//    FieldValues fieldValues = new FieldValues(
-//        List.of(new URI("http://www.w3.org/2001/XMLSchema#date")),
-//        Optional.empty(),
-//        Optional.of(temporalFieldValue),
-//        Optional.empty());
-//    Map<String, FieldValues> values = new HashMap<>();
-//    values.put(fieldPath, fieldValues);
-//
-//    when(valuesReporter.getValues()).thenReturn(values);
-//
-//    validator.validate(templateReporter, valuesReporter, consumer);
-//    assertEquals(2, results.size());
-//  }
+  @Test
+  void testValidateWithValidTextField(){
+    String fieldName = "text field";
+    String templateName = "My template";
+    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.textFieldBuilder()
+        .withName(fieldName)
+        .withRequiredValue(true)
+        .withRegex("^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")
+        .withMinLength(2)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(textFieldSchemaArtifact)
+        .build();
+
+    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+
+    String fieldPath = "/" + fieldName;
+    String textFieldValue = "1234567890";
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.empty(), Optional.of(textFieldValue), Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+    assertEquals(0, results.size());
+  }
+
+  @Test
+  void testValidateWithInvalidTextField(){
+    String fieldName = "text field";
+    String templateName = "My template";
+    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.textFieldBuilder()
+        .withName(fieldName)
+        .withRequiredValue(true)
+        .withRegex("^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")
+        .withMinLength(2)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(textFieldSchemaArtifact)
+        .build();
+
+    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+
+    String fieldPath = "/" + fieldName;
+    String textFieldValue = "a";
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.empty(), Optional.of(textFieldValue), Optional.of("label"));
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+    assertEquals(3, results.size());
+  }
+
+  @Test
+  void testValidateWithValidNumericField() throws URISyntaxException {
+    String fieldName = "numeric field";
+    String templateName = "My template";
+    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.numericFieldBuilder()
+        .withName(fieldName)
+        .withRequiredValue(true)
+        .withDecimalPlaces(2)
+        .withNumericType(XsdNumericDatatype.DECIMAL)
+        .withMinValue(0)
+        .withMaxValue(100)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(textFieldSchemaArtifact)
+        .build();
+
+    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+
+    String fieldPath = "/" + fieldName;
+    String numericFieldValue = "50.23";
+    FieldValues fieldValues = new FieldValues(
+        List.of(new URI("http://www.w3.org/2001/XMLSchema#decimal")),
+        Optional.empty(),
+        Optional.of(numericFieldValue),
+        Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+    assertEquals(0, results.size());
+  }
+
+  @Test
+  void testValidateWithInvalidNumericField() throws URISyntaxException {
+    String fieldName = "numeric field";
+    String templateName = "My template";
+    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.numericFieldBuilder()
+        .withName(fieldName)
+        .withRequiredValue(true)
+        .withDecimalPlaces(2)
+        .withNumericType(XsdNumericDatatype.DECIMAL)
+        .withMinValue(0)
+        .withMaxValue(100)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(textFieldSchemaArtifact)
+        .build();
+
+    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+
+    String fieldPath = "/" + fieldName;
+    String numericFieldValue = "-50.236";
+    FieldValues fieldValues = new FieldValues(
+        List.of(new URI("http://www.w3.org/2001/XMLSchema#int")),
+        Optional.empty(),
+        Optional.of(numericFieldValue),
+        Optional.of("label"));
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+    assertEquals(4, results.size());
+  }
+
+  @Test
+  void testValidateWithValidTemporalField() throws URISyntaxException {
+    String fieldName = "Temporal field";
+    String templateName = "My template";
+    FieldSchemaArtifact temporalFieldArtifact = FieldSchemaArtifact.temporalFieldBuilder()
+        .withName(fieldName)
+        .withRequiredValue(true)
+        .withTemporalType(XsdTemporalDatatype.DATETIME)
+        .withTemporalGranularity(TemporalGranularity.YEAR)
+        .withTimeZoneEnabled(true)
+        .withInputTimeFormat(InputTimeFormat.TWENTY_FOUR_HOUR)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(temporalFieldArtifact)
+        .build();
+
+    var templateReporter = new TemplateReporter(templateSchemaArtifact);
+
+    String fieldPath = "/" + fieldName;
+    String temporalFieldValue = "2024-01-17T11:01:01-12:00";
+    FieldValues fieldValues = new FieldValues(
+        List.of(new URI("http://www.w3.org/2001/XMLSchema#dateTime")),
+        Optional.empty(),
+        Optional.of(temporalFieldValue),
+        Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    validator.validate(templateReporter, valuesReporter, consumer);
+    assertEquals(0, results.size());
+  }
+
+  @Test
+  void testValidateWithInvalidTemporalField() throws URISyntaxException {
+    String fieldName = "Temporal field";
+    String templateName = "My template";
+    FieldSchemaArtifact temporalFieldArtifact = FieldSchemaArtifact.temporalFieldBuilder()
+        .withName(fieldName)
+        .withRequiredValue(true)
+        .withTemporalType(XsdTemporalDatatype.DATETIME)
+        .withTemporalGranularity(TemporalGranularity.YEAR)
+        .withTimeZoneEnabled(true)
+        .withInputTimeFormat(InputTimeFormat.TWENTY_FOUR_HOUR)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(temporalFieldArtifact)
+        .build();
+
+    var templateReporter = new TemplateReporter(templateSchemaArtifact);
+
+    String fieldPath = "/" + fieldName;
+    String temporalFieldValue = "2024-01-17T11:01:01";
+    FieldValues fieldValues = new FieldValues(
+        List.of(new URI("http://www.w3.org/2001/XMLSchema#date")),
+        Optional.empty(),
+        Optional.of(temporalFieldValue),
+        Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    validator.validate(templateReporter, valuesReporter, consumer);
+    assertEquals(2, results.size());
+  }
 }

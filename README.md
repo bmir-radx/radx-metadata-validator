@@ -27,7 +27,6 @@ For example:
 
 ### Schema Validation Against Template
 - Validates that the schema of the provided instance matches the schema defined in the template.
-- If no specific template is provided, the validator defaults to using the RADx Metadata Template Specification.
 - This level of validation ensures that the metadata instance aligns structurally with the template.
 
 ### Value Constraint Validation
