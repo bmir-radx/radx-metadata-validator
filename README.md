@@ -44,5 +44,5 @@ The output of the RADx Metadata Validator is a CSV file with the following forma
 - **Validation Type**: Specifies which validation step (e.g., JSON Validation, CEDAR Model Validation, Schema Validation, Requirement Validation, Data Type Validation) generated the message.
 - **Message**: Describes the validation error or warning message.
 
-![Validation Report](ValidationReportWithFinalResult.png)
+![Validation Report](ValidationReportExample.png)
 
