@@ -1,12 +1,8 @@
 package edu.stanford.bmir.radx.metadata.validator.lib;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.RequiredFieldValidatorComponent;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.CedarSchemaValidatorComponent;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.DataTypeValidatorComponent;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.SchemaValidatorComponent;
+import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.*;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
 import org.metadatacenter.artifacts.model.reader.ArtifactParseException;
@@ -26,30 +22,28 @@ public class Validator {
   private final CedarSchemaValidatorComponent cedarSchemaValidatorComponent;
   private final RequiredFieldValidatorComponent requiredFieldValidatorComponent;
   private final DataTypeValidatorComponent dataTypeValidatorComponent;
+  private final CardinalityValidatorComponent cardinalityValidatorComponent;
+  private final SanitationChecker sanitationChecker;
 
   public Validator(SchemaValidatorComponent schemaValidatorComponent,
                    CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
-                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent) {
+                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, CardinalityValidatorComponent cardinalityValidatorComponent, SanitationChecker sanitationChecker) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
     this.dataTypeValidatorComponent = dataTypeValidatorComponent;
+    this.cardinalityValidatorComponent = cardinalityValidatorComponent;
+    this.sanitationChecker = sanitationChecker;
   }
 
 
   public ValidationReport validateInstance(Path templateFilePath, Path instanceFilePath) throws Exception {
-//    var results = new ArrayList<ValidationResult>();
     var results = new HashSet<ValidationResult>();
     Consumer<ValidationResult> consumer = results::add;
-    JsonNode templateNode;
 
     try{
       //validate the provided files are JSON file and get the templateNode and instanceNode
-      if(templateFilePath != null) {
-        templateNode = JsonLoader.loadJson(String.valueOf(templateFilePath));
-      } else {
-        templateNode = JsonLoader.loadJson((Constants.RADX_TEMPLATE_SCHEMA_PATH));
-      }
+      var templateNode = JsonLoader.loadJson(String.valueOf(templateFilePath));
       var instanceNode = JsonLoader.loadJson(String.valueOf(instanceFilePath));
 
       //validate the template is CEDAR model template
@@ -65,9 +59,8 @@ public class Validator {
         TemplateInstanceArtifact templateInstanceArtifact = jsonSchemaArtifactReader.readTemplateInstanceArtifact((ObjectNode) instanceNode);
         TemplateInstanceValuesReporter templateInstanceValuesReporter = new TemplateInstanceValuesReporter(templateInstanceArtifact);
 
-        //TODO: Sanitation check - validate the schema:isBasedOn of the instance matches template ID
-        var templateID = templateSchemaArtifact.jsonLdId();
-        var instanceID = templateInstanceArtifact.isBasedOn();
+        // Check if the instance's "isBasedOn" equals to template id
+        sanitationChecker.validate(templateSchemaArtifact, templateInstanceArtifact, consumer);
 
         //Compare instance JSON schema against template's
         schemaValidatorComponent.validate(templateNode, instanceNode, consumer);
@@ -78,19 +71,21 @@ public class Validator {
 
           //validate data type
           dataTypeValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
-        }
 
+          //validate cardinality
+          cardinalityValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
+        }
       }
     } catch (JsonParseException e) {
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.JSON_VALIDATION, e.getMessage(), ""));
     } catch (ArtifactParseException e) {
       String errorMessage = e.getMessage();
-      String pointer = e.getPath();
-      //TODO: modify the validation name?
+      String pointer = e.getPath() + "/" + e.getFieldName();
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.ARTIFACT_SCHEMA_VALIDATION, errorMessage, pointer));
     } catch (ProcessingException e){
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, e.getMessage(), ""));
     } catch (Exception e){
+      consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.UNKNOWN, e.getMessage(), ""));
       for (StackTraceElement element : e.getStackTrace()) {
         System.out.println(element.toString());
       }

@@ -11,7 +11,7 @@ Below is the workflow of RADx Metadata Validator:
 ### Input Specification
 The RADx Metadata Validator accepts the following command line arguments:
 
-- `template` (Optional): The file path to the metadata template file. If not provided, the validator uses the RADx Metadata Specification by default.
+- `template` (Required): The file path to the metadata template file.
 - `instance` (Required): The file path to the metadata instance file that needs to be validated.
 - `out` (Optional): The file path where the validation report will be saved. If not provided, the validation report will be printed out to the console.
 
@@ -27,23 +27,21 @@ For example:
 
 ### Schema Validation Against Template
 - Validates that the schema of the provided instance matches the schema defined in the template.
-- If no specific template is provided, the validator defaults to using the RADx Metadata Template Specification.
 - This level of validation ensures that the metadata instance aligns structurally with the template.
 
 ### Value Constraint Validation
 - Validates other value constraints, which include:
     - Required value validation: Checks that all required data fields are present.
     - Data type validation: Ensures that the data types of the values in the metadata instance match those specified in the template.
+    - Cardinality validation: Verifies that the quantity of element instances or field instances adheres to the specified minimum and maximum limits.
 
 ### Output File Format
 The output of the RADx Metadata Validator is a CSV file with the following format:
-
-The report's final validation status appears at the top. A `SUCCESS` indicates that the instance has passed validation without any `ERROR` results. In the presence of any `ERROR` results, the status will be `FAILURE`.
 
 - **Level**: Indicates the level of validation message, which can be either `ERROR` or `WARNING`.
 - **Path**: Specifies the location within the file where the validation issue was found.
 - **Validation Type**: Specifies which validation step (e.g., JSON Validation, CEDAR Model Validation, Schema Validation, Requirement Validation, Data Type Validation) generated the message.
 - **Message**: Describes the validation error or warning message.
 
-![Validation Report](ValidationReportWithFinalResult.png)
+![Validation Report](ValidationReportExample.png)
 

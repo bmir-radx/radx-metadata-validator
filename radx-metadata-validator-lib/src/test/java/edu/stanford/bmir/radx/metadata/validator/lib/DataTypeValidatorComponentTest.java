@@ -39,8 +39,9 @@ public class DataTypeValidatorComponentTest {
     consumer = results::add;
     TextFieldValidationUtil textFieldValidationUtil = new TextFieldValidationUtil();
     NumericFieldValidationUtil numericFieldValidationUtil = new NumericFieldValidationUtil();
+    AttributeValueValidationUtil attributeValueValidationUtil = new AttributeValueValidationUtil();
     FieldSchemaValidationHelper fieldSchemaValidationHelper = new FieldSchemaValidationHelper();
-    validator = new DataTypeValidatorComponent(textFieldValidationUtil, numericFieldValidationUtil, fieldSchemaValidationHelper);
+    validator = new DataTypeValidatorComponent(textFieldValidationUtil, numericFieldValidationUtil, attributeValueValidationUtil, fieldSchemaValidationHelper);
   }
 
   @Test
@@ -474,7 +475,7 @@ public class DataTypeValidatorComponentTest {
     String fieldPath = "/" + fieldName;
     String numericFieldValue = "50.23";
     FieldValues fieldValues = new FieldValues(
-        List.of(new URI("http://www.w3.org/2001/XMLSchema#/decimal")),
+        List.of(new URI("http://www.w3.org/2001/XMLSchema#decimal")),
         Optional.empty(),
         Optional.of(numericFieldValue),
         Optional.empty());
@@ -510,7 +511,7 @@ public class DataTypeValidatorComponentTest {
     String fieldPath = "/" + fieldName;
     String numericFieldValue = "-50.236";
     FieldValues fieldValues = new FieldValues(
-        List.of(new URI("http://www.w3.org/2001/XMLSchema#/int")),
+        List.of(new URI("http://www.w3.org/2001/XMLSchema#int")),
         Optional.empty(),
         Optional.of(numericFieldValue),
         Optional.of("label"));

@@ -6,6 +6,7 @@ import org.metadatacenter.artifacts.model.core.InstanceArtifactVisitor;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,25 +14,31 @@ import java.util.Map;
 @Component
 public class ValuesVisitor implements InstanceArtifactVisitor {
   private final Map<String, FieldValues> values;
-  private final Map<String, Integer> fieldCardinals;
-  private final Map<String, Integer> elementCardinals;
+  private final Map<String, Integer> fieldCardinalities;
+  private final Map<String, Integer> elementCardinalities;
+  private final List<AttributeValueFieldValues> attributeValueFields;
 
   public ValuesVisitor() {
     this.values = new HashMap<>();
-    this.fieldCardinals = new HashMap<>();
-    this.elementCardinals = new HashMap<>();
+    this.fieldCardinalities = new HashMap<>();
+    this.elementCardinalities = new HashMap<>();
+    this.attributeValueFields = new ArrayList<>();
   }
 
   public Map<String, FieldValues> getValues() {
     return this.values;
   }
 
-  public Map<String, Integer> getFieldCardinals() {
-    return fieldCardinals;
+  public Map<String, Integer> getFieldCardinalities() {
+    return fieldCardinalities;
   }
 
-  public Map<String, Integer> getElementCardinals() {
-    return elementCardinals;
+  public Map<String, Integer> getElementCardinalities() {
+    return elementCardinalities;
+  }
+
+  public List<AttributeValueFieldValues> getAttributeValueFields() {
+    return attributeValueFields;
   }
 
   @Override
@@ -58,12 +65,22 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
             fieldInstanceArtifact.label()));
   }
 
+  @Override
+  public void visitAttributeValueFieldInstanceArtifact(FieldInstanceArtifact fieldInstanceArtifact, String s, String s1) {
+    attributeValueFields.add(new AttributeValueFieldValues(s, s1,
+        new FieldValues(fieldInstanceArtifact.jsonLdTypes(),
+            fieldInstanceArtifact.jsonLdId(),
+            fieldInstanceArtifact.jsonLdValue(),
+            fieldInstanceArtifact.label())
+    ));
+  }
+
   private void parseFieldInstances(Map<String, List<FieldInstanceArtifact>> fieldInstances, String path){
     for (Map.Entry<String, List<FieldInstanceArtifact>> entry : fieldInstances.entrySet()) {
       String fieldName = entry.getKey();
       String childBasePath = path + "/" + fieldName;
       int size = entry.getValue().size();
-      fieldCardinals.put(childBasePath, size);
+      fieldCardinalities.put(childBasePath, size);
     }
   }
 
@@ -72,7 +89,7 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
       String elementName = entry.getKey();
       String childBasePath = "/" + elementName;
       int size = entry.getValue().size();
-      elementCardinals.put(childBasePath, size);
+      elementCardinalities.put(childBasePath, size);
     }
   }
 }
