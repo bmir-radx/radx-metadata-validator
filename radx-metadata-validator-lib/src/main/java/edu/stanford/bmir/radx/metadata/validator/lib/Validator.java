@@ -8,15 +8,12 @@ import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
 import org.metadatacenter.artifacts.model.reader.ArtifactParseException;
 import org.metadatacenter.artifacts.model.reader.JsonSchemaArtifactReader;
 import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
-import org.springframework.stereotype.Component;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.function.Consumer;
 
-@Component
 public class Validator {
   private final SchemaValidatorComponent schemaValidatorComponent;
   private final CedarSchemaValidatorComponent cedarSchemaValidatorComponent;
@@ -37,14 +34,14 @@ public class Validator {
   }
 
 
-  public ValidationReport validateInstance(Path templateFilePath, Path instanceFilePath) throws Exception {
+  public ValidationReport validateInstance(String templateContent, String instanceContent) throws Exception {
     var results = new HashSet<ValidationResult>();
     Consumer<ValidationResult> consumer = results::add;
 
     try{
       //validate the provided files are JSON file and get the templateNode and instanceNode
-      var templateNode = JsonLoader.loadJson(String.valueOf(templateFilePath));
-      var instanceNode = JsonLoader.loadJson(String.valueOf(instanceFilePath));
+      var templateNode = JsonLoader.loadJson(templateContent, "Template");
+      var instanceNode = JsonLoader.loadJson(instanceContent, "Instance");
 
       //validate the template is CEDAR model template
       cedarSchemaValidatorComponent.validate(templateNode, consumer);
