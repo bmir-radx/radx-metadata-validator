@@ -86,6 +86,16 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<mainClass>edu.stanford.bmir.radx.metadata.validator.app.RadxMetadataValidatorApplication</mainClass>
+					<cleanupDaemonThreads>false</cleanupDaemonThreads>
+				</configuration>
+			</plugin>
+
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
@@ -155,7 +165,6 @@
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 

@@ -1,31 +1,32 @@
 package edu.stanford.bmir.radx.metadata.validator.app;
 
-import edu.stanford.bmir.radx.metadata.validator.lib.Validator;
+import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.mock;
 
 @SpringBootTest
 class RadxMetadataSchemaValidatorApplicationTests {
 	@Autowired
-	private ApplicationContext context;
-	@Autowired
-	private Validator validator;
+	private ValidatorFactory validatorFactory;
 
 	@Test
-	void shouldValidate() throws Exception{
-		Path templatePath = mock(Path.class);
-		Path instancePath = mock(Path.class);
+	void shouldValidate(@TempDir Path tempDir) throws Exception{
+		Path templatePath = Files.createTempFile(tempDir, "template", ".tmp");
+		Path instancePath = Files.createTempFile(tempDir, "instance", ".tmp");
 
-		var report = validator.validateInstance(templatePath, instancePath);
+		var validator = validatorFactory.createValidator();
+		String templateContent = Arrays.toString(Files.readAllBytes(templatePath));
+		String instanceContent = Arrays.toString(Files.readAllBytes(instancePath));
+		var report = validator.validateInstance(templateContent, instanceContent);
 
 		assertThat(report).isNotNull();
 	}
-
 }
