@@ -69,8 +69,9 @@ public class ValidateCommand implements Callable<Integer> {
 
     validationReportWriter.writeReportHeader(out);
     validationReportWriter.writeReport(report, out);
-    if(isValid(report.results())){
-      System.out.println(instance + " is not valid");
+    int errorCount = isValid(report.results());
+    if( errorCount > 0){
+      System.out.println(instance + " is not valid. " + errorCount + " error(s) found.");
     } else{
       System.out.println(instance + " is valid");
     }
@@ -83,13 +84,14 @@ public class ValidateCommand implements Callable<Integer> {
     return 0;
   }
 
-  private boolean isValid(List<ValidationResult> report){
+  private Integer isValid(List<ValidationResult> report){
+    int errorCount = 0;
     for(ValidationResult result: report){
       if(result.validationLevel().equals(ValidationLevel.ERROR)){
-        return false;
+        errorCount += 1;
       }
     }
-    return true;
+    return  errorCount;
   }
 
   private LiteralFieldValidatorsComponent getLiteralFieldValidatorsComponent(){
