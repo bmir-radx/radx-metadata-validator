@@ -1,6 +1,6 @@
 package edu.stanford.bmir.radx.metadata.validator.lib;
 
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.*;
+import edu.stanford.bmir.radx.metadata.validator.lib.validators.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,12 +26,13 @@ public class ValidatorFactory {
     this.sanitationChecker = sanitationChecker;
   }
 
-  public Validator createValidator(){
+  public Validator createValidator(LiteralFieldValidatorsComponent literalFieldValidatorsComponent){
     return  new Validator(schemaValidatorComponent,
         cedarSchemaValidatorComponent,
         requiredFieldValidatorComponent,
         dataTypeValidatorComponent,
         cardinalityValidatorComponent,
-        sanitationChecker);
+        sanitationChecker,
+        literalFieldValidatorsComponent);
   }
 }

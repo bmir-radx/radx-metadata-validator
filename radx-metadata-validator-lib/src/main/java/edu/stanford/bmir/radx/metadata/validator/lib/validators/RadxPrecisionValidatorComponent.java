@@ -1,4 +1,4 @@
-package edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents;
+package edu.stanford.bmir.radx.metadata.validator.lib.validators;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.*;
 import org.springframework.stereotype.Component;
@@ -33,11 +33,11 @@ public class RadxPrecisionValidatorComponent {
     // if value in metadata instance is null, populate warning
     if(metadataValue.isEmpty()){
       String message = String.format("The expected %s is %s, but an empty value is received." , fileName, providedValue);
-      handler.accept(new ValidationResult(ValidationLevel.WARNING, ValidationName.RADX_PRECISION_VALIDATION, message, path));
+      handler.accept(new ValidationResult(ValidationLevel.WARNING, ValidationName.LITERAL_FIELD_VALIDATION, message, path));
     } else {
       if (!metadataValue.get().equals(providedValue)) {
         String message = String.format("The expected %s is %s, but %s is received.", fileName, providedValue, metadataValue.get());
-        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.RADX_PRECISION_VALIDATION, message, path));
+        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.LITERAL_FIELD_VALIDATION, message, path));
       }
     }
   }

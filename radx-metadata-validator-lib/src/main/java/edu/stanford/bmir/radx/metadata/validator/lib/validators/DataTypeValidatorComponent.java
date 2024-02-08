@@ -1,4 +1,4 @@
-package edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents;
+package edu.stanford.bmir.radx.metadata.validator.lib.validators;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.*;
 import org.metadatacenter.artifacts.model.core.fields.FieldInputType;

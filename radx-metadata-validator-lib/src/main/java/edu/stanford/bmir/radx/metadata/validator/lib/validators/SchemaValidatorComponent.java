@@ -1,4 +1,4 @@
-package edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents;
+package edu.stanford.bmir.radx.metadata.validator.lib.validators;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;

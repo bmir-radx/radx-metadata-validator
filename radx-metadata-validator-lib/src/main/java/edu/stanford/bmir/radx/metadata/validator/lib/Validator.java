@@ -2,7 +2,7 @@ package edu.stanford.bmir.radx.metadata.validator.lib;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.*;
+import edu.stanford.bmir.radx.metadata.validator.lib.validators.*;
 import org.metadatacenter.artifacts.model.core.TemplateInstanceArtifact;
 import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
 import org.metadatacenter.artifacts.model.reader.ArtifactParseException;
@@ -21,16 +21,19 @@ public class Validator {
   private final DataTypeValidatorComponent dataTypeValidatorComponent;
   private final CardinalityValidatorComponent cardinalityValidatorComponent;
   private final SanitationChecker sanitationChecker;
+  private final LiteralFieldValidatorsComponent literalFieldValidatorsComponent;
+
 
   public Validator(SchemaValidatorComponent schemaValidatorComponent,
                    CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
-                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, CardinalityValidatorComponent cardinalityValidatorComponent, SanitationChecker sanitationChecker) {
+                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, CardinalityValidatorComponent cardinalityValidatorComponent, SanitationChecker sanitationChecker, LiteralFieldValidatorsComponent literalFieldValidatorsComponent) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
     this.dataTypeValidatorComponent = dataTypeValidatorComponent;
     this.cardinalityValidatorComponent = cardinalityValidatorComponent;
     this.sanitationChecker = sanitationChecker;
+    this.literalFieldValidatorsComponent = literalFieldValidatorsComponent;
   }
 
 
@@ -71,6 +74,13 @@ public class Validator {
 
           //validate cardinality
           cardinalityValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
+
+//          //RADx specific validation
+//          var sha256DigestValidator = literalFieldValidatorsComponent.getValidator(RADxSpecificFieldPath.SHA256_DIGEST.getFieldPath());
+//          if(sha256DigestValidator.isPresent()){
+//            var value = templateInstanceValuesReporter.getValues().get(RADxSpecificFieldPath.SHA256_DIGEST.getFieldPath()).jsonLdValue();
+//            sha256DigestValidator.get().validate();
+//          }
         }
       }
     } catch (JsonParseException e) {
