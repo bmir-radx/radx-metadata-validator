@@ -10,6 +10,7 @@ public class ValidatorFactory {
   private final RequiredFieldValidatorComponent requiredFieldValidatorComponent;
   private final DataTypeValidatorComponent dataTypeValidatorComponent;
   private final CardinalityValidatorComponent cardinalityValidatorComponent;
+  private final RadxPrecisionValidatorComponent radxPrecisionValidatorComponent;
   private final SanitationChecker sanitationChecker;
 
   public ValidatorFactory(SchemaValidatorComponent schemaValidatorComponent,
@@ -17,22 +18,23 @@ public class ValidatorFactory {
                           RequiredFieldValidatorComponent requiredFieldValidatorComponent,
                           DataTypeValidatorComponent dataTypeValidatorComponent,
                           CardinalityValidatorComponent cardinalityValidatorComponent,
-                          SanitationChecker sanitationChecker) {
+                          RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
     this.dataTypeValidatorComponent = dataTypeValidatorComponent;
     this.cardinalityValidatorComponent = cardinalityValidatorComponent;
+    this.radxPrecisionValidatorComponent = radxPrecisionValidatorComponent;
     this.sanitationChecker = sanitationChecker;
   }
 
-  public Validator createValidator(LiteralFieldValidatorsComponent literalFieldValidatorsComponent){
+  public Validator createValidator(LiteralFieldValidators literalFieldValidators){
     return  new Validator(schemaValidatorComponent,
         cedarSchemaValidatorComponent,
         requiredFieldValidatorComponent,
         dataTypeValidatorComponent,
         cardinalityValidatorComponent,
-        sanitationChecker,
-        literalFieldValidatorsComponent);
+        radxPrecisionValidatorComponent, sanitationChecker,
+        literalFieldValidators);
   }
 }

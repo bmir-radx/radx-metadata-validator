@@ -20,20 +20,22 @@ public class Validator {
   private final RequiredFieldValidatorComponent requiredFieldValidatorComponent;
   private final DataTypeValidatorComponent dataTypeValidatorComponent;
   private final CardinalityValidatorComponent cardinalityValidatorComponent;
+  private final RadxPrecisionValidatorComponent radxPrecisionValidatorComponent;
   private final SanitationChecker sanitationChecker;
-  private final LiteralFieldValidatorsComponent literalFieldValidatorsComponent;
+  private final LiteralFieldValidators literalFieldValidators;
 
 
   public Validator(SchemaValidatorComponent schemaValidatorComponent,
                    CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
-                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, CardinalityValidatorComponent cardinalityValidatorComponent, SanitationChecker sanitationChecker, LiteralFieldValidatorsComponent literalFieldValidatorsComponent) {
+                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, CardinalityValidatorComponent cardinalityValidatorComponent, RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker, LiteralFieldValidators literalFieldValidators) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
     this.dataTypeValidatorComponent = dataTypeValidatorComponent;
     this.cardinalityValidatorComponent = cardinalityValidatorComponent;
+    this.radxPrecisionValidatorComponent = radxPrecisionValidatorComponent;
     this.sanitationChecker = sanitationChecker;
-    this.literalFieldValidatorsComponent = literalFieldValidatorsComponent;
+    this.literalFieldValidators = literalFieldValidators;
   }
 
 
@@ -75,12 +77,8 @@ public class Validator {
           //validate cardinality
           cardinalityValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
 
-//          //RADx specific validation
-//          var sha256DigestValidator = literalFieldValidatorsComponent.getValidator(RADxSpecificFieldPath.SHA256_DIGEST.getFieldPath());
-//          if(sha256DigestValidator.isPresent()){
-//            var value = templateInstanceValuesReporter.getValues().get(RADxSpecificFieldPath.SHA256_DIGEST.getFieldPath()).jsonLdValue();
-//            sha256DigestValidator.get().validate();
-//          }
+          //RADx specific validation
+          radxPrecisionValidatorComponent.validate(literalFieldValidators, templateInstanceValuesReporter, consumer);
         }
       }
     } catch (JsonParseException e) {
