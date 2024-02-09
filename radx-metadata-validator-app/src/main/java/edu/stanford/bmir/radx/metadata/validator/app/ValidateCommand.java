@@ -1,7 +1,7 @@
 package edu.stanford.bmir.radx.metadata.validator.app;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.*;
-import edu.stanford.bmir.radx.metadata.validator.lib.validators.LiteralFieldValidatorsComponent;
+import edu.stanford.bmir.radx.metadata.validator.lib.LiteralFieldValidators;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -76,7 +76,6 @@ public class ValidateCommand implements Callable<Integer> {
       System.out.println(instance + " is valid");
     }
 
-
     if(out != System.out) {
       out.close();
     }
@@ -94,23 +93,29 @@ public class ValidateCommand implements Callable<Integer> {
     return  errorCount;
   }
 
-  private LiteralFieldValidatorsComponent getLiteralFieldValidatorsComponent(){
+  private LiteralFieldValidators getLiteralFieldValidatorsComponent(){
     var map = new HashMap<FieldPath, LiteralFieldValidator>();
     if(sha256 != null){
-      var constantValueFieldValidator = new ConstantValueFieldValidator(sha256, String.format("Expected SHA256 digest equals to %s", sha256), ValidationLevel.ERROR);
+      String errorMessage = String.format("Expected SHA256 digest equals to %s", sha256);
+      String warningMessage = String.format("Expected SHA256 digest equals to %s, but an empty value is received.", sha256);
+      var constantValueFieldValidator = new ConstantValueFieldValidator(sha256, errorMessage, warningMessage);
       map.put(RADxSpecificFieldPath.SHA256_DIGEST.getFieldPath(), constantValueFieldValidator);
     }
 
     if(data != null){
-      var constantValueFieldValidator = new ConstantValueFieldValidator(data, String.format("Expected File Name equals to %s", data), ValidationLevel.ERROR);
+      String errorMessage = String.format("Expected File Name equals to %s", data);
+      String warningMessage = String.format("Expected File Name equals to %s, but an empty value is received.", data);
+      var constantValueFieldValidator = new ConstantValueFieldValidator(data, errorMessage, warningMessage);
       map.put(RADxSpecificFieldPath.FILE_NAME.getFieldPath(), constantValueFieldValidator);
     }
 
     if(dict != null){
-      var constantValueFieldValidator = new ConstantValueFieldValidator(dict, String.format("Expected Data Dictionary File Name equals to %s", dict), ValidationLevel.ERROR);
+      String errorMessage = String.format("Expected Data Dictionary File Name equals to %s", dict);
+      String warningMessage = String.format("Expected Data Dictionary File Name equals to %s, but an empty value is received.", dict);
+      var constantValueFieldValidator = new ConstantValueFieldValidator(dict, errorMessage, warningMessage);
       map.put(RADxSpecificFieldPath.DATA_DICT_FILE_NAME.getFieldPath(), constantValueFieldValidator);
     }
 
-    return new LiteralFieldValidatorsComponent(map);
+    return new LiteralFieldValidators(map);
   }
 }
