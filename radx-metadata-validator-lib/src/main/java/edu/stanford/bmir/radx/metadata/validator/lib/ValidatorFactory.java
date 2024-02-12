@@ -34,7 +34,8 @@ public class ValidatorFactory {
         requiredFieldValidatorComponent,
         dataTypeValidatorComponent,
         cardinalityValidatorComponent,
-        radxPrecisionValidatorComponent, sanitationChecker,
+        radxPrecisionValidatorComponent,
+        sanitationChecker,
         literalFieldValidators);
   }
 }

@@ -35,7 +35,7 @@ public class ValidateCommand implements Callable<Integer> {
   @Option(names = "--dict", description = "CSV data dictionary file name.")
   private String dict;
 
-  @Option(names = "--sha256", description = "SHA256 digest value.")
+  @Option(names = "--sha256", description = "SHA256 digest value of data file.")
   private String sha256;
 
   public ValidateCommand(ValidatorFactory validatorFactory, ValidationReportWriter validationReportWriter) {
