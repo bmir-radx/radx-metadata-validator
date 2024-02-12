@@ -41,7 +41,7 @@ Follow the steps below to validate your metadata instances:
 
 #### To use the Radx Metadata Validator Library
 Add the following Maven dependency:
-```
+```xml
 <dependency>
     <groupId>edu.stanford.bmir.radx</groupId>
     <artifactId>radx-metadata-validator-lib</artifactId>
@@ -49,7 +49,7 @@ Add the following Maven dependency:
 </dependency>
 ```
 The Radx Metadata Validator Library can be used with Spring Boot by scanning components in the library:
-```
+```java
 @ComponentScan(basePackages = "edu.stanford.bmir.radx.metadata.validator")
 ```
 #### Example Implementation
@@ -64,7 +64,7 @@ public class Example {
     this.validatorFactory = validatorFactory;
   }
 
-  public void doValidation(Path template, Path instance, String sha256, String data, String dict) throws Exception {
+  public void doValidation(Path template, Path instance, String sha256, String data, String dict){
     var validator = validatorFactory.createValidator(getLiteralFieldValidatorsComponent(sha256, data, dict));
     String templateContent = Files.readString(template);
     String instanceContent = Files.readString(instance);
