@@ -1,6 +1,6 @@
 package edu.stanford.bmir.radx.metadata.validator.lib;
 
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents.CardinalityValidatorComponent;
+import edu.stanford.bmir.radx.metadata.validator.lib.validators.CardinalityValidatorComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.metadatacenter.artifacts.model.core.ElementSchemaArtifact;

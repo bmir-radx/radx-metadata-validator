@@ -45,3 +45,32 @@ The output of the RADx Metadata Validator is a CSV file with the following forma
 
 ![Validation Report](ValidationReportExample.png)
 
+### Usage
+The validator can be executed through Maven's `exec:java` goal. Follow the steps below to validate your metadata instances:
+1. **Navigate to the Application Directory**
+   
+    First, navigate to the `radx-metadata-validator-app` directory within the `radx-metadata-validator` project folder:
+
+   ```
+   cd radx-metadata-validator-app
+   ```
+
+2. **Validate Metadata Instance**
+   
+    To validate your metadata instances against a CEDAR template stored in a file, use the following Maven command. You need to specify the paths to your template file, instance file, and the output file where validation report will be saved:
+    
+   ```
+   mvn exec:java 
+     -Dexec.args="--template <template_file_path> 
+                  --instance <instance_file_path> 
+                  --out <validation_report_path>"
+    ```
+
+    e.g., 
+
+    ```
+    mvn exec:java 
+     -Dexec.args="--template ../../RADxTemplate.json
+                  --instance ../../RADxExampleMetadataInstance.json 
+                  --out ../../Output.csv"
+    ```

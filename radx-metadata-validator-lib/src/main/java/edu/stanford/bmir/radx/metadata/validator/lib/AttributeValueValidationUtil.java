@@ -22,7 +22,7 @@ public class AttributeValueValidationUtil {
 
       if(isAttributeValue(templateReporter, specificationPath)){
         if(fieldValues.jsonLdValue().isPresent()){
-          fieldSchemaValidationHelper.validateAttributeValueField(fieldValues.jsonLdId(), fieldValues.label(), fieldValues.jsonLdTypes(), handler, instancePath);
+          fieldSchemaValidationHelper.validateAttributeValueField(fieldValues.jsonLdValue(), fieldValues.jsonLdId(), fieldValues.label(), fieldValues.jsonLdTypes(), handler, instancePath);
         } else{
           handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@value should not be null", instancePath));
         }

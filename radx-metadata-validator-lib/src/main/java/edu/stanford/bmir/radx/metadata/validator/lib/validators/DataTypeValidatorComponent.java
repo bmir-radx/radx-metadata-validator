@@ -1,4 +1,4 @@
-package edu.stanford.bmir.radx.metadata.validator.lib.ValidatorComponents;
+package edu.stanford.bmir.radx.metadata.validator.lib.validators;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.*;
 import org.metadatacenter.artifacts.model.core.fields.FieldInputType;
@@ -52,43 +52,43 @@ public class DataTypeValidatorComponent {
 
         // if it is controlled terms, validate schema and @id is a valid URI
         if (valueConstraint.get().isControlledTermValueConstraint()){
-          validateControlledTermsField(id, handler, path);
           fieldSchemaValidationHelper.validateControlledTermField(id, label, value, type, handler, path);
+          validateControlledTermsField(id, handler, path);
           //if it is text field, validate regex, length, schema
         } else if (fieldInputType == FieldInputType.TEXTFIELD){
           if(value.isPresent()){
+            fieldSchemaValidationHelper.validateTextField(value, id, label, type, handler, path);
             validateTextField(value.get(), valueConstraint.get(), handler, path);
-            fieldSchemaValidationHelper.validateTextField(id, label, type, handler, path);
           }
         //if it is numeric field, validate range, data type, decimal place and @type value, schema
         } else if (fieldInputType == FieldInputType.NUMERIC) {
           if(value.isPresent()){
-            validateNumericField(value.get(), type, valueConstraint.get(), handler, path);
             fieldSchemaValidationHelper.validateNumericAndTemporalField(id, label, handler, path);
+            validateNumericField(value.get(), type, valueConstraint.get(), handler, path);
           }
         //if it is temporal field, validate temporal data type and @type value, schema
         } else if (fieldInputType == FieldInputType.TEMPORAL) {
           if(value.isPresent()){
-            validateTemporalField(value.get(), type, valueConstraint.get(), handler, path);
             fieldSchemaValidationHelper.validateNumericAndTemporalField(id, label, handler, path);
+            validateTemporalField(value.get(), type, valueConstraint.get(), handler, path);
           }
         //if it is email field, validate regex
         } else if (fieldInputType == FieldInputType.EMAIL){
           if(value.isPresent()){
+            fieldSchemaValidationHelper.validateTextField(value, id, label, type, handler, path);
             validateEmailField(value.get(), handler, path);
-            fieldSchemaValidationHelper.validateTextField(id, label, type, handler, path);
           }
         //if it is link field, validate input is valid URL and no @value, rdfs:label and @type
         } else if (fieldInputType == FieldInputType.LINK) {
           if(id.isPresent()){
+            fieldSchemaValidationHelper.validateLinkField(id, value, label, type, handler, path);
             validateLinkField(id.get().toString(), handler, path);
-            fieldSchemaValidationHelper.validateLinkField(value, label, type, handler, path);
           }
         //if it is multiple choice, list field, or checkbox field, validate literals
         } else if (fieldInputType == FieldInputType.RADIO || fieldInputType == FieldInputType.CHECKBOX || fieldInputType == FieldInputType.LIST) {
           if(value.isPresent()){
+            fieldSchemaValidationHelper.validateTextField(value, id, label, type, handler, path);
             validateLiterals(value.get(), valueConstraint.get(), handler, path);
-            fieldSchemaValidationHelper.validateTextField(id, label, type, handler, path);
           }
         }
       }
