@@ -55,7 +55,7 @@ The Radx Metadata Validator Library can be used with Spring Boot by scanning com
 #### Example Implementation
 Use the ValidatorFactory to create a validator instance. This is achieved by invoking the createValidator method and passing it the LiteralFieldValidators object. This method orchestrates the various components and prepares the validator for execution.
 
-```
+```java
 @Component
 public class Example {
   private final ValidatorFactory validatorFactory;
@@ -97,7 +97,6 @@ public class Example {
     return new LiteralFieldValidators(map);
   }
 }
-
 ```
 
 
