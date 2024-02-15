@@ -18,7 +18,7 @@ public class ValidatorFactory {
                           RequiredFieldValidatorComponent requiredFieldValidatorComponent,
                           DataTypeValidatorComponent dataTypeValidatorComponent,
                           CardinalityValidatorComponent cardinalityValidatorComponent,
-                          RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker, ControlledTermValidatorComponent controlledTermValidatorComponent) {
+                          RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
@@ -28,7 +28,7 @@ public class ValidatorFactory {
     this.sanitationChecker = sanitationChecker;
   }
 
-  public Validator createValidator(LiteralFieldValidators literalFieldValidators, ControlledTermValidatorComponent controlledTermValidatorComponent){
+  public Validator createValidator(LiteralFieldValidators literalFieldValidators){
     return  new Validator(schemaValidatorComponent,
         cedarSchemaValidatorComponent,
         requiredFieldValidatorComponent,
@@ -36,7 +36,6 @@ public class ValidatorFactory {
         cardinalityValidatorComponent,
         radxPrecisionValidatorComponent,
         sanitationChecker,
-        literalFieldValidators,
-        controlledTermValidatorComponent);
+        literalFieldValidators);
   }
 }
