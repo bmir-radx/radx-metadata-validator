@@ -23,11 +23,12 @@ public class Validator {
   private final RadxPrecisionValidatorComponent radxPrecisionValidatorComponent;
   private final SanitationChecker sanitationChecker;
   private final LiteralFieldValidators literalFieldValidators;
+  private final ControlledTermValidatorComponent controlledTermValidatorComponent;
 
 
   public Validator(SchemaValidatorComponent schemaValidatorComponent,
                    CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
-                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, CardinalityValidatorComponent cardinalityValidatorComponent, RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker, LiteralFieldValidators literalFieldValidators) {
+                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, CardinalityValidatorComponent cardinalityValidatorComponent, RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker, LiteralFieldValidators literalFieldValidators, ControlledTermValidatorComponent controlledTermValidatorComponent) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
@@ -36,6 +37,7 @@ public class Validator {
     this.radxPrecisionValidatorComponent = radxPrecisionValidatorComponent;
     this.sanitationChecker = sanitationChecker;
     this.literalFieldValidators = literalFieldValidators;
+    this.controlledTermValidatorComponent = controlledTermValidatorComponent;
   }
 
 
@@ -79,6 +81,11 @@ public class Validator {
 
           //RADx specific validation
           radxPrecisionValidatorComponent.validate(literalFieldValidators, templateInstanceValuesReporter, consumer);
+
+          //Controlled term validation
+          if(controlledTermValidatorComponent != null){
+            controlledTermValidatorComponent.validate();
+          }
         }
       }
     } catch (JsonParseException e) {
