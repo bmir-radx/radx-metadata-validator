@@ -45,7 +45,7 @@ Add the following Maven dependency:
 <dependency>
     <groupId>edu.stanford.bmir.radx</groupId>
     <artifactId>radx-metadata-validator-lib</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 The Radx Metadata Validator Library can be used with Spring Boot by scanning components in the library:
