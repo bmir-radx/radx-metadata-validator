@@ -1,6 +1,6 @@
 package edu.stanford.bmir.radx.metadata.validator.lib;
 
-import edu.stanford.bmir.radx.metadata.validator.lib.validators.CardinalityValidatorComponent;
+import edu.stanford.bmir.radx.metadata.validator.lib.validators.MetadataCardinalityValidatorComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.metadatacenter.artifacts.model.core.ElementSchemaArtifact;
@@ -19,8 +19,8 @@ import java.util.function.Consumer;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class CardinalityValidatorComponentTest {
-  private CardinalityValidatorComponent validator;
+public class MetadataCardinalityValidatorComponentTest {
+  private MetadataCardinalityValidatorComponent validator;
   private List<ValidationResult> results;
   private Consumer<ValidationResult> consumer;
   @Mock
@@ -31,7 +31,7 @@ public class CardinalityValidatorComponentTest {
     MockitoAnnotations.openMocks(this);
     results = new ArrayList<>();
     consumer = results::add;
-    validator = new CardinalityValidatorComponent();
+    validator = new MetadataCardinalityValidatorComponent();
   }
 
   @Test

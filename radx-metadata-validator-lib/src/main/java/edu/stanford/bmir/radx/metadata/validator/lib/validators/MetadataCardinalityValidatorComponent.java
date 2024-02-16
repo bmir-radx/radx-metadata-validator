@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @Component
-public class CardinalityValidatorComponent {
+public class MetadataCardinalityValidatorComponent {
   public void validate(TemplateReporter templateReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<ValidationResult> handler){
     var fieldCardinals = valuesReporter.getFieldCardinalities();
     var elementCardinals = valuesReporter.getElementCardinalities();

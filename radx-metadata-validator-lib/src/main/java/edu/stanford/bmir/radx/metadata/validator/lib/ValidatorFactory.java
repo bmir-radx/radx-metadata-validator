@@ -9,7 +9,7 @@ public class ValidatorFactory {
   private final CedarSchemaValidatorComponent cedarSchemaValidatorComponent;
   private final RequiredFieldValidatorComponent requiredFieldValidatorComponent;
   private final DataTypeValidatorComponent dataTypeValidatorComponent;
-  private final CardinalityValidatorComponent cardinalityValidatorComponent;
+  private final MetadataCardinalityValidatorComponent metadataCardinalityValidatorComponent;
   private final RadxPrecisionValidatorComponent radxPrecisionValidatorComponent;
   private final SanitationChecker sanitationChecker;
 
@@ -17,13 +17,13 @@ public class ValidatorFactory {
                           CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
                           RequiredFieldValidatorComponent requiredFieldValidatorComponent,
                           DataTypeValidatorComponent dataTypeValidatorComponent,
-                          CardinalityValidatorComponent cardinalityValidatorComponent,
+                          MetadataCardinalityValidatorComponent metadataCardinalityValidatorComponent,
                           RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
     this.dataTypeValidatorComponent = dataTypeValidatorComponent;
-    this.cardinalityValidatorComponent = cardinalityValidatorComponent;
+    this.metadataCardinalityValidatorComponent = metadataCardinalityValidatorComponent;
     this.radxPrecisionValidatorComponent = radxPrecisionValidatorComponent;
     this.sanitationChecker = sanitationChecker;
   }
@@ -33,7 +33,7 @@ public class ValidatorFactory {
         cedarSchemaValidatorComponent,
         requiredFieldValidatorComponent,
         dataTypeValidatorComponent,
-        cardinalityValidatorComponent,
+        metadataCardinalityValidatorComponent,
         radxPrecisionValidatorComponent,
         sanitationChecker,
         literalFieldValidators);

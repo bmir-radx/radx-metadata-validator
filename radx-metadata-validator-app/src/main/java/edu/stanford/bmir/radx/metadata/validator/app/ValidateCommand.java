@@ -62,7 +62,8 @@ public class ValidateCommand implements Callable<Integer> {
     }
 
     var out = getOutputStream();
-    var validator = validatorFactory.createValidator(getLiteralFieldValidatorsComponent());
+//    var validator = validatorFactory.createValidator(getLiteralFieldValidatorsComponent());
+    var validator = validatorFactory.createValidator(new LiteralFieldValidators(new HashMap<>()));
     String templateContent = Files.readString(template);
     String instanceContent = Files.readString(instance);
     var report = validator.validateInstance(templateContent, instanceContent);
