@@ -12,7 +12,7 @@
 
 	<groupId>edu.stanford.bmir.radx</groupId>
 	<artifactId>radx-metadata-validator-app</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<name>radx-metadata-validator-app</name>
 	<description>This is a command line application that validates RADx metadata</description>
 	<packaging>jar</packaging>
