@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@Component
-public class MetadataCardinalityValidatorComponent {
+@Component("MetadataCardinalityValidatorComponent")
+public class CardinalityValidatorComponent {
   public void validate(TemplateReporter templateReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<ValidationResult> handler){
     var fieldCardinals = valuesReporter.getFieldCardinalities();
     var elementCardinals = valuesReporter.getElementCardinalities();

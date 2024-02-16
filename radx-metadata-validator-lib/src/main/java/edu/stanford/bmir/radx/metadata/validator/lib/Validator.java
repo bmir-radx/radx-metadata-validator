@@ -19,7 +19,7 @@ public class Validator {
   private final CedarSchemaValidatorComponent cedarSchemaValidatorComponent;
   private final RequiredFieldValidatorComponent requiredFieldValidatorComponent;
   private final DataTypeValidatorComponent dataTypeValidatorComponent;
-  private final MetadataCardinalityValidatorComponent metadataCardinalityValidatorComponent;
+  private final CardinalityValidatorComponent cardinalityValidatorComponent;
   private final RadxPrecisionValidatorComponent radxPrecisionValidatorComponent;
   private final SanitationChecker sanitationChecker;
   private final LiteralFieldValidators literalFieldValidators;
@@ -27,12 +27,12 @@ public class Validator {
 
   public Validator(SchemaValidatorComponent schemaValidatorComponent,
                    CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
-                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, MetadataCardinalityValidatorComponent metadataCardinalityValidatorComponent, RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker, LiteralFieldValidators literalFieldValidators) {
+                   RequiredFieldValidatorComponent requiredFieldValidatorComponent, DataTypeValidatorComponent dataTypeValidatorComponent, CardinalityValidatorComponent cardinalityValidatorComponent, RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker, LiteralFieldValidators literalFieldValidators) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
     this.dataTypeValidatorComponent = dataTypeValidatorComponent;
-    this.metadataCardinalityValidatorComponent = metadataCardinalityValidatorComponent;
+    this.cardinalityValidatorComponent = cardinalityValidatorComponent;
     this.radxPrecisionValidatorComponent = radxPrecisionValidatorComponent;
     this.sanitationChecker = sanitationChecker;
     this.literalFieldValidators = literalFieldValidators;
@@ -75,7 +75,7 @@ public class Validator {
           dataTypeValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
 
           //validate cardinality
-          metadataCardinalityValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
+          cardinalityValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
 
           //RADx specific validation
           radxPrecisionValidatorComponent.validate(literalFieldValidators, templateInstanceValuesReporter, consumer);

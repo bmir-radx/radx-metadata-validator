@@ -1,7 +1,8 @@
 package edu.stanford.bmir.radx.metadata.validator.app;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.*;
-import edu.stanford.bmir.radx.metadata.validator.lib.LiteralFieldValidators;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -38,7 +39,8 @@ public class ValidateCommand implements Callable<Integer> {
   @Option(names = "--sha256", description = "SHA256 digest value of data file.")
   private String sha256;
 
-  public ValidateCommand(ValidatorFactory validatorFactory, ValidationReportWriter validationReportWriter) {
+  @Autowired
+  public ValidateCommand(ValidatorFactory validatorFactory, @Qualifier("MetadataValidationReportWriter")ValidationReportWriter validationReportWriter) {
     this.validatorFactory = validatorFactory;
     this.validationReportWriter = validationReportWriter;
   }
