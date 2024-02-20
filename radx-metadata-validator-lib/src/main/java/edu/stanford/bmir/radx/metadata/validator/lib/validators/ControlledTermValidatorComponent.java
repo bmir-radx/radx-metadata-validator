@@ -53,7 +53,7 @@ public class ControlledTermValidatorComponent {
               var prefLabel = controlledTermValues.get(id);
               if(jsonLdLabel.isPresent() && !jsonLdLabel.get().equals(prefLabel)){
                 String warningMessage = String.format("Expected %s on 'rdfs:label', but %s is given.", prefLabel, jsonLdLabel.get());
-                handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.CONTROLLED_TERM_VALIDATION, warningMessage, path));
+                handler.accept(new ValidationResult(ValidationLevel.WARNING, ValidationName.CONTROLLED_TERM_VALIDATION, warningMessage, path));
               }
             } else{
               String errorMessage = String.format("%s is not an element of set", jsonLdId.get());

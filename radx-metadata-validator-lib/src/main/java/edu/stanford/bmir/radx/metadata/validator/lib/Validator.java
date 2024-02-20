@@ -83,9 +83,7 @@ public class Validator {
           radxPrecisionValidatorComponent.validate(literalFieldValidators, templateInstanceValuesReporter, consumer);
 
           //Controlled term validation
-          if(controlledTermValidatorComponent != null){
-            controlledTermValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
-          }
+          controlledTermValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
         }
       }
     } catch (JsonParseException e) {
