@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import edu.stanford.bmir.radx.metadata.validator.lib.FieldValues;
-import edu.stanford.bmir.radx.metadata.validator.lib.TemplateInstanceValuesReporter;
-import edu.stanford.bmir.radx.metadata.validator.lib.ValidationResult;
+import edu.stanford.bmir.radx.metadata.validator.lib.*;
 import org.metadatacenter.artifacts.model.core.fields.constraints.ControlledTermValueConstraints;
 import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.metadatacenter.artifacts.util.ConnectionUtil;
@@ -24,11 +22,9 @@ import java.util.function.Consumer;
 public class ControlledTermValidatorComponent {
   private final ObjectMapper mapper;
   private final ObjectWriter objectWriter;
-  private final String terminologyServerIntegratedSearchEndpoint;
   private final String terminologyServerAPIKey;
 
-  public ControlledTermValidatorComponent(String terminologyServerIntegratedSearchEndpoint, String terminologyServerAPIKey) {
-    this.terminologyServerIntegratedSearchEndpoint = terminologyServerIntegratedSearchEndpoint;
+  public ControlledTermValidatorComponent(String terminologyServerAPIKey) {
     this.terminologyServerAPIKey = terminologyServerAPIKey;
 
     this.mapper = new ObjectMapper();
@@ -41,15 +37,36 @@ public class ControlledTermValidatorComponent {
     if (this.terminologyServerAPIKey != null){
       var values = valuesReporter.getValues();
 
-      //Iterate the valuesReporter
       for (Map.Entry<String, FieldValues> fieldEntry : values.entrySet()) {
-
+        String path = fieldEntry.getKey();
+        FieldValues fieldValues = fieldEntry.getValue();
+        var jsonLdId = fieldValues.jsonLdId();
+        var jsonLdLabel = fieldValues.label();
+        var valueConstraint = templateReporter.getValueConstraints(path);
+        if(valueConstraint.isPresent() && valueConstraint.get().isControlledTermValueConstraint()){
+          var controlledTermValues = getValuesFromTerminologyServer(valueConstraint.get().asControlledTermValueConstraints());
+          if(jsonLdId.isPresent()){
+            //check if @id is within values get from terminology server
+            var id = jsonLdId.get().toString();
+            if(controlledTermValues.containsKey(id)){
+              //check prefLabel
+              var prefLabel = controlledTermValues.get(id);
+              if(jsonLdLabel.isPresent() && !jsonLdLabel.get().equals(prefLabel)){
+                String warningMessage = String.format("Expected %s on 'rdfs:label', but %s is given.", prefLabel, jsonLdLabel.get());
+                handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.CONTROLLED_TERM_VALIDATION, warningMessage, path));
+              }
+            } else{
+              String errorMessage = String.format("%s is not an element of set", jsonLdId.get());
+              handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.CONTROLLED_TERM_VALIDATION, errorMessage, path));
+            }
+          }
+        }
       }
     }
   }
 
   /***
-   * Get prefLabel, URI key-value pairs from terminology server
+   * Get prefLabel, URI key-value pairs from CEDAR terminology server
    * @param valueConstraints
    * @return
    */
@@ -61,9 +78,8 @@ public class ControlledTermValidatorComponent {
       Map<String, Object> vcMap = mapper.readValue(vc, Map.class);
 
       List<Map<String, String>> valueDescriptions;
-      // TODO Replace arbitrary 5000 BioPortal terms; show error if more
       Map<String, Object> searchResult = integratedSearch(vcMap, 1, 4999,
-          terminologyServerIntegratedSearchEndpoint, terminologyServerAPIKey);
+          Constants.TERMINOLOGY_SERVER_INTEGRATED_SEARCH_ENDPOINT, terminologyServerAPIKey);
       valueDescriptions = searchResult.containsKey("collection") ?
           (List<Map<String, String>>)searchResult.get("collection") :
           new ArrayList<>();

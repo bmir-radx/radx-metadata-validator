@@ -84,7 +84,7 @@ public class Validator {
 
           //Controlled term validation
           if(controlledTermValidatorComponent != null){
-            controlledTermValidatorComponent.validate();
+            controlledTermValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
           }
         }
       }

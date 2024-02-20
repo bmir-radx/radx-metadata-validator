@@ -125,8 +125,8 @@ public class ValidateCommand implements Callable<Integer> {
 
   private ControlledTermValidatorComponent getControlledTermValidator(){
     if(apiKey != null){
-      return new ControlledTermValidatorComponent(Constants.TERMINOLOGY_SERVER_INTEGRATED_SEARCH_ENDPOINT, apiKey);
+      return new ControlledTermValidatorComponent(apiKey);
     }
-    return new ControlledTermValidatorComponent(Constants.TERMINOLOGY_SERVER_INTEGRATED_SEARCH_ENDPOINT, null);
+    return new ControlledTermValidatorComponent(null);
   }
 }
