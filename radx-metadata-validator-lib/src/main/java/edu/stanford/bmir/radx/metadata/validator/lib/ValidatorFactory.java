@@ -18,7 +18,8 @@ public class ValidatorFactory {
                           RequiredFieldValidatorComponent requiredFieldValidatorComponent,
                           DataTypeValidatorComponent dataTypeValidatorComponent,
                           CardinalityValidatorComponent cardinalityValidatorComponent,
-                          RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker, ControlledTermValidatorComponent controlledTermValidatorComponent) {
+                          RadxPrecisionValidatorComponent radxPrecisionValidatorComponent,
+                          SanitationChecker sanitationChecker) {
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;

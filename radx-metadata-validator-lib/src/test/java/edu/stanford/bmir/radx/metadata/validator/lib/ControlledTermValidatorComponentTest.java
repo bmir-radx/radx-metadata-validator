@@ -69,7 +69,7 @@ public class ControlledTermValidatorComponentTest {
 
   @Test
   void testValidateControlledTermsWrongIdWrongPrefLabel() throws URISyntaxException {
-    String apiKey = "apiKey e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
+    String apiKey = "e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
     validator = new ControlledTermValidatorComponent(apiKey);
 
     String fieldName = "controlled terms field";
@@ -105,8 +105,43 @@ public class ControlledTermValidatorComponentTest {
   }
 
   @Test
+  void testValidateControlledTermsWrongId() throws URISyntaxException {
+    String apiKey = "e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
+    validator = new ControlledTermValidatorComponent(apiKey);
+
+    String fieldName = "controlled terms field";
+    String templateName = "My template";
+    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
+        .withName(fieldName)
+        .withOntologyValueConstraint(new URI("https://bioportal.bioontology.org/ontologies/MESH"),
+            "MESH",
+            "MESH")
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(linkFieldSchemaArtifact)
+        .build();
+
+    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+
+    String fieldPath = "/" + fieldName;
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.of(new URI("http://purl.bioontology.org/ontology/MESH/D000086382")), Optional.empty(), Optional.of("COVID-19"));
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+
+    assertEquals(1, results.size());
+  }
+
+  @Test
   void testValidateControlledTermsCorrectIdWrongPrefLabel() throws URISyntaxException {
-    String apiKey = "apiKey e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
+    String apiKey = "e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
     validator = new ControlledTermValidatorComponent(apiKey);
 
     String fieldName = "controlled terms field";
@@ -143,7 +178,7 @@ public class ControlledTermValidatorComponentTest {
 
   @Test
   void testValidateControlledTermsCorrectIdCorrectPrefLabel() throws URISyntaxException {
-    String apiKey = "apiKey e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
+    String apiKey = "e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
     validator = new ControlledTermValidatorComponent(apiKey);
 
     String fieldName = "controlled terms field";
