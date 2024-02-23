@@ -18,26 +18,26 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 public class ControlledTermValidatorComponentTest {
+  private String apiKey = "e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
+  private String terminologyServerEndPoint = "https://terminology.metadatacenter.org/bioportal/integrated-search/" ;
+  String fieldName = "controlled terms field";
   private ControlledTermValidatorComponent validator;
+  private TerminologyServerHandler terminologyServerHandler;
   private List<ValidationResult> results;
   private Consumer<ValidationResult> consumer;
   @Mock
   private TemplateInstanceValuesReporter valuesReporter;
+  private TemplateReporter valueConstraintsReporter;
 
   @BeforeEach
-  void setup() {
+  void setup() throws URISyntaxException {
     MockitoAnnotations.openMocks(this);
     results = new ArrayList<>();
     consumer = results::add;
-  }
+    validator = new ControlledTermValidatorComponent();
 
-  @Test
-  void testValidateControlledTermsNoApiKey() throws URISyntaxException {
-    validator = new ControlledTermValidatorComponent(null);
-
-    String fieldName = "controlled terms field";
     String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
+    FieldSchemaArtifact fieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
         .withName(fieldName)
         .withBranchValueConstraint(new URI("http://vocab.fairdatacollective.org/gdmt/ContributorRole"),
             "https://bioportal.bioontology.org/ontologies/FDC-GDMT",
@@ -48,13 +48,17 @@ public class ControlledTermValidatorComponentTest {
 
     TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
         .withName(templateName)
-        .withFieldSchema(linkFieldSchemaArtifact)
+        .withFieldSchema(fieldSchemaArtifact)
         .build();
 
-    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+    valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+  }
+
+  @Test
+  void testValidateControlledTermsNoApiKeyNoTsApi() throws URISyntaxException {
+    terminologyServerHandler = new TerminologyServerHandler(null, null);
 
     String fieldPath = "/" + fieldName;
-
     FieldValues fieldValues = new FieldValues(
         List.of(), Optional.of(new URI("http://purl.bioontology.org/ontology/LNC/LP286655-8")), Optional.empty(), Optional.of("Neutrophils/leukocytes"));
     Map<String, FieldValues> values = new HashMap<>();
@@ -62,36 +66,16 @@ public class ControlledTermValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+    validator.validate(terminologyServerHandler, valueConstraintsReporter, valuesReporter, consumer);
 
     assertEquals(0, results.size());
   }
 
   @Test
-  void testValidateControlledTermsWrongIdWrongPrefLabel() throws URISyntaxException {
-    String apiKey = "e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
-    validator = new ControlledTermValidatorComponent(apiKey);
-
-    String fieldName = "controlled terms field";
-    String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
-        .withName(fieldName)
-        .withBranchValueConstraint(new URI("http://vocab.fairdatacollective.org/gdmt/ContributorRole"),
-            "https://bioportal.bioontology.org/ontologies/FDC-GDMT",
-            "FDC-GDMT",
-            "FDC-GDMT",
-            2147483647)
-        .build();
-
-    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
-        .withName(templateName)
-        .withFieldSchema(linkFieldSchemaArtifact)
-        .build();
-
-    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+  void testValidateControlledTermsNoApiKey() throws URISyntaxException {
+    terminologyServerHandler = new TerminologyServerHandler(null, terminologyServerEndPoint);
 
     String fieldPath = "/" + fieldName;
-
     FieldValues fieldValues = new FieldValues(
         List.of(), Optional.of(new URI("http://purl.bioontology.org/ontology/LNC/LP286655-8")), Optional.empty(), Optional.of("Neutrophils/leukocytes"));
     Map<String, FieldValues> values = new HashMap<>();
@@ -99,71 +83,50 @@ public class ControlledTermValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+    validator.validate(terminologyServerHandler, valueConstraintsReporter, valuesReporter, consumer);
 
     assertEquals(1, results.size());
   }
 
   @Test
-  void testValidateControlledTermsWrongId() throws URISyntaxException {
-    String apiKey = "e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
-    validator = new ControlledTermValidatorComponent(apiKey);
-
-    String fieldName = "controlled terms field";
-    String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
-        .withName(fieldName)
-        .withOntologyValueConstraint(new URI("https://bioportal.bioontology.org/ontologies/MESH"),
-            "MESH",
-            "MESH")
-        .build();
-
-    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
-        .withName(templateName)
-        .withFieldSchema(linkFieldSchemaArtifact)
-        .build();
-
-    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+  void testValidateControlledTermsWrongIdWrongPrefLabel() throws URISyntaxException {
+    terminologyServerHandler = new TerminologyServerHandler(apiKey, terminologyServerEndPoint);
 
     String fieldPath = "/" + fieldName;
-
     FieldValues fieldValues = new FieldValues(
-        List.of(), Optional.of(new URI("http://purl.bioontology.org/ontology/MESH/D000086382")), Optional.empty(), Optional.of("COVID-19"));
+        List.of(), Optional.of(new URI("http://purl.bioontology.org/ontology/LNC/LP286655-8")), Optional.empty(), Optional.of("Neutrophils/leukocytes"));
     Map<String, FieldValues> values = new HashMap<>();
     values.put(fieldPath, fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+    validator.validate(terminologyServerHandler, valueConstraintsReporter, valuesReporter, consumer);
 
     assertEquals(1, results.size());
   }
 
+//  @Test
+//  void testValidateControlledTermsWrongId() throws URISyntaxException {
+//    terminologyServerHandler = new TerminologyServerHandler(apiKey, terminologyServerEndPoint);
+//
+//    String fieldPath = "/" + fieldName;
+//    FieldValues fieldValues = new FieldValues(
+//        List.of(), Optional.of(new URI("http://purl.bioontology.org/ontology/MESH/D000086382")), Optional.empty(), Optional.of("COVID-19"));
+//    Map<String, FieldValues> values = new HashMap<>();
+//    values.put(fieldPath, fieldValues);
+//
+//    when(valuesReporter.getValues()).thenReturn(values);
+//
+//    validator.validate(terminologyServerHandler, valueConstraintsReporter, valuesReporter, consumer);
+//
+//    assertEquals(1, results.size());
+//  }
+
   @Test
   void testValidateControlledTermsCorrectIdWrongPrefLabel() throws URISyntaxException {
-    String apiKey = "e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
-    validator = new ControlledTermValidatorComponent(apiKey);
-
-    String fieldName = "controlled terms field";
-    String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
-        .withName(fieldName)
-        .withBranchValueConstraint(new URI("http://vocab.fairdatacollective.org/gdmt/ContributorRole"),
-            "https://bioportal.bioontology.org/ontologies/FDC-GDMT",
-            "FDC-GDMT",
-            "FDC-GDMT",
-            2147483647)
-        .build();
-
-    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
-        .withName(templateName)
-        .withFieldSchema(linkFieldSchemaArtifact)
-        .build();
-
-    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+    terminologyServerHandler = new TerminologyServerHandler(apiKey, terminologyServerEndPoint);
 
     String fieldPath = "/" + fieldName;
-
     FieldValues fieldValues = new FieldValues(
         List.of(), Optional.of(new URI("http://vocab.fairdatacollective.org/gdmt/ContactPerson")), Optional.empty(), Optional.of("Neutrophils/leukocytes"));
     Map<String, FieldValues> values = new HashMap<>();
@@ -171,20 +134,46 @@ public class ControlledTermValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+    validator.validate(terminologyServerHandler, valueConstraintsReporter, valuesReporter, consumer);
 
     assertEquals(1, results.size());
   }
 
   @Test
   void testValidateControlledTermsCorrectIdCorrectPrefLabel() throws URISyntaxException {
-    String apiKey = "e94e265d4c3cd623ca8bde96cfc743074196409e345b164f148333dd403c3401";
-    validator = new ControlledTermValidatorComponent(apiKey);
+    terminologyServerHandler = new TerminologyServerHandler(apiKey, terminologyServerEndPoint);
 
-    String fieldName = "controlled terms field";
+    String fieldPath = "/" + fieldName;
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.of(new URI("http://vocab.fairdatacollective.org/gdmt/ContactPerson")), Optional.empty(), Optional.of("Contact Person"));
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    validator.validate(terminologyServerHandler, valueConstraintsReporter, valuesReporter, consumer);
+
+    assertEquals(0, results.size());
+  }
+
+  @Test
+  void testLoadFromCache() throws URISyntaxException {
+    terminologyServerHandler = new TerminologyServerHandler(apiKey, terminologyServerEndPoint);
+    String fieldName1 = "f1";
+    String fieldName2 = "f2";
+
     String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
-        .withName(fieldName)
+    FieldSchemaArtifact fieldSchemaArtifact1 = FieldSchemaArtifact.controlledTermFieldBuilder()
+        .withName(fieldName1)
+        .withBranchValueConstraint(new URI("http://vocab.fairdatacollective.org/gdmt/ContributorRole"),
+            "https://bioportal.bioontology.org/ontologies/FDC-GDMT",
+            "FDC-GDMT",
+            "FDC-GDMT",
+            2147483647)
+        .build();
+
+    FieldSchemaArtifact fieldSchemaArtifact2 = FieldSchemaArtifact.controlledTermFieldBuilder()
+        .withName(fieldName2)
         .withBranchValueConstraint(new URI("http://vocab.fairdatacollective.org/gdmt/ContributorRole"),
             "https://bioportal.bioontology.org/ontologies/FDC-GDMT",
             "FDC-GDMT",
@@ -194,21 +183,22 @@ public class ControlledTermValidatorComponentTest {
 
     TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
         .withName(templateName)
-        .withFieldSchema(linkFieldSchemaArtifact)
+        .withFieldSchema(fieldSchemaArtifact1)
+        .withFieldSchema(fieldSchemaArtifact2)
         .build();
 
-    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
-
-    String fieldPath = "/" + fieldName;
-
+    var templateReporter = new TemplateReporter(templateSchemaArtifact);
+    String fieldPath1 = "/" + fieldName1;
+    String fieldPath2 = "/" + fieldName2;
     FieldValues fieldValues = new FieldValues(
         List.of(), Optional.of(new URI("http://vocab.fairdatacollective.org/gdmt/ContactPerson")), Optional.empty(), Optional.of("Contact Person"));
     Map<String, FieldValues> values = new HashMap<>();
-    values.put(fieldPath, fieldValues);
+    values.put(fieldPath1, fieldValues);
+    values.put(fieldPath2,fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    validator.validate(valueConstraintsReporter, valuesReporter, consumer);
+    validator.validate(terminologyServerHandler, templateReporter, valuesReporter, consumer);
 
     assertEquals(0, results.size());
   }

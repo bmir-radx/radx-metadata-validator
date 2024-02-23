@@ -1,8 +1,6 @@
 package edu.stanford.bmir.radx.metadata.validator.app;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.*;
-import edu.stanford.bmir.radx.metadata.validator.lib.LiteralFieldValidators;
-import edu.stanford.bmir.radx.metadata.validator.lib.validators.ControlledTermValidatorComponent;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -42,6 +40,9 @@ public class ValidateCommand implements Callable<Integer> {
   @Option(names = "--apiKey", description = "CEDAR API key.")
   private String apiKey;
 
+  @Option(names = "--tsApi", description = "CEDAR Terminology server integrated search end point.")
+  private String tsApi;
+
   public ValidateCommand(ValidatorFactory validatorFactory, ValidationReportWriter validationReportWriter) {
     this.validatorFactory = validatorFactory;
     this.validationReportWriter = validationReportWriter;
@@ -66,7 +67,7 @@ public class ValidateCommand implements Callable<Integer> {
     }
 
     var out = getOutputStream();
-    var validator = validatorFactory.createValidator(getLiteralFieldValidatorsComponent(), getControlledTermValidator());
+    var validator = validatorFactory.createValidator(getLiteralFieldValidatorsComponent(), getTernomologyServerHanlder());
     String templateContent = Files.readString(template);
     String instanceContent = Files.readString(instance);
     var report = validator.validateInstance(templateContent, instanceContent);
@@ -123,10 +124,10 @@ public class ValidateCommand implements Callable<Integer> {
     return new LiteralFieldValidators(map);
   }
 
-  private ControlledTermValidatorComponent getControlledTermValidator(){
-    if(apiKey != null){
-      return new ControlledTermValidatorComponent(apiKey);
+  private TerminologyServerHandler getTernomologyServerHanlder(){
+    if(apiKey != null && tsApi != null){
+      return new TerminologyServerHandler(apiKey, tsApi);
     }
-    return new ControlledTermValidatorComponent(null);
+    return new TerminologyServerHandler(null, null);
   }
 }
