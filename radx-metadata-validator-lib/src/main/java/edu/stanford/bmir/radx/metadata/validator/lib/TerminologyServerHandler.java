@@ -49,14 +49,13 @@ public class TerminologyServerHandler {
 
   public Map<String, String> getAllValues(ControlledTermValueConstraints valueConstraints) {
     long startTime = System.nanoTime();
+    int page = 1;
+    int pageSize = 4999;
     try {
       if(cache.containsKey(valueConstraints)){
         log.info("Loading <URI, prefLabel> pairs from cache");
         return cache.get(valueConstraints);
       } else{
-        int page = 1;
-        int pageSize = 4999;
-
         String vc = controlledTermValueConstraints2Json(valueConstraints);
         Map<String, Object> vcMap = mapper.readValue(vc, Map.class);
 
@@ -87,7 +86,6 @@ public class TerminologyServerHandler {
       throw new RuntimeException("Error generation value constraints object for terminology server " + e.getMessage());
     }
   }
-
 
   private Map<String, Object> integratedSearch(Map<String, Object> valueConstraints,
                                                Integer page, Integer pageSize, String integratedSearchEndpoint, String apiKey) throws IOException, RuntimeException
@@ -121,7 +119,6 @@ public class TerminologyServerHandler {
     }
     return resultsMap;
   }
-
 
   /***
    * Get URI, prefLabel key-value pairs from CEDAR terminology server

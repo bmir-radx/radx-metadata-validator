@@ -67,7 +67,7 @@ public class ValidateCommand implements Callable<Integer> {
     }
 
     var out = getOutputStream();
-    var validator = validatorFactory.createValidator(getLiteralFieldValidatorsComponent(), getTernomologyServerHanlder());
+    var validator = validatorFactory.createValidator(getLiteralFieldValidatorsComponent(), getTerminologyServerHandler());
     String templateContent = Files.readString(template);
     String instanceContent = Files.readString(instance);
     var report = validator.validateInstance(templateContent, instanceContent);
@@ -124,10 +124,7 @@ public class ValidateCommand implements Callable<Integer> {
     return new LiteralFieldValidators(map);
   }
 
-  private TerminologyServerHandler getTernomologyServerHanlder(){
-    if(apiKey != null && tsApi != null){
-      return new TerminologyServerHandler(apiKey, tsApi);
-    }
-    return new TerminologyServerHandler(null, null);
+  private TerminologyServerHandler getTerminologyServerHandler() {
+    return new TerminologyServerHandler(apiKey, tsApi);
   }
 }
