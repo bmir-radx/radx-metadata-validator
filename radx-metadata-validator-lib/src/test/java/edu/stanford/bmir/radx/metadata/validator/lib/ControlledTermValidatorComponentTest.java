@@ -197,7 +197,6 @@ public class ControlledTermValidatorComponentTest {
     values.put(fieldPath2,fieldValues);
 
     when(valuesReporter.getValues()).thenReturn(values);
-
     validator.validate(terminologyServerHandler, templateReporter, valuesReporter, consumer);
 
     assertEquals(0, results.size());

@@ -53,7 +53,7 @@ public class TerminologyServerHandler {
     int pageSize = 4999;
     try {
       if(cache.containsKey(valueConstraints)){
-        log.info("Loading <URI, prefLabel> pairs from cache");
+//        log.info("Loading <URI, prefLabel> pairs from cache");
         return cache.get(valueConstraints);
       } else{
         String vc = controlledTermValueConstraints2Json(valueConstraints);
@@ -62,12 +62,12 @@ public class TerminologyServerHandler {
         Map<String, String> allValues = new HashMap<>();
         int totalCount = getTotalCount(vcMap, page, pageSize);
         int i = 0;
-        while(i <= totalCount/page){
+        while(i <= totalCount/pageSize){
           allValues.putAll(getSingleValuesFromTerminologyServer(vcMap, i+1, pageSize));
           i ++;
         }
         cache.put(valueConstraints, allValues);
-        log.info("Loading <URI, prefLabel> pairs from terminology server");
+//        log.info("Loading <URI, prefLabel> pairs from terminology server");
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1_000_000;
         log.info("Execution time: " + duration + " ms");
