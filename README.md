@@ -104,10 +104,12 @@ public class Example {
 The RADx Metadata Validator accepts the following command line arguments:
 
 - `template` (Required): The file path to the metadata template file.
-- `instance` (Required): The file path to the metadata instance file that needs to be validated.
+- `instance` (Required): The file path to the metadata instance file(s) that needs to be validated. This can accept either a single metadata instance file or a directory containing multiple metadata instance files for batch processing.
 - `data` (Optional): CSV data file name described by the metadata instance. 
 - `dict` (Optional): CSV data dictionary file name. 
 - `sha256` (Optional): SHA256 digest value of data file. 
+- `apiKey` (Optional): CEDAR api key.
+- `tsApi` (Optional): CEDAR Terminology server integrated search end point.
 - `out` (Optional): The file path where the validation report will be saved. If not provided, the validation report will be printed out to the console.
 
 For example:
@@ -137,6 +139,7 @@ java -jar radx-metadata-validator-app-1.0.0.jar
     - Required value validation: Checks that all required data fields are present.
     - Data type validation: Ensures that the data types of the values in the metadata instance match those specified in the template.
     - Cardinality validation: Verifies that the quantity of element instances or field instances adheres to the specified minimum and maximum limits.
+    - Controlled term validation: Confirms both the existence of the controlled term URI within the specified ontologies and the correctness of its prefLabel.
 
 ### Output File Format
 The output of the RADx Metadata Validator is a CSV file with the following format:
