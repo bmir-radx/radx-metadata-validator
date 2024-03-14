@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.metadatacenter.artifacts.model.core.fields.constraints.ControlledTermValueConstraints;
 import org.metadatacenter.artifacts.model.core.fields.constraints.ValueConstraints;
@@ -58,14 +59,22 @@ public class TerminologyServerHandler {
       } else{
         String vc = controlledTermValueConstraints2Json(valueConstraints);
         Map<String, Object> vcMap = mapper.readValue(vc, Map.class);
-
         Map<String, String> allValues = new HashMap<>();
-        int totalCount = getTotalCount(vcMap, page, pageSize);
-        int i = 0;
-        while(i <= totalCount/pageSize){
-          allValues.putAll(getSingleValuesFromTerminologyServer(vcMap, i+1, pageSize));
-          i ++;
-        }
+
+        Map<String, Object> searchResult;
+        do {
+          searchResult = integratedSearch(vcMap, page, pageSize, terminologyServerEndPoint, terminologyServerAPIKey);
+          List<Map<String, String>> valueDescriptions = searchResult.containsKey("collection") ?
+              (List<Map<String, String>>) searchResult.get("collection") :
+              new ArrayList<>();
+          for (Map<String, String> description : valueDescriptions) {
+            String uri = description.get("@id");
+            String prefLabel = description.get("prefLabel");
+            allValues.put(uri, prefLabel);
+          }
+          page++;
+        } while (searchResult.containsKey("nextPage") && searchResult.get("nextPage") != null);
+
         cache.put(valueConstraints, allValues);
 //        log.info("Loading <URI, prefLabel> pairs from terminology server");
         long endTime = System.nanoTime();
@@ -81,10 +90,29 @@ public class TerminologyServerHandler {
   private String controlledTermValueConstraints2Json(ControlledTermValueConstraints controlledTermValueConstraints)
   {
     try {
-      return objectWriter.writeValueAsString(controlledTermValueConstraints);
+//      return objectWriter.writeValueAsString(controlledTermValueConstraints);
+      String vc = objectWriter.writeValueAsString(controlledTermValueConstraints);
+      return patchValueConstraints(vc);
     } catch (JsonProcessingException e) {
       throw new RuntimeException("Error generation value constraints object for terminology server " + e.getMessage());
     }
+  }
+
+  /***
+   * The value constraints in RADx template missing valueSets entry
+   * This method aims to patch value constraints with empty valueSets
+   * @param valueConstraints
+   * @return
+   */
+  private String patchValueConstraints(String valueConstraints) throws JsonProcessingException {
+    ObjectNode jsonNode = (ObjectNode) mapper.readTree(valueConstraints);
+
+    if (!jsonNode.has("valueSets")) {
+      jsonNode.putArray("valueSets");
+      return mapper.writeValueAsString(jsonNode);
+    }
+
+    return valueConstraints;
   }
 
   private Map<String, Object> integratedSearch(Map<String, Object> valueConstraints,
@@ -94,9 +122,10 @@ public class TerminologyServerHandler {
     Map<String, Object> resultsMap;
     try {
       Map<String, Object> vcMap = new HashMap<>();
-      vcMap.put("valueConstraints", valueConstraints);
+//      vcMap.put("valueConstraints", valueConstraints);
       Map<String, Object> payloadMap = new HashMap<>();
-      payloadMap.put("parameterObject", vcMap);
+//      payloadMap.put("parameterObject", vcMap);
+      payloadMap.put("valueConstraints", valueConstraints);
       payloadMap.put("page", page);
       payloadMap.put("pageSize", pageSize);
       String payload = mapper.writeValueAsString(payloadMap);
@@ -152,9 +181,9 @@ public class TerminologyServerHandler {
   }
 
 
-  private int getTotalCount(Map<String, Object> vcMap, int page, int pageSize) throws IOException {
+  private String getNextPage(Map<String, Object> vcMap, int page, int pageSize) throws IOException {
     Map<String, Object> searchResult = integratedSearch(vcMap, page, pageSize,
         terminologyServerEndPoint, terminologyServerAPIKey);
-    return searchResult.containsKey("totalCount") ? (int) searchResult.get("totalCount") : 0;
+    return searchResult.get("nextPage").toString();
   }
 }
