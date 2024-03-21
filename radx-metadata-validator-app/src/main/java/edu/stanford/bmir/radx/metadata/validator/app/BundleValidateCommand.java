@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 public class BundleValidateCommand implements Callable<Integer> {
   private final ValidatorFactory validatorFactory;
   private final ValidationReportWriter validationReportWriter;
+  private final MetadataFillingReport metadataFillingReport;
   @Option(names = "--template", required = true, description = "Path to the JSON template file. This is optional. If it is not provided then the Radx Metadata Specification will be utilized by default.")
   private Path template;
 
@@ -48,9 +50,10 @@ public class BundleValidateCommand implements Callable<Integer> {
   private boolean multipleInstances = false;
   private TerminologyServerHandler terminologyServerHandler;
 
-  public BundleValidateCommand(ValidatorFactory validatorFactory, ValidationReportWriter validationReportWriter) {
+  public BundleValidateCommand(ValidatorFactory validatorFactory, ValidationReportWriter validationReportWriter, MetadataFillingReport metadataFillingReport) {
     this.validatorFactory = validatorFactory;
     this.validationReportWriter = validationReportWriter;
+    this.metadataFillingReport = metadataFillingReport;
   }
 
   private OutputStream getOutputStream(Path outputFile) throws IOException {
@@ -77,9 +80,10 @@ public class BundleValidateCommand implements Callable<Integer> {
       throw new FileNotFoundException("Template file not found: " + template);
     }
     String templateContent = Files.readString(template);
-
+    Map<String, Integer> combinedFillingReport = new HashMap<>();
     // Check if the instance path is a directory
     if (Files.isDirectory(instance)) {
+      //generate metadata filling report
       multipleInstances = true;
       try (Stream<Path> paths = Files.walk(instance)) {
         paths.filter(Files::isRegularFile)
@@ -88,27 +92,38 @@ public class BundleValidateCommand implements Callable<Integer> {
           // For each file, generate a report in the specified output directory
           try {
             Path outputFile = getOutputPath(file);
-            validateSingleInstance(templateContent, file, outputFile);
+            String instanceContent = Files.readString(file);
+//            validateSingleInstance(templateContent, instanceContent, file, outputFile);
+
+            //Update filling report
+            var singleFillingReport = metadataFillingReport.getSingleReport(templateContent, instanceContent);
+            metadataFillingReport.updateReport(combinedFillingReport, singleFillingReport);
           } catch (Exception e) {
             System.err.println("Error processing file " + file + ": " + e.getMessage());
           }
         });
       }
+      //generate metadata filling report
+
     } else if (Files.exists(instance)) {
       // Process a single instance file, report goes to the specified output or stdout
-      validateSingleInstance(templateContent, instance, out);
+      String instanceContent = Files.readString(instance);
+//      validateSingleInstance(templateContent, instanceContent, instance, out);
+      var singleFillingReport = metadataFillingReport.getSingleReport(templateContent, instanceContent);
+      metadataFillingReport.updateReport(combinedFillingReport, singleFillingReport);
     } else {
       throw new FileNotFoundException("Instance path not found: " + instance);
     }
 
+    //generate metadata filling report
+    metadataFillingReport.writeReport(combinedFillingReport, templateContent, out);
     return 0;
   }
 
-  private void validateSingleInstance(String templateContent, Path instanceFile, Path outputFile) throws Exception {
+  private void validateSingleInstance(String templateContent, String instanceContent, Path instanceFile, Path outputFile) throws Exception {
     var outStream = getOutputStream(outputFile);
     var validator = validatorFactory.createValidator(getLiteralFieldValidatorsComponent(), getTerminologyServerHandler());
 
-    String instanceContent = Files.readString(instanceFile);
     if(!hasCached && multipleInstances){
       terminologyServerHandler = new TerminologyServerHandler(apiKey, tsApi);
       Cache.init(templateContent, instanceContent, terminologyServerHandler);
