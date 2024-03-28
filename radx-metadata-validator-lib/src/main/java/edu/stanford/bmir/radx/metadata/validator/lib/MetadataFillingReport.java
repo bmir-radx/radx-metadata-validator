@@ -70,7 +70,10 @@ public class MetadataFillingReport {
     // order keys
     Map<String, Integer> sortedMap = new TreeMap<>(combinedFillingReport);
     Path reportPath = Paths.get(String.valueOf(outputDirectory), "metadata_filling_report.xlsx");
-    var emptyElements = getEmptyElements(combinedFillingReport, templateContent);
+
+    var templateSchemaArtifact = getTemplateSchemaArtifact(templateContent);
+    var allElements = getAllElements(templateSchemaArtifact);
+    var emptyElements = getEmptyElements(combinedFillingReport, templateSchemaArtifact);
 
     try (Workbook workbook = new XSSFWorkbook()) {
       // Creating the report sheet
@@ -96,6 +99,16 @@ public class MetadataFillingReport {
         row.createCell(0).setCellValue(element);
       }
 
+      //Creating all elements sheet
+      Sheet elementSheet = workbook.createSheet("All Elements");
+      Row elementHeaderRow = elementSheet.createRow(0);
+      elementHeaderRow.createCell(0).setCellValue("All Elements");
+      int elementRowNum = 1;
+      for (String element : allElements) {
+        Row row = elementSheet.createRow(elementRowNum++);
+        row.createCell(0).setCellValue(element);
+      }
+
       // Writing the workbook to the file
       FileOutputStream fileOut = new FileOutputStream(reportPath.toString());
       workbook.write(fileOut);
@@ -104,12 +117,8 @@ public class MetadataFillingReport {
     }
   }
 
-  public Collection<String> getEmptyElements(Map<String, Integer> combinedFillingReport, String templateContent){
-    var templateNode = JsonLoader.loadJson(templateContent, "Template");
-    JsonSchemaArtifactReader jsonSchemaArtifactReader = new JsonSchemaArtifactReader();
-    TemplateSchemaArtifact templateSchemaArtifact = jsonSchemaArtifactReader.readTemplateSchemaArtifact((ObjectNode) templateNode);
+  public Collection<String> getEmptyElements(Map<String, Integer> combinedFillingReport, TemplateSchemaArtifact templateSchemaArtifact){
     Set<String> emptyElements = new HashSet<>();
-
     var childElements = templateSchemaArtifact.getElementNames();
     for(var childElement: childElements){
       var currentElementArtifact = templateSchemaArtifact.getElementSchemaArtifact(childElement);
@@ -139,5 +148,16 @@ public class MetadataFillingReport {
       }
     }
     return true;
+  }
+
+  private Collection<String> getAllElements(TemplateSchemaArtifact templateSchemaArtifact){
+    var childElements = templateSchemaArtifact.getElementNames();
+    return new HashSet<>(childElements);
+  }
+
+  private TemplateSchemaArtifact getTemplateSchemaArtifact(String templateContent){
+    var templateNode = JsonLoader.loadJson(templateContent, "Template");
+    JsonSchemaArtifactReader jsonSchemaArtifactReader = new JsonSchemaArtifactReader();
+    return jsonSchemaArtifactReader.readTemplateSchemaArtifact((ObjectNode) templateNode);
   }
 }
