@@ -43,18 +43,26 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
 
   @Override
   public void visitTemplateInstanceArtifact(TemplateInstanceArtifact templateInstanceArtifact) {
-    var elementInstances = templateInstanceArtifact.elementInstances();
-    var fieldInstances = templateInstanceArtifact.fieldInstances();
-    parseElementInstance(elementInstances, "");
-    parseFieldInstances(fieldInstances, "");
+    var multiElementInstances = templateInstanceArtifact.multiInstanceElementInstances();
+    var singleElementInstances = templateInstanceArtifact.singleInstanceElementInstances();
+    var multiFieldInstances = templateInstanceArtifact.multiInstanceFieldInstances();
+    var singleFieldInstances = templateInstanceArtifact.singleInstanceFieldInstances();
+    parseMultiElementInstance(multiElementInstances, "");
+    parseSingleElementInstance(singleElementInstances, "");
+    parseMultiFieldInstances(multiFieldInstances, "");
+    parseSingleFieldInstances(singleFieldInstances, "");
   }
 
   @Override
   public void visitElementInstanceArtifact(ElementInstanceArtifact elementInstanceArtifact, String path) {
-    var elementInstances = elementInstanceArtifact.elementInstances();
-    var fieldInstances = elementInstanceArtifact.fieldInstances();
-    parseElementInstance(elementInstances, path);
-    parseFieldInstances(fieldInstances, path);
+    var multiElementInstances = elementInstanceArtifact.multiInstanceElementInstances();
+    var singleElementInstances = elementInstanceArtifact.singleInstanceElementInstances();
+    var multiFieldInstances = elementInstanceArtifact.multiInstanceFieldInstances();
+    var singleFieldInstances = elementInstanceArtifact.singleInstanceFieldInstances();
+    parseMultiElementInstance(multiElementInstances, path);
+    parseSingleElementInstance(singleElementInstances, path);
+    parseMultiFieldInstances(multiFieldInstances, path);
+    parseSingleFieldInstances(singleFieldInstances, path);
   }
 
   @Override
@@ -75,7 +83,7 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
     ));
   }
 
-  private void parseFieldInstances(Map<String, List<FieldInstanceArtifact>> fieldInstances, String path){
+  private void parseMultiFieldInstances(Map<String, List<FieldInstanceArtifact>> fieldInstances, String path){
     for (Map.Entry<String, List<FieldInstanceArtifact>> entry : fieldInstances.entrySet()) {
       String fieldName = entry.getKey();
       String childBasePath = path + "/" + fieldName;
@@ -84,12 +92,26 @@ public class ValuesVisitor implements InstanceArtifactVisitor {
     }
   }
 
-  private void parseElementInstance(Map<String, List<ElementInstanceArtifact>> elementInstances, String path){
+  private void parseSingleFieldInstances(Map<String, FieldInstanceArtifact> fieldInstances, String path){
+    for (String fieldName : fieldInstances.keySet()) {
+      String childBasePath = path + "/" + fieldName;
+      fieldCardinalities.put(childBasePath, 1);
+    }
+  }
+
+  private void parseMultiElementInstance(Map<String, List<ElementInstanceArtifact>> elementInstances, String path){
     for (Map.Entry<String, List<ElementInstanceArtifact>> entry : elementInstances.entrySet()) {
       String elementName = entry.getKey();
-      String childBasePath = "/" + elementName;
+      String childBasePath = path + "/" + elementName;
       int size = entry.getValue().size();
       elementCardinalities.put(childBasePath, size);
+    }
+  }
+
+  private void parseSingleElementInstance(Map<String, ElementInstanceArtifact> elementInstances, String path){
+    for (String elementName : elementInstances.keySet()) {
+      String childBasePath = path + "/" + elementName;
+      elementCardinalities.put(childBasePath, 1);
     }
   }
 }
