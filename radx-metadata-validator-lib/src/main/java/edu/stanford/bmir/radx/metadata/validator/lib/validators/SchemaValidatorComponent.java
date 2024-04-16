@@ -34,18 +34,15 @@ public class SchemaValidatorComponent {
       var jsonNode = message.asJson();
       var schemaNode = jsonNode.path(SCHEMA);
       var pointer = normalizePointer(schemaNode.path(POINTER).toString());
+      var errorMessage = messageContent + " at " + pointer;
       if (logLevel.equals(ERROR)) {
-        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, messageContent, pointer));
+        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, errorMessage, pointer));
       }
     }
   }
 
   private String normalizePointer(String pointer){
     pointer = pointer.trim();
-    if(pointer.startsWith("\"/properties")){
-      return pointer.replaceFirst("/properties", "");
-    } else{
-      return pointer;
-    }
+    return pointer.replace("/items", "").replace("/properties", "");
   }
 }
