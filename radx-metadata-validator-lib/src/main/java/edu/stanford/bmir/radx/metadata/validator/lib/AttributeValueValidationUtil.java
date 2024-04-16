@@ -24,10 +24,10 @@ public class AttributeValueValidationUtil {
         if(fieldValues.jsonLdValue().isPresent()){
           fieldSchemaValidationHelper.validateAttributeValueField(fieldValues.jsonLdValue(), fieldValues.jsonLdId(), fieldValues.label(), fieldValues.jsonLdTypes(), handler, instancePath);
         } else{
-          handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@value should not be null", instancePath));
+          handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@value should not be null at " + instancePath, instancePath));
         }
       } else{
-      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "It is not a attribute-value field", instancePath));
+      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, instancePath+ " is not a valid attribute-value field", instancePath));
       }
       }
     }
