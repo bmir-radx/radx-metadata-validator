@@ -23,7 +23,7 @@ public class CedarSchemaValidatorComponent {
     } else {
       System.out.println("Template is invalid. Found " + validationReport.getErrors().size() + " error(s)");
       for (ErrorItem errorItem : validationReport.getErrors()) {
-        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.CEDAR_MODEL_VALIDATION, errorItem.getMessage(), ""));
+        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.CEDAR_MODEL_VALIDATION, "Template is invalid. " + errorItem.getMessage(), ""));
       }
     }
   }
