@@ -21,7 +21,7 @@
 		<java.version>17</java.version>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-		<metadatacenter.version>2.6.58-SNAPSHOT</metadatacenter.version>
+		<metadatacenter.version>2.6.57</metadatacenter.version>
 	</properties>
 
 	<dependencies>
