@@ -86,13 +86,14 @@ public class Validator {
 
           //Controlled term validation
           controlledTermValidatorComponent.validate(terminologyServerHandler, templateReporter, templateInstanceValuesReporter, consumer);
+
         }
       }
     } catch (JsonParseException e) {
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.JSON_VALIDATION, e.getMessage(), ""));
     } catch (ArtifactParseException e) {
       String errorMessage = e.getMessage();
-      String pointer = e.getPath() + "/" + e.getFieldName();
+      String pointer = e.getPath();
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.ARTIFACT_SCHEMA_VALIDATION, errorMessage, pointer));
     } catch (ProcessingException e){
       consumer.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.SCHEMA_VALIDATION, e.getMessage(), ""));

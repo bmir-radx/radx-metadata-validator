@@ -12,7 +12,7 @@
 
 	<groupId>edu.stanford.bmir.radx</groupId>
 	<artifactId>radx-metadata-validator-lib</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.5</version>
 	<name>radx-metadata-validator-lib</name>
 	<description>RADx Metadata Validator Library</description>
 	<packaging>jar</packaging>
@@ -21,6 +21,7 @@
 		<java.version>17</java.version>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
+		<metadatacenter.version>2.6.57</metadatacenter.version>
 	</properties>
 
 	<dependencies>
@@ -66,13 +67,13 @@
 		<dependency>
 			<groupId>org.metadatacenter</groupId>
 			<artifactId>cedar-artifact-library</artifactId>
-			<version>2.6.57-SNAPSHOT</version>
+			<version>${metadatacenter.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.metadatacenter</groupId>
 			<artifactId>cedar-model-validation-library</artifactId>
-			<version>2.6.57-SNAPSHOT</version>
+			<version>${metadatacenter.version}</version>
 		</dependency>
 
     <dependency>
@@ -177,5 +178,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>

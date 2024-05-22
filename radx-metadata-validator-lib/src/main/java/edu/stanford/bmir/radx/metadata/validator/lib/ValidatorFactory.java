@@ -1,6 +1,8 @@
 package edu.stanford.bmir.radx.metadata.validator.lib;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.validators.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,14 +16,16 @@ public class ValidatorFactory {
   private final SanitationChecker sanitationChecker;
   private final ControlledTermValidatorComponent controlledTermValidatorComponent;
 
+  @Autowired
   public ValidatorFactory(SchemaValidatorComponent schemaValidatorComponent,
                           CedarSchemaValidatorComponent cedarSchemaValidatorComponent,
                           RequiredFieldValidatorComponent requiredFieldValidatorComponent,
                           DataTypeValidatorComponent dataTypeValidatorComponent,
-                          CardinalityValidatorComponent cardinalityValidatorComponent,
+                          @Qualifier("MetadataCardinalityValidatorComponent") CardinalityValidatorComponent cardinalityValidatorComponent,
                           RadxPrecisionValidatorComponent radxPrecisionValidatorComponent,
                           SanitationChecker sanitationChecker,
                           ControlledTermValidatorComponent controlledTermValidatorComponent) {
+
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;

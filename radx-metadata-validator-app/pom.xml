@@ -12,7 +12,7 @@
 
 	<groupId>edu.stanford.bmir.radx</groupId>
 	<artifactId>radx-metadata-validator-app</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.5</version>
 	<name>radx-metadata-validator-app</name>
 	<description>This is a command line application that validates RADx metadata</description>
 	<packaging>jar</packaging>
@@ -45,18 +45,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.metadatacenter</groupId>
-			<artifactId>cedar-artifact-library</artifactId>
-			<version>2.6.57-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.metadatacenter</groupId>
-			<artifactId>cedar-model-validation-library</artifactId>
-			<version>2.6.57-SNAPSHOT</version>
 		</dependency>
 
     <dependency>
@@ -180,5 +168,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

@@ -1,6 +1,8 @@
 package edu.stanford.bmir.radx.metadata.validator.app;
 
 import edu.stanford.bmir.radx.metadata.validator.lib.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -43,7 +45,8 @@ public class ValidateCommand implements Callable<Integer> {
   @Option(names = "--tsApi", description = "CEDAR Terminology server integrated search end point.")
   private String tsApi;
 
-  public ValidateCommand(ValidatorFactory validatorFactory, ValidationReportWriter validationReportWriter) {
+  @Autowired
+  public ValidateCommand(ValidatorFactory validatorFactory, @Qualifier("MetadataValidationReportWriter") ValidationReportWriter validationReportWriter) {
     this.validatorFactory = validatorFactory;
     this.validationReportWriter = validationReportWriter;
   }

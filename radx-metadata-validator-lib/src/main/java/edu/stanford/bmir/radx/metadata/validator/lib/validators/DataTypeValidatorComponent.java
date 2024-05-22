@@ -102,13 +102,13 @@ public class DataTypeValidatorComponent {
     var textConstraint = valueConstraint.asTextValueConstraints();
     //validate regex
     if(!textFieldValidationUtil.matchRegex(textConstraint.regex(), value)){
-      String message = String.format("\"%s\" does not follow the regex (%s)", value, textConstraint.regex().orElse(""));
+      String message = String.format("\"%s\" does not follow the regex (%s)", value, textConstraint.regex().orElse("")) + " at " + path;
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
     }
     //validate length range
     var length = value.length();
     if(!textFieldValidationUtil.lengthIsInRange(textConstraint.minLength(), textConstraint.maxLength(), length)){
-      String message = String.format("Input string length (%d) is out of range [%d, %d]", length, textConstraint.minLength().orElse(0), textConstraint.maxLength().orElse(Integer.MAX_VALUE));
+      String message = String.format("Input string length (%d) is out of range [%d, %d]", length, textConstraint.minLength().orElse(0), textConstraint.maxLength().orElse(Integer.MAX_VALUE)) + " at " + path;
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
     }
   }
@@ -117,7 +117,7 @@ public class DataTypeValidatorComponent {
     var literals = valueConstraint.asTextValueConstraints().literals();
       if(literals.size() > 0){
         if(!textFieldValidationUtil.validLiteral(literals, value)){
-          String message = String.format("Provided value \"%s\" does not exist in the given list", value);
+          String message = String.format("Provided value \"%s\" does not exist in the given list", value) + " at " + path;
           handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
         }
       }
@@ -131,18 +131,18 @@ public class DataTypeValidatorComponent {
       try {
         numericFieldValidationUtil.validateNumericType(value, numericConstraint.numberType(), numericConstraint.decimalPlace());
       } catch (NumberFormatException e){
-        String errorMessage = String.format("Input value \"%s\" is not consistent with numeric data type %s.", value, numericConstraint.numberType());
+        String errorMessage = String.format("Input value \"%s\" is not consistent with numeric data type %s.", value, numericConstraint.numberType()) + " at " + path;
         handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, errorMessage, path));
       } catch (JsonParseException e) {
-        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, e.getMessage(), path));
+        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, e.getMessage() + " at " + path, path));
       }
       //validate range
       if(!numericFieldValidationUtil.numberIsInRange(numericConstraint.minValue(), numericConstraint.maxValue(), value)){
-        String errorMessage = String.format("Input value \"%s\" must be between [%s, %s].", value, numericConstraint.minValue().orElse(Double.NEGATIVE_INFINITY), numericConstraint.maxValue().orElse(Double.POSITIVE_INFINITY));
+        String errorMessage = String.format("Input value \"%s\" must be between [%s, %s].", value, numericConstraint.minValue().orElse(Double.NEGATIVE_INFINITY), numericConstraint.maxValue().orElse(Double.POSITIVE_INFINITY)) + " at " + path;
         handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, errorMessage, path));
       }
     }else {
-      String errorMessage = String.format("Invalid numeric input: \"%s\" is not a valid number.", value);
+      String errorMessage = String.format("Invalid numeric input: \"%s\" is not a valid number.", value) + " at " + path;
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, errorMessage, path));
     }
 
@@ -150,7 +150,7 @@ public class DataTypeValidatorComponent {
     if(type.size() > 0){
       validateTypeValue(type.get(0), numericConstraint.numberType().getText(), handler, path);
     } else{
-      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@type is expected in the numeric field.", path));
+      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@type is expected at " + path, path));
     }
   }
 
@@ -190,19 +190,19 @@ public class DataTypeValidatorComponent {
     switch (temporalDatatype) {
       case DATE:
         if(!isValidDate(value)){
-          String message = String.format("Input value \"%s\" is not a valid Date", value);
+          String message = String.format("Input value \"%s\" is not a valid Date", value) + " at " + path;
           handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
         }
         break;
       case DATETIME:
         if(!isValidDateTime(value)){
-          String message = String.format("Input value \"%s\" is not a valid DateTime", value);
+          String message = String.format("Input value \"%s\" is not a valid DateTime", value) + " at " + path;
           handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
         }
         break;
       case TIME:
         if(!isValidTime(value)){
-          String message = String.format("Input value \"%s\" is not a valid Time", value);
+          String message = String.format("Input value \"%s\" is not a valid Time", value) + " at " + path;
           handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
         }
         break;
@@ -212,7 +212,7 @@ public class DataTypeValidatorComponent {
     if (type.size() > 0){
       validateTypeValue(type.get(0), temporalDatatype.getText(), handler, path);
     } else{
-      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@type is expected in the numeric field", path));
+      handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, "@type is expected at " + path, path));
     }
   }
 
@@ -220,7 +220,7 @@ public class DataTypeValidatorComponent {
     try {
       new URL(id);
     } catch (MalformedURLException e) {
-      var message = String.format("Input value \"%s\" is not a valid URL", id);
+      var message = String.format("Input value \"%s\" is not a valid URL", id) + " at " + path;
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
     }
   }
@@ -228,7 +228,7 @@ public class DataTypeValidatorComponent {
   public void validateTypeValue(URI inputType, String typeConstraint, Consumer<ValidationResult> handler, String path){
     String semanticInputType = inputType.toString().replace(Constants.XSD_IRI, Constants.XSD_PREFIX);
     if(!semanticInputType.equals(typeConstraint)){
-      String message = String.format("Expected \"%s\" for @type, but \"%s\" is given", typeConstraint, semanticInputType);
+      String message = String.format("Expected \"%s\" for @type, but \"%s\" is given", typeConstraint, semanticInputType) + " at " + path;
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
     }
   }
@@ -239,7 +239,7 @@ public class DataTypeValidatorComponent {
       try {
         new URI(id.get().toString());
       } catch (URISyntaxException e) {
-        String message = String.format("Input @id \"%s\" is not a valid URI", id.get());
+        String message = String.format("Input @id \"%s\" is not a valid URI", id.get()) + " at " + path;
         handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
       }
     }
@@ -251,7 +251,7 @@ public class DataTypeValidatorComponent {
     Pattern email_pattern = Pattern.compile(email_regex);
     Matcher matcher = email_pattern.matcher(value);
     if(!matcher.matches()){
-      String message = String.format("Input value \"%s\" is not a valid email", value);
+      String message = String.format("Input value \"%s\" is not a valid email", value) + " at " + path;
       handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.DATA_TYPE_VALIDATION, message, path));
     }
   }

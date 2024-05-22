@@ -12,7 +12,7 @@
 
 	<groupId>edu.stanford.bmir.radx</groupId>
 	<artifactId>radx-metadata-validator</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.5</version>
 	<name>radx-metadata-validator</name>
 	<description>radx-metadata-validator</description>
 	<packaging>pom</packaging>
@@ -22,7 +22,6 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 	</properties>
-
 
 	<modules>
 		<module>radx-metadata-validator-lib</module>
@@ -48,7 +47,4 @@
 			</distributionManagement>
 		</profile>
 	</profiles>
-
-
-
 </project>

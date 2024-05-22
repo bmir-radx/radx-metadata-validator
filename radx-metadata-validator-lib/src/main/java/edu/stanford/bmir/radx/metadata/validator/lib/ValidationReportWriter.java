@@ -8,9 +8,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@Component
+@Component("MetadataValidationReportWriter")
 public class ValidationReportWriter {
-
   public void writeReportHeader(OutputStream outputStream) throws IOException {
     var resultWriter = new CSVPrinter(new PrintStream(outputStream, true, StandardCharsets.UTF_8), CSVFormat.DEFAULT);
     resultWriter.printRecord("LEVEL", "PATH", "VALIDATION TYPE", "MESSAGE");
