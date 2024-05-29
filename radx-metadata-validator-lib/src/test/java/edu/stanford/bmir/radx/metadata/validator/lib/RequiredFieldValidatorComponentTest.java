@@ -3,8 +3,7 @@ package edu.stanford.bmir.radx.metadata.validator.lib;
 import edu.stanford.bmir.radx.metadata.validator.lib.validators.RequiredFieldValidatorComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.metadatacenter.artifacts.model.core.FieldSchemaArtifact;
-import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
+import org.metadatacenter.artifacts.model.core.*;
 import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -39,7 +38,7 @@ public class RequiredFieldValidatorComponentTest {
   void testValidateRequiredTextFieldMissing() {
     String textFieldName = "text field";
     String templateName = "My template";
-    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.textFieldBuilder()
+    FieldSchemaArtifact textFieldSchemaArtifact = TextField.builder()
         .withName(textFieldName)
         .withRequiredValue(true)
         .build();
@@ -69,7 +68,7 @@ public class RequiredFieldValidatorComponentTest {
   void testValidateRequiredTextFieldEmptyString() {
     String textFieldName = "text field";
     String templateName = "My template";
-    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.textFieldBuilder()
+    FieldSchemaArtifact textFieldSchemaArtifact = TextField.builder()
         .withName(textFieldName)
         .withRequiredValue(true)
         .build();
@@ -99,7 +98,7 @@ public class RequiredFieldValidatorComponentTest {
   void testValidateRequiredTextFieldPresent() {
     String textFieldName = "text field";
     String templateName = "My template";
-    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.textFieldBuilder()
+    FieldSchemaArtifact textFieldSchemaArtifact = TextField.builder()
         .withName(textFieldName)
         .withRequiredValue(true)
         .build();
@@ -131,7 +130,7 @@ public class RequiredFieldValidatorComponentTest {
   void testValidateRequiredLinkFieldMissing() {
     String linkFieldName = "link field";
     String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.linkFieldBuilder()
+    FieldSchemaArtifact linkFieldSchemaArtifact = LinkField.builder()
         .withName(linkFieldName)
         .withRequiredValue(true)
         .build();
@@ -161,7 +160,7 @@ public class RequiredFieldValidatorComponentTest {
   void testValidateRequiredLinkFieldemptyString() throws URISyntaxException {
     String linkFieldName = "link field";
     String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.linkFieldBuilder()
+    FieldSchemaArtifact linkFieldSchemaArtifact = LinkField.builder()
         .withName(linkFieldName)
         .withRequiredValue(true)
         .build();
@@ -191,7 +190,7 @@ public class RequiredFieldValidatorComponentTest {
   void testValidateRequiredLinkFieldPresent() throws URISyntaxException {
     String linkFieldName = "link field";
     String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.linkFieldBuilder()
+    FieldSchemaArtifact linkFieldSchemaArtifact = LinkField.builder()
         .withName(linkFieldName)
         .withRequiredValue(true)
         .build();
@@ -221,7 +220,7 @@ public class RequiredFieldValidatorComponentTest {
   void testValidateRequiredControlledTermsFieldPresent() throws URISyntaxException {
     String fieldName = "controlled terms field";
     String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
+    FieldSchemaArtifact linkFieldSchemaArtifact = ControlledTermField.builder()
         .withName(fieldName)
         .withRequiredValue(true)
         .build();
@@ -251,7 +250,7 @@ public class RequiredFieldValidatorComponentTest {
   void testValidateRequiredControlledTermsFieldIdMissing() {
     String fieldName = "controlled terms field";
     String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
+    FieldSchemaArtifact linkFieldSchemaArtifact = ControlledTermField.builder()
         .withName(fieldName)
         .withRequiredValue(true)
         .build();
@@ -281,7 +280,7 @@ public class RequiredFieldValidatorComponentTest {
   void testValidateRequiredControlledTermsFieldLabelMissing() throws URISyntaxException {
     String fieldName = "controlled terms field";
     String templateName = "My template";
-    FieldSchemaArtifact linkFieldSchemaArtifact = FieldSchemaArtifact.controlledTermFieldBuilder()
+    FieldSchemaArtifact linkFieldSchemaArtifact = ControlledTermField.builder()
         .withName(fieldName)
         .withRequiredValue(true)
         .build();
