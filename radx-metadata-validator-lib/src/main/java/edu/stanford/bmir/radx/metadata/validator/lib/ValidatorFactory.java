@@ -14,6 +14,7 @@ public class ValidatorFactory {
   private final CardinalityValidatorComponent cardinalityValidatorComponent;
   private final RadxPrecisionValidatorComponent radxPrecisionValidatorComponent;
   private final SanitationChecker sanitationChecker;
+  private final ControlledTermValidatorComponent controlledTermValidatorComponent;
 
   @Autowired
   public ValidatorFactory(SchemaValidatorComponent schemaValidatorComponent,
@@ -21,7 +22,10 @@ public class ValidatorFactory {
                           RequiredFieldValidatorComponent requiredFieldValidatorComponent,
                           DataTypeValidatorComponent dataTypeValidatorComponent,
                           @Qualifier("MetadataCardinalityValidatorComponent") CardinalityValidatorComponent cardinalityValidatorComponent,
-                          RadxPrecisionValidatorComponent radxPrecisionValidatorComponent, SanitationChecker sanitationChecker) {
+                          RadxPrecisionValidatorComponent radxPrecisionValidatorComponent,
+                          SanitationChecker sanitationChecker,
+                          ControlledTermValidatorComponent controlledTermValidatorComponent) {
+
     this.schemaValidatorComponent = schemaValidatorComponent;
     this.cedarSchemaValidatorComponent = cedarSchemaValidatorComponent;
     this.requiredFieldValidatorComponent = requiredFieldValidatorComponent;
@@ -29,9 +33,10 @@ public class ValidatorFactory {
     this.cardinalityValidatorComponent = cardinalityValidatorComponent;
     this.radxPrecisionValidatorComponent = radxPrecisionValidatorComponent;
     this.sanitationChecker = sanitationChecker;
+    this.controlledTermValidatorComponent = controlledTermValidatorComponent;
   }
 
-  public Validator createValidator(LiteralFieldValidators literalFieldValidators){
+  public Validator createValidator(LiteralFieldValidators literalFieldValidators, TerminologyServerHandler terminologyServerHandler){
     return  new Validator(schemaValidatorComponent,
         cedarSchemaValidatorComponent,
         requiredFieldValidatorComponent,
@@ -39,6 +44,8 @@ public class ValidatorFactory {
         cardinalityValidatorComponent,
         radxPrecisionValidatorComponent,
         sanitationChecker,
-        literalFieldValidators);
+        literalFieldValidators,
+        controlledTermValidatorComponent,
+        terminologyServerHandler);
   }
 }

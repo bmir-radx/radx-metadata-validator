@@ -208,7 +208,6 @@ public class DataTypeValidatorComponent {
         break;
     }
 
-
     //validate @type value
     if (type.size() > 0){
       validateTypeValue(type.get(0), temporalDatatype.getText(), handler, path);
