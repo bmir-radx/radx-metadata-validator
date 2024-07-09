@@ -24,8 +24,11 @@ public class RadxMetadataValidatorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		var validateCommand = context.getBean(BundleValidateCommand.class);
-		exitCode = new CommandLine(validateCommand, iFactory).execute(args);
+//		var validateCommand = context.getBean(BundleValidateCommand.class);
+//		exitCode = new CommandLine(validateCommand, iFactory).execute(args);
+
+		var evaluateCommand = context.getBean(EvaluateCommand.class);
+		exitCode = new CommandLine(evaluateCommand, iFactory).execute(args);
 	}
 
 	public int getExitCode() {

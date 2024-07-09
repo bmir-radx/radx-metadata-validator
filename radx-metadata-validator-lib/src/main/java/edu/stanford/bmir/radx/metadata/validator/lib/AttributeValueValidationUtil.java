@@ -9,7 +9,8 @@ import java.util.function.Consumer;
 @Component
 public class AttributeValueValidationUtil {
   private final FieldSchemaValidationHelper fieldSchemaValidationHelper = new FieldSchemaValidationHelper();
-  private boolean isAttributeValue(TemplateReporter templateReporter, String specificationPath){
+
+  public boolean isAttributeValue(TemplateReporter templateReporter, String specificationPath){
     var attributeValueInstanceArtifact = templateReporter.getFieldSchema(specificationPath);
     return attributeValueInstanceArtifact.map(fieldSchemaArtifact -> fieldSchemaArtifact.fieldUi().isAttributeValue()).orElse(false);
   }

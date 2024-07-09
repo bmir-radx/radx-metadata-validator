@@ -1,0 +1,38 @@
+package edu.stanford.bmir.radx.metadata.validator.lib.evaluators;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.springframework.stereotype.Component;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+@Component
+public class EvaluationReportWriter {
+  public void writeReportHeader(OutputStream outputStream) throws IOException {
+    var resultWriter = new CSVPrinter(new PrintStream(outputStream, true, StandardCharsets.UTF_8), CSVFormat.DEFAULT);
+    resultWriter.printRecord("EVALUATION TYPE", "COUNT");
+  }
+
+  public void writeReport(EvaluationReport report, OutputStream outputStream) throws IOException {
+    var resultWriter = new CSVPrinter(new PrintStream(outputStream, true, StandardCharsets.UTF_8), CSVFormat.DEFAULT);
+
+    report.results()
+        .stream()
+        .map(EvaluationReportWriter::toCsvRecord)
+        .forEach(r -> {
+          try {
+            resultWriter.printRecord(r);
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
+        });
+  }
+
+  private static List<? extends Serializable> toCsvRecord(EvaluationResult r) {
+    var type = r.getEvaluationConstant();
+    var count = r.getCount();
+    return List.of(type, count);
+  }
+}
