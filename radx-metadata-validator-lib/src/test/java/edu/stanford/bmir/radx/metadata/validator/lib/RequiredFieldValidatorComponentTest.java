@@ -59,7 +59,7 @@ public class RequiredFieldValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
 
     assertEquals(1, results.size());
   }
@@ -89,7 +89,7 @@ public class RequiredFieldValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
 
     assertEquals(1, results.size());
   }
@@ -121,7 +121,7 @@ public class RequiredFieldValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
 
     assertEquals(0, results.size());
   }
@@ -151,7 +151,7 @@ public class RequiredFieldValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
 
     assertEquals(1, results.size());
   }
@@ -181,7 +181,7 @@ public class RequiredFieldValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
 
     assertEquals(1, results.size());
   }
@@ -211,7 +211,7 @@ public class RequiredFieldValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
 
     assertEquals(0, results.size());
   }
@@ -241,7 +241,7 @@ public class RequiredFieldValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
 
     assertEquals(0, results.size());
   }
@@ -271,7 +271,7 @@ public class RequiredFieldValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
 
     assertEquals(1, results.size());
   }
@@ -301,7 +301,46 @@ public class RequiredFieldValidatorComponentTest {
 
     when(valuesReporter.getValues()).thenReturn(values);
 
-    requiredFieldValidatorComponent.validate(valueConstraintsReporter, valuesReporter, handler);
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
+
+    assertEquals(1, results.size());
+  }
+
+  @Test
+  void testMissingRequiredField() {
+    String textFieldName1 = "text field 1";
+    String textFieldName2 = "text field 2";
+    String templateName = "My template";
+    FieldSchemaArtifact textFieldSchemaArtifact1 = TextField.builder()
+        .withName(textFieldName1)
+        .withRequiredValue(true)
+        .build();
+
+    FieldSchemaArtifact textFieldSchemaArtifact2 = TextField.builder()
+        .withName(textFieldName2)
+        .withRequiredValue(true)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(textFieldSchemaArtifact1)
+        .withFieldSchema(textFieldSchemaArtifact2)
+        .build();
+
+    var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
+
+
+    String fieldPath = "/" + textFieldName1;
+    String textFieldValue = "text value";
+
+    FieldValues fieldValues = new FieldValues(
+        List.of(), Optional.empty(), Optional.of(textFieldValue), Optional.empty());
+    Map<String, FieldValues> values = new HashMap<>();
+    values.put(fieldPath, fieldValues);
+
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
 
     assertEquals(1, results.size());
   }
