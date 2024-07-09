@@ -50,7 +50,7 @@ public class Validator {
 
       //validate the template is CEDAR model template
       //TODO: patch template
-//      cedarSchemaValidatorComponent.validate(templateNode, consumer);
+      cedarSchemaValidatorComponent.validate(templateNode, consumer);
 
       if(passValidation(results)){
         //Read template and get valueConstraints map
