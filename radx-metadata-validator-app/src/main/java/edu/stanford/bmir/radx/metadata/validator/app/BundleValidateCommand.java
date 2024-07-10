@@ -62,8 +62,11 @@ public class BundleValidateCommand implements Callable<Integer> {
     }
   }
 
-  private Path getOutputPath(Path file){
+  private Path getOutputPath(Path file) throws IOException {
     if(out != null){
+      if (out.getParent() != null && !Files.exists(out.getParent())) {
+        Files.createDirectories(out.getParent());
+      }
       String outputFileName = file.getFileName().toString().replaceAll("\\.json$", "_report.json");
       return out.resolve(outputFileName);
     } else{

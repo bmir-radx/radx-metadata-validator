@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -52,10 +53,12 @@ public class ValidateCommand implements Callable<Integer> {
   }
 
   private OutputStream getOutputStream() throws IOException {
-    if(out != null) {
-      return Files.newOutputStream(out);
-    }
-    else {
+    if (out != null) {
+      if (out.getParent() != null && !Files.exists(out.getParent())) {
+        Files.createDirectories(out.getParent());
+      }
+      return Files.newOutputStream(out, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+    } else {
       return System.out;
     }
   }
