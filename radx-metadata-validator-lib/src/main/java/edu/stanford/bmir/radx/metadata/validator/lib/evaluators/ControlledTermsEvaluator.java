@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static edu.stanford.bmir.radx.metadata.validator.lib.evaluators.EvaluationConstant.CONTROLLED_TERM_FREQUENCY;
-import static edu.stanford.bmir.radx.metadata.validator.lib.evaluators.EvaluationConstant.FILLED_CONTROLLED_TERM_COUNT;
+import static edu.stanford.bmir.radx.metadata.validator.lib.evaluators.EvaluationConstant.CONTROLLED_TERMS_FREQUENCY;
+import static edu.stanford.bmir.radx.metadata.validator.lib.evaluators.EvaluationConstant.FILLED_CONTROLLED_TERMS_COUNT;
 
 @Component
 public class ControlledTermsEvaluator {
@@ -36,7 +36,7 @@ public class ControlledTermsEvaluator {
       }
     }
 
-    handler.accept(new EvaluationResult(FILLED_CONTROLLED_TERM_COUNT, filledCtFields));
-    handler.accept(new EvaluationResult(CONTROLLED_TERM_FREQUENCY, controlledTermCounts));
+    handler.accept(new EvaluationResult(FILLED_CONTROLLED_TERMS_COUNT, filledCtFields));
+    handler.accept(new EvaluationResult(CONTROLLED_TERMS_FREQUENCY, controlledTermCounts));
   }
 }
