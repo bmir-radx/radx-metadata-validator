@@ -25,4 +25,16 @@ public class FieldsCollector {
     }
     return fieldPath;
   }
+
+  public boolean isEmptyField(FieldValues fieldValues){
+    var jsonLdValue = fieldValues.jsonLdValue();
+    var jsonLdId = fieldValues.jsonLdId();
+    var jsonLdLabel = fieldValues.label();
+
+    boolean isEmptyId = jsonLdId.map(uri -> uri.toString().isEmpty()).orElse(true);
+    boolean isEmptyLabel = jsonLdLabel.map(String::isEmpty).orElse(true);
+    boolean isEmptyValue = jsonLdValue.map(String::isEmpty).orElse(true);
+
+    return isEmptyId && isEmptyLabel && isEmptyValue;
+  }
 }
