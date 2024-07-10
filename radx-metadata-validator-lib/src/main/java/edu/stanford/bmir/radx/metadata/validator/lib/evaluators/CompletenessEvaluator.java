@@ -23,22 +23,20 @@ public class CompletenessEvaluator {
   }
 
   public void evaluate(TemplateSchemaArtifact templateSchemaArtifact, TemplateInstanceValuesReporter templateInstanceValuesReporter, Consumer<EvaluationResult> handler){
-    HashSet<String> checkedFields = new HashSet<>();
-
     var templateReporter = new TemplateReporter(templateSchemaArtifact);
-
     var values = templateInstanceValuesReporter.getValues();
     var attributeValueFields = templateInstanceValuesReporter.getAttributeValueFields();
     var allFields = fieldsCollector.getAllFields(templateSchemaArtifact);
 
+    HashSet<String> filledRequiredFields = new HashSet<>();
+    HashSet<String> filledRecommendedFields = new HashSet<>();
+    HashSet<String> filledOptionalFields = new HashSet<>();
+    HashSet<String> filledElements = new HashSet<>();
+    HashSet<String> checkedFields = new HashSet<>();
+
     int requiredFieldCount = 0;
     int recommendedFieldCount = 0;
     int optionalFieldCount = 0;
-    int avFieldCount = 0;
-    int filledRequiredFieldCount = 0;
-    int filledRecommendedFieldCount = 0;
-    int filledOptionalFieldCount = 0;
-    int filledAvFieldsCount = filledAvFields(attributeValueFields);
 
     for(var field:allFields){
       var fieldConstraint = templateReporter.getValueConstraints(field);
@@ -46,8 +44,6 @@ public class CompletenessEvaluator {
         requiredFieldCount++;
       } else if (isRecommendedField(field)) {
         recommendedFieldCount++;
-      } else if (attributeValueValidationUtil.isAttributeValue(templateReporter, field)) {
-        avFieldCount++;
       } else{
         optionalFieldCount++;
       }
@@ -60,32 +56,43 @@ public class CompletenessEvaluator {
       var fieldConstraint = templateReporter.getValueConstraints(normalizedPath);
       if(!checkedFields.contains(normalizedPath) && !fieldsCollector.isEmptyField(value)){
         if (isRequiredField(fieldConstraint)) {
-          filledRequiredFieldCount++;
+          filledRequiredFields.add(normalizedPath);
         } else if (isRecommendedField(normalizedPath) ) {
-          filledRecommendedFieldCount++;
+          filledRecommendedFields.add(normalizedPath);
         } else {
-          filledOptionalFieldCount++;
+          filledOptionalFields.add(normalizedPath);
         }
         checkedFields.add(normalizedPath);
+        filledElements.add(getParentElement(normalizedPath));
       }
     }
 
+    int filledRequiredFieldCount = filledRequiredFields.size();
+    int filledRecommendedFieldCount = filledRecommendedFields.size();
+    int filledAvFieldsCount = filledAvFields(attributeValueFields);
+    int filledOptionalFieldCount = filledOptionalFields.size() + filledAvFieldsCount;
+
     var requiredCompleteness = ((double)filledRequiredFieldCount/requiredFieldCount) * 100;
     var recommendedCompleteness = ((double)filledRecommendedFieldCount/recommendedFieldCount) * 100;
-    var optionalCompleteness = ((double) (filledAvFieldsCount + filledOptionalFieldCount)/ (avFieldCount + optionalFieldCount)) * 100;
-    var overallCompleteness = ((double) (filledRequiredFieldCount + filledRecommendedFieldCount + filledAvFieldsCount + filledOptionalFieldCount)
-        /(requiredFieldCount + recommendedFieldCount + avFieldCount + optionalFieldCount)) * 100;
+    var optionalCompleteness = ((double) filledOptionalFieldCount/ optionalFieldCount) * 100;
+    var overallCompleteness = ((double) (filledRequiredFieldCount + filledRecommendedFieldCount + filledOptionalFieldCount)
+        /(requiredFieldCount + recommendedFieldCount + optionalFieldCount)) * 100;
 
     handler.accept(new EvaluationResult(REQUIRED_FIELD_COUNT, requiredFieldCount));
     handler.accept(new EvaluationResult(RECOMMENDED_FIELD_COUNT, recommendedFieldCount));
     handler.accept(new EvaluationResult(OPTIONAL_FIELD_COUNT, optionalFieldCount));
-    handler.accept(new EvaluationResult(FILLED_REQUIRED_FILED_COUNT, filledRequiredFieldCount));
-    handler.accept(new EvaluationResult(FILLED_RECOMMENDED_FIELD_COUNT,filledRecommendedFieldCount));
-    handler.accept(new EvaluationResult(FILLED_OPTIONAL_FIELD_COUNT, filledOptionalFieldCount));
-    handler.accept(new EvaluationResult(REQUIRED_FIELD_COMPLETENESS, requiredCompleteness));
-    handler.accept(new EvaluationResult(RECOMMENDED_FIELD_COMPLETENESS, recommendedCompleteness));
-    handler.accept(new EvaluationResult(OPTIONAL_FIELD_COMPLETENESS, optionalCompleteness));
+    handler.accept(new EvaluationResult(FILLED_REQUIRED_FILEDS_COUNT, filledRequiredFieldCount));
+    handler.accept(new EvaluationResult(FILLED_RECOMMENDED_FIELDS_COUNT,filledRecommendedFieldCount));
+    handler.accept(new EvaluationResult(FILLED_OPTIONAL_FIELDS_COUNT, filledOptionalFieldCount));
+    handler.accept(new EvaluationResult(REQUIRED_FIELDS_COMPLETENESS, requiredCompleteness));
+    handler.accept(new EvaluationResult(RECOMMENDED_FIELDS_COMPLETENESS, recommendedCompleteness));
+    handler.accept(new EvaluationResult(OPTIONAL_FIELDS_COMPLETENESS, optionalCompleteness));
     handler.accept(new EvaluationResult(OVERALL_COMPLETENESS, overallCompleteness));
+    handler.accept(new EvaluationResult(FILLED_REQUIRED_FIELDS, filledRequiredFields));
+    handler.accept(new EvaluationResult(FILLED_RECOMMENDED_FIELDS, filledRecommendedFields));
+    handler.accept(new EvaluationResult(FILLED_OPTIONAL_FIELDS, filledOptionalFields));
+    handler.accept(new EvaluationResult(FILLED_ELEMENTS, filledElements));
+    handler.accept(new EvaluationResult(FILLED_ELEMENTS_COUNT, filledElements.size()));
   }
 
   private boolean isRequiredField(Optional<ValueConstraints> valueConstraints){
@@ -138,6 +145,10 @@ public class CompletenessEvaluator {
       }
     }
     return true;
+  }
+
+  private String getParentElement(String path){
+    return path.split("/")[1];
   }
 
   private Collection<String> getAllElements(TemplateSchemaArtifact templateSchemaArtifact){

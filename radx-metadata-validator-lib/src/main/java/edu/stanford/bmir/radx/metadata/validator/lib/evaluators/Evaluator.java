@@ -16,10 +16,12 @@ import java.util.function.Consumer;
 public class Evaluator {
   private final CompletenessEvaluator completenessEvaluator;
   private final ControlledTermsEvaluator controlledTermsEvaluator;
+  private final LinkEvaluator linkEvaluator;
 
-  public Evaluator(CompletenessEvaluator completenessEvaluator, ControlledTermsEvaluator controlledTermsEvaluator) {
+  public Evaluator(CompletenessEvaluator completenessEvaluator, ControlledTermsEvaluator controlledTermsEvaluator, LinkEvaluator linkEvaluator) {
     this.completenessEvaluator = completenessEvaluator;
     this.controlledTermsEvaluator = controlledTermsEvaluator;
+    this.linkEvaluator = linkEvaluator;
   }
 
   public EvaluationReport evaluate(String templateContent, String instanceContent){
@@ -38,6 +40,7 @@ public class Evaluator {
 
     completenessEvaluator.evaluate(templateSchemaArtifact, templateInstanceValuesReporter, consumer);
     controlledTermsEvaluator.evaluate(templateReporter, templateInstanceValuesReporter, consumer);
+    linkEvaluator.evaluate(templateReporter, templateInstanceValuesReporter, consumer);
 
     return new EvaluationReport(results);
   }

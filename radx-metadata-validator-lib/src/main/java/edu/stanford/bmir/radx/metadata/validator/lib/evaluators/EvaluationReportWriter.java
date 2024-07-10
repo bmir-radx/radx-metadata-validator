@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,19 +35,23 @@ public class EvaluationReportWriter {
 
   private static List<? extends Serializable> toCsvRecord(EvaluationResult r) {
     var type = r.getEvaluationConstant();
-    var count = r.getContent();
-    String countStr;
+    var content = r.getContent();
+    String contentStr;
 
-    if (count instanceof Number) {
-      countStr = count.toString();
-    } else if (count instanceof Map) {
-      countStr = ((Map<?, ?>) count).entrySet().stream()
+    if (content instanceof Number) {
+      contentStr = content.toString();
+    } else if (content instanceof Map) {
+      contentStr = ((Map<?, ?>) content).entrySet().stream()
           .map(e -> e.getKey() + "=" + e.getValue())
           .collect(Collectors.joining(", "));
+    } else if (content instanceof HashSet<?>) {
+      contentStr = ((HashSet<?>) content).stream()
+          .map(Object::toString)
+          .collect(Collectors.joining(", "));
     } else {
-      countStr = count != null ? count.toString() : "null";
+      contentStr = content != null ? content.toString() : "null";
     }
 
-    return List.of(type, countStr);
+    return List.of(type, contentStr);
   }
 }
