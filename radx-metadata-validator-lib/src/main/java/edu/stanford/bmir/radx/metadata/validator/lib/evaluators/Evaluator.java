@@ -15,9 +15,11 @@ import java.util.function.Consumer;
 @Component
 public class Evaluator {
   private final CompletenessEvaluator completenessEvaluator;
+  private final ControlledTermsEvaluator controlledTermsEvaluator;
 
-  public Evaluator(CompletenessEvaluator completenessEvaluator) {
+  public Evaluator(CompletenessEvaluator completenessEvaluator, ControlledTermsEvaluator controlledTermsEvaluator) {
     this.completenessEvaluator = completenessEvaluator;
+    this.controlledTermsEvaluator = controlledTermsEvaluator;
   }
 
   public EvaluationReport evaluate(String templateContent, String instanceContent){
@@ -35,6 +37,7 @@ public class Evaluator {
     TemplateInstanceValuesReporter templateInstanceValuesReporter = new TemplateInstanceValuesReporter(templateInstanceArtifact);
 
     completenessEvaluator.evaluate(templateSchemaArtifact, templateInstanceValuesReporter, consumer);
+    controlledTermsEvaluator.evaluate(templateReporter, templateInstanceValuesReporter, consumer);
 
     return new EvaluationReport(results);
   }
