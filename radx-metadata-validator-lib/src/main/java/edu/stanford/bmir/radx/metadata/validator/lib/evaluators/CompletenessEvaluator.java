@@ -15,6 +15,7 @@ import static edu.stanford.bmir.radx.metadata.validator.lib.evaluators.Evaluatio
 @Component
 public class CompletenessEvaluator {
   private final AttributeValueValidationUtil attributeValueValidationUtil;
+  private final FieldsCollector fieldsCollector = new FieldsCollector();
 
 
   public CompletenessEvaluator(AttributeValueValidationUtil attributeValueValidationUtil) {
@@ -25,7 +26,7 @@ public class CompletenessEvaluator {
     HashSet<String> checkedFields = new HashSet<>();
 
     var templateReporter = new TemplateReporter(templateSchemaArtifact);
-    var fieldsCollector = new FieldsCollector();
+
     var values = templateInstanceValuesReporter.getValues();
     var attributeValueFields = templateInstanceValuesReporter.getAttributeValueFields();
     var allFields = fieldsCollector.getAllFields(templateSchemaArtifact);
@@ -57,7 +58,7 @@ public class CompletenessEvaluator {
       var normalizedPath = path.replaceAll("\\[\\d+\\]", "");
       var value = fieldEntry.getValue();
       var fieldConstraint = templateReporter.getValueConstraints(normalizedPath);
-      if(!checkedFields.contains(normalizedPath) && !isEmptyField(value)){
+      if(!checkedFields.contains(normalizedPath) && !fieldsCollector.isEmptyField(value)){
         if (isRequiredField(fieldConstraint)) {
           filledRequiredFieldCount++;
         } else if (isRecommendedField(normalizedPath) ) {
@@ -99,23 +100,11 @@ public class CompletenessEvaluator {
     var filledAvFields = new HashSet<String>();
     for(var avField: avFields){
       var fieldValus = avField.fieldValues();
-      if(!isEmptyField(fieldValus)){
+      if(!fieldsCollector.isEmptyField(fieldValus)){
         filledAvFields.add(avField.specificationPath());
       }
     }
     return filledAvFields.size();
-  }
-
-  private boolean isEmptyField(FieldValues fieldValues){
-    var jsonLdValue = fieldValues.jsonLdValue();
-    var jsonLdId = fieldValues.jsonLdId();
-    var jsonLdLabel = fieldValues.label();
-
-    boolean isEmptyId = jsonLdId.map(uri -> uri.toString().isEmpty()).orElse(true);
-    boolean isEmptyLabel = jsonLdLabel.map(String::isEmpty).orElse(true);
-    boolean isEmptyValue = jsonLdValue.map(String::isEmpty).orElse(true);
-
-    return isEmptyId && isEmptyLabel && isEmptyValue;
   }
 
   public Collection<String> getEmptyElements(Map<String, Integer> combinedFillingReport, TemplateSchemaArtifact templateSchemaArtifact){
