@@ -27,7 +27,7 @@ public class LinkEvaluator {
     }
 
     //todo radx-rad has publication-url
-    handler.accept(new EvaluationResult(ACCESSIBLE_URI_COUNT, accessibleUri));
+    handler.accept(new EvaluationResult(ACCESSIBLE_URI_COUNT, String.valueOf(accessibleUri)));
   }
 
   private boolean meetCriteria(FieldValues fieldValues, ValueConstraints valueConstraints){

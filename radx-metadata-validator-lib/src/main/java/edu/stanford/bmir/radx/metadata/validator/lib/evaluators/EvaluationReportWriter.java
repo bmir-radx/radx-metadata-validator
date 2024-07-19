@@ -6,10 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class EvaluationReportWriter {
@@ -36,22 +33,7 @@ public class EvaluationReportWriter {
   private static List<? extends Serializable> toCsvRecord(EvaluationResult r) {
     var type = r.getEvaluationConstant();
     var content = r.getContent();
-    String contentStr;
 
-    if (content instanceof Number) {
-      contentStr = content.toString();
-    } else if (content instanceof Map) {
-      contentStr = ((Map<?, ?>) content).entrySet().stream()
-          .map(e -> e.getKey() + "=" + e.getValue())
-          .collect(Collectors.joining(", "));
-    } else if (content instanceof HashSet<?>) {
-      contentStr = ((HashSet<?>) content).stream()
-          .map(Object::toString)
-          .collect(Collectors.joining(", "));
-    } else {
-      contentStr = content != null ? content.toString() : "null";
-    }
-
-    return List.of(type, contentStr);
+    return List.of(type, content);
   }
 }

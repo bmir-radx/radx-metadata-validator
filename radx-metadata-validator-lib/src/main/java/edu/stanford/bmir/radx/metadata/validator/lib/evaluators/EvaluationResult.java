@@ -2,9 +2,9 @@ package edu.stanford.bmir.radx.metadata.validator.lib.evaluators;
 
 public class EvaluationResult {
   private EvaluationConstant evaluationConstant;
-  private Object content;
+  private String content;
 
-  public EvaluationResult(EvaluationConstant evaluationConstant, Object content) {
+  public EvaluationResult(EvaluationConstant evaluationConstant, String content) {
     this.evaluationConstant = evaluationConstant;
     this.content = content;
   }
@@ -13,7 +13,7 @@ public class EvaluationResult {
     return evaluationConstant;
   }
 
-  public Object getContent() {
+  public String getContent() {
     return content;
   }
 }

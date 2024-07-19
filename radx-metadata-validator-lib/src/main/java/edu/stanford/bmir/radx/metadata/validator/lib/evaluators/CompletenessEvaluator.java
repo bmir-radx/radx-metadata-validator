@@ -48,6 +48,10 @@ public class CompletenessEvaluator {
         optionalFieldCount++;
       }
     }
+    //update optional filed count with attribute value fields
+    optionalFieldCount = optionalFieldCount + attributeValueFields.size();
+
+    int elementCount = templateSchemaArtifact.getElementNames().size();
 
     for (Map.Entry<String, FieldValues> fieldEntry : values.entrySet()) {
       var path = fieldEntry.getKey();
@@ -71,28 +75,35 @@ public class CompletenessEvaluator {
     int filledRecommendedFieldCount = filledRecommendedFields.size();
     int filledAvFieldsCount = filledAvFields(attributeValueFields);
     int filledOptionalFieldCount = filledOptionalFields.size() + filledAvFieldsCount;
+    int filledElementCount = filledElements.size();
 
     var requiredCompleteness = ((double)filledRequiredFieldCount/requiredFieldCount) * 100;
     var recommendedCompleteness = ((double)filledRecommendedFieldCount/recommendedFieldCount) * 100;
     var optionalCompleteness = ((double) filledOptionalFieldCount/ optionalFieldCount) * 100;
     var overallCompleteness = ((double) (filledRequiredFieldCount + filledRecommendedFieldCount + filledOptionalFieldCount)
         /(requiredFieldCount + recommendedFieldCount + optionalFieldCount)) * 100;
+    var elementCompleteness = ((double) filledElementCount / elementCount) * 100;
 
-    handler.accept(new EvaluationResult(REQUIRED_FIELD_COUNT, requiredFieldCount));
-    handler.accept(new EvaluationResult(RECOMMENDED_FIELD_COUNT, recommendedFieldCount));
-    handler.accept(new EvaluationResult(OPTIONAL_FIELD_COUNT, optionalFieldCount));
-    handler.accept(new EvaluationResult(FILLED_REQUIRED_FILEDS_COUNT, filledRequiredFieldCount));
-    handler.accept(new EvaluationResult(FILLED_RECOMMENDED_FIELDS_COUNT,filledRecommendedFieldCount));
-    handler.accept(new EvaluationResult(FILLED_OPTIONAL_FIELDS_COUNT, filledOptionalFieldCount));
-    handler.accept(new EvaluationResult(REQUIRED_FIELDS_COMPLETENESS, requiredCompleteness));
-    handler.accept(new EvaluationResult(RECOMMENDED_FIELDS_COMPLETENESS, recommendedCompleteness));
-    handler.accept(new EvaluationResult(OPTIONAL_FIELDS_COMPLETENESS, optionalCompleteness));
-    handler.accept(new EvaluationResult(OVERALL_COMPLETENESS, overallCompleteness));
-    handler.accept(new EvaluationResult(FILLED_REQUIRED_FIELDS, filledRequiredFields));
-    handler.accept(new EvaluationResult(FILLED_RECOMMENDED_FIELDS, filledRecommendedFields));
-    handler.accept(new EvaluationResult(FILLED_OPTIONAL_FIELDS, filledOptionalFields));
-    handler.accept(new EvaluationResult(FILLED_ELEMENTS, filledElements));
-    handler.accept(new EvaluationResult(FILLED_ELEMENTS_COUNT, filledElements.size()));
+    handler.accept(new EvaluationResult(TOTAL_REQUIRED_FIELD, String.valueOf(requiredFieldCount)));
+    handler.accept(new EvaluationResult(FILLED_REQUIRED_FIELDS_COUNT, String.valueOf(filledRequiredFieldCount)));
+    handler.accept(new EvaluationResult(FILLED_REQUIRED_FIELDS, filledRequiredFields.toString()));
+    handler.accept(new EvaluationResult(REQUIRED_FIELDS_COMPLETION_RATE, String.valueOf(requiredCompleteness)));
+
+    handler.accept(new EvaluationResult(TOTAL_RECOMMENDED_FIELD, String.valueOf(recommendedFieldCount)));
+    handler.accept(new EvaluationResult(FILLED_RECOMMENDED_FIELDS_COUNT,String.valueOf(filledRecommendedFieldCount)));
+    handler.accept(new EvaluationResult(FILLED_RECOMMENDED_FIELDS, filledRecommendedFields.toString()));
+    handler.accept(new EvaluationResult(RECOMMENDED_FIELDS_COMPLETION_RATE, String.valueOf(recommendedCompleteness)));
+
+    handler.accept(new EvaluationResult(TOTAL_OPTIONAL_FIELD, String.valueOf(optionalFieldCount)));
+    handler.accept(new EvaluationResult(FILLED_OPTIONAL_FIELDS_COUNT, String.valueOf(filledOptionalFieldCount)));
+    handler.accept(new EvaluationResult(FILLED_OPTIONAL_FIELDS, filledOptionalFields.toString()));
+    handler.accept(new EvaluationResult(OPTIONAL_FIELDS_COMPLETION_RATE, String.valueOf(optionalCompleteness)));
+
+    handler.accept(new EvaluationResult(OVERALL_COMPLETION_RATE, String.valueOf(overallCompleteness)));
+
+    handler.accept(new EvaluationResult(FILLED_ELEMENTS, filledElements.toString()));
+    handler.accept(new EvaluationResult(FILLED_ELEMENTS_COUNT, String.valueOf(filledElementCount)));
+    handler.accept(new EvaluationResult(ELEMENT_COMPLETION_RATE, String.valueOf(elementCompleteness)));
   }
 
   private boolean isRequiredField(Optional<ValueConstraints> valueConstraints){

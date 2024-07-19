@@ -23,7 +23,7 @@ public class EvaluateCommand implements Callable<Integer> {
   @Option(names = "--template", required = true, description = "Path to the JSON template file. This is optional. If it is not provided then the Radx Metadata Specification will be utilized by default.")
   private Path template;
 
-  @Option(names = "--instance", required = true, description = "Path to the JSON instance file that you want to validate.")
+  @Option(names = "--instance", required = true, description = "Path to the JSON instance file that you want to evaluate.")
   private Path instance;
 
   @Option(names = "--out", description = "Path to an output file where the evaluation report will be written. This is optional. If it is not provided then the report will be written to stdout.")

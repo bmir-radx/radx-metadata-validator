@@ -19,8 +19,8 @@ public class ControlledTermsEvaluator {
   public void evaluate(TemplateReporter templateReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<EvaluationResult> handler){
     //todo check it is a valid controlled term
     var values = valuesReporter.getValues();
-    var controlledTermCounts = new HashMap<String, Integer>();
-    int filledCtFields = 0;
+    var ctFrequency = new HashMap<String, Integer>();
+    int filledCtCounts = 0;
 
     for (Map.Entry<String, FieldValues> fieldEntry : values.entrySet()) {
       var path = fieldEntry.getKey();
@@ -28,15 +28,15 @@ public class ControlledTermsEvaluator {
       var valueConstraint = templateReporter.getValueConstraints(path);
 
       if(!fieldsCollector.isEmptyField(fieldValue) && valueConstraint.isPresent() && valueConstraint.get().isControlledTermValueConstraint()){
-        filledCtFields++;
+        filledCtCounts++;
         var prefLabel = fieldValue.label();
         if(prefLabel.isPresent() && !prefLabel.get().isEmpty()){
-          controlledTermCounts.merge(prefLabel.get(), 1, Integer::sum);
+          ctFrequency.merge(prefLabel.get(), 1, Integer::sum);
         }
       }
     }
 
-    handler.accept(new EvaluationResult(FILLED_CONTROLLED_TERMS_COUNT, filledCtFields));
-    handler.accept(new EvaluationResult(CONTROLLED_TERMS_FREQUENCY, controlledTermCounts));
+    handler.accept(new EvaluationResult(FILLED_CONTROLLED_TERMS_COUNT, String.valueOf(filledCtCounts)));
+    handler.accept(new EvaluationResult(CONTROLLED_TERMS_FREQUENCY, ctFrequency.toString()));
   }
 }
