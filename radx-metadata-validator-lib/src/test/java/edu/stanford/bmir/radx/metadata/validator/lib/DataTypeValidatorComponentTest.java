@@ -3,8 +3,7 @@ package edu.stanford.bmir.radx.metadata.validator.lib;
 import edu.stanford.bmir.radx.metadata.validator.lib.validators.DataTypeValidatorComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.metadatacenter.artifacts.model.core.FieldSchemaArtifact;
-import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
+import org.metadatacenter.artifacts.model.core.*;
 import org.metadatacenter.artifacts.model.core.fields.InputTimeFormat;
 import org.metadatacenter.artifacts.model.core.fields.TemporalGranularity;
 import org.metadatacenter.artifacts.model.core.fields.XsdNumericDatatype;
@@ -394,7 +393,7 @@ public class DataTypeValidatorComponentTest {
   void testValidateWithValidTextField(){
     String fieldName = "text field";
     String templateName = "My template";
-    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.textFieldBuilder()
+    FieldSchemaArtifact textFieldSchemaArtifact = TextField.builder()
         .withName(fieldName)
         .withRequiredValue(true)
         .withRegex("^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")
@@ -425,7 +424,7 @@ public class DataTypeValidatorComponentTest {
   void testValidateWithInvalidTextField(){
     String fieldName = "text field";
     String templateName = "My template";
-    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.textFieldBuilder()
+    FieldSchemaArtifact textFieldSchemaArtifact = TextField.builder()
         .withName(fieldName)
         .withRequiredValue(true)
         .withRegex("^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")
@@ -456,7 +455,7 @@ public class DataTypeValidatorComponentTest {
   void testValidateWithValidNumericField() throws URISyntaxException {
     String fieldName = "numeric field";
     String templateName = "My template";
-    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.numericFieldBuilder()
+    FieldSchemaArtifact textFieldSchemaArtifact = NumericField.builder()
         .withName(fieldName)
         .withRequiredValue(true)
         .withDecimalPlaces(2)
@@ -492,7 +491,7 @@ public class DataTypeValidatorComponentTest {
   void testValidateWithInvalidNumericField() throws URISyntaxException {
     String fieldName = "numeric field";
     String templateName = "My template";
-    FieldSchemaArtifact textFieldSchemaArtifact = FieldSchemaArtifact.numericFieldBuilder()
+    FieldSchemaArtifact textFieldSchemaArtifact = NumericField.builder()
         .withName(fieldName)
         .withRequiredValue(true)
         .withDecimalPlaces(2)
@@ -528,7 +527,7 @@ public class DataTypeValidatorComponentTest {
   void testValidateWithValidTemporalField() throws URISyntaxException {
     String fieldName = "Temporal field";
     String templateName = "My template";
-    FieldSchemaArtifact temporalFieldArtifact = FieldSchemaArtifact.temporalFieldBuilder()
+    FieldSchemaArtifact temporalFieldArtifact = TemporalField.builder()
         .withName(fieldName)
         .withRequiredValue(true)
         .withTemporalType(XsdTemporalDatatype.DATETIME)
@@ -564,7 +563,7 @@ public class DataTypeValidatorComponentTest {
   void testValidateWithInvalidTemporalField() throws URISyntaxException {
     String fieldName = "Temporal field";
     String templateName = "My template";
-    FieldSchemaArtifact temporalFieldArtifact = FieldSchemaArtifact.temporalFieldBuilder()
+    FieldSchemaArtifact temporalFieldArtifact = TemporalField.builder()
         .withName(fieldName)
         .withRequiredValue(true)
         .withTemporalType(XsdTemporalDatatype.DATETIME)
