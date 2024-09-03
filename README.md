@@ -8,12 +8,48 @@ Below is the workflow of RADx Metadata Validator:
 
 ![Workflow of RADx Metadata Validator](Workflow.png)
 
+### Input Specification
+The RADx Metadata Validator accepts the following command line arguments:
+
+- `template` (Required): The file path to the metadata template file.
+- `instance` (Required): The file path to the metadata instance file that needs to be validated.
+- `data` (Optional): CSV data file name described by the metadata instance.
+- `dict` (Optional): CSV data dictionary file name.
+- `sha256` (Optional): SHA256 digest value of data file.
+- `out` (Optional): The file path where the validation report will be saved. If not provided, the validation report will be printed out to the console.
+
+For example:
+
+```
+java -jar radx-metadata-validator-app-1.0.0.jar 
+--template validationFiles/RADxTemplate.json 
+--instance validationFiles/RADxInstance.json 
+--data COVID-19_Booster_Shot_June_2022_Responses.csv
+--dict COVID-19_Booster_Shot_June_2022_Responses--DICT.csv
+--sha256 ebff8d3da88b292622d3bfc36bdac4c4537ddc56cb07f344c5223d6b6f9cd011
+--out output.csv
+```
+**Data File Metadata Specification can be downloaded [here](https://github.com/bmir-radx/radx-metadata-validator/releases/download/v1.0.6/RADxMetadataSpecification.json
+)**
+
 ### Usage
+#### The validator can be executed through jar file.
+You can download the radx-metadata-validator-app jar file [here](https://github.com/bmir-radx/radx-metadata-validator/releases/download/v1.0.6/radx-metadata-validator-app-1.0.6.jar).
+
+Once downloaded, navigate to the folder where the jar file is located. Then, run the jar file using the following command:
+
+```bash
+java -jar radx-metadata-validator-app-1.0.6.jar 
+  --template validationFiles/RADxTemplate.json 
+  --instance validationFiles/RADxInstance.json 
+  --out output.csv
+```
+
 #### The validator can be executed through Maven's `exec:java` goal. 
 Follow the steps below to validate your metadata instances:
 1. **Navigate to the Application Directory**
 
-   First, navigate to the `radx-metadata-validator-app` directory within the `radx-metadata-validator` project folder:
+   First, clone the repo and navigate to the `radx-metadata-validator-app` directory within the `radx-metadata-validator` project folder:
 
    ```
    cd radx-metadata-validator-app
@@ -45,7 +81,7 @@ Add the following Maven dependency:
 <dependency>
     <groupId>edu.stanford.bmir.radx</groupId>
     <artifactId>radx-metadata-validator-lib</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 The Radx Metadata Validator Library can be used with Spring Boot by scanning components in the library:
@@ -97,29 +133,6 @@ public class Example {
     return new LiteralFieldValidators(map);
   }
 }
-```
-
-
-### Input Specification
-The RADx Metadata Validator accepts the following command line arguments:
-
-- `template` (Required): The file path to the metadata template file.
-- `instance` (Required): The file path to the metadata instance file that needs to be validated.
-- `data` (Optional): CSV data file name described by the metadata instance. 
-- `dict` (Optional): CSV data dictionary file name. 
-- `sha256` (Optional): SHA256 digest value of data file. 
-- `out` (Optional): The file path where the validation report will be saved. If not provided, the validation report will be printed out to the console.
-
-For example:
-
-```
-java -jar radx-metadata-validator-app-1.0.0.jar 
---template validationFiles/RADxTemplate.json 
---instance validationFiles/RADxInstance.json 
---data COVID-19_Booster_Shot_June_2022_Responses.csv
---dict COVID-19_Booster_Shot_June_2022_Responses--DICT.csv
---sha256 ebff8d3da88b292622d3bfc36bdac4c4537ddc56cb07f344c5223d6b6f9cd011
---out output.csv
 ```
 
 ### JSON File Validation
