@@ -16,7 +16,7 @@ The RADx Metadata Validator accepts the following command line arguments:
 - `data` (Optional): CSV data file name described by the metadata instance.
 - `dict` (Optional): CSV data dictionary file name.
 - `sha256` (Optional): SHA256 digest value of data file.
-- `out` (Optional): The file path where the validation report will be saved. If not provided, the validation report will be printed out to the console.
+- `out` (Optional): The file path where the validation report will be saved in CSV format. If not provided, the validation report will be printed to the console.
 
 For example:
 
