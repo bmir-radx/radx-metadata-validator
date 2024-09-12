@@ -14,11 +14,11 @@ public class FieldsCollector {
   }
 
   public List<String> getFieldsFromParentArtifact(ParentSchemaArtifact parentSchemaArtifact, String parentElementName){
-    var fields = parentSchemaArtifact.getFieldNames();
+    var fields = parentSchemaArtifact.getFieldKeys();
     var fieldPath = fields.stream()
         .map(p-> parentElementName + "/" + p)
         .collect(Collectors.toCollection(ArrayList::new));
-    var childElements = parentSchemaArtifact.getElementNames();
+    var childElements = parentSchemaArtifact.getElementKeys();
     for(var childElement: childElements){
       var childElementSchema = parentSchemaArtifact.getElementSchemaArtifact(childElement);
       fieldPath.addAll(getFieldsFromParentArtifact(childElementSchema, "/" + childElement));
