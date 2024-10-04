@@ -53,6 +53,7 @@ public class Validator {
       var instanceNode = JsonLoader.loadJson(instanceContent, "Instance");
 
       //validate the template is CEDAR model template
+      //TODO: patch template
       cedarSchemaValidatorComponent.validate(templateNode, consumer);
 
       if(passValidation(results)){
@@ -73,7 +74,7 @@ public class Validator {
 
         if(passValidation(results)){
           //validate required fields
-          requiredFieldValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);
+          requiredFieldValidatorComponent.validate(templateSchemaArtifact, templateReporter, templateInstanceValuesReporter, consumer);
 
           //validate data type
           dataTypeValidatorComponent.validate(templateReporter, templateInstanceValuesReporter, consumer);

@@ -3,9 +3,7 @@ package edu.stanford.bmir.radx.metadata.validator.lib;
 import edu.stanford.bmir.radx.metadata.validator.lib.validators.CardinalityValidatorComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.metadatacenter.artifacts.model.core.ElementSchemaArtifact;
-import org.metadatacenter.artifacts.model.core.FieldSchemaArtifact;
-import org.metadatacenter.artifacts.model.core.TemplateSchemaArtifact;
+import org.metadatacenter.artifacts.model.core.*;
 import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -41,13 +39,13 @@ public class CardinalityValidatorComponentTest {
     String elementName = "Text element";
     String templateName = "My template";
 
-    FieldSchemaArtifact textFieldArtifact1 = FieldSchemaArtifact.textFieldBuilder()
+    FieldSchemaArtifact textFieldArtifact1 = TextField.builder()
         .withName(fieldName1)
         .withIsMultiple(true)
         .withMinItems(1)
         .build();
 
-    FieldSchemaArtifact textFieldArtifact2 = FieldSchemaArtifact.textFieldBuilder()
+    FieldSchemaArtifact textFieldArtifact2 = TextField.builder()
         .withName(fieldName2)
         .withIsMultiple(true)
         .withMinItems(0)
@@ -92,13 +90,13 @@ public class CardinalityValidatorComponentTest {
     String elementName = "Text element";
     String templateName = "My template";
 
-    FieldSchemaArtifact textFieldArtifact1 = FieldSchemaArtifact.textFieldBuilder()
+    FieldSchemaArtifact textFieldArtifact1 = TextField.builder()
         .withName(fieldName1)
         .withIsMultiple(true)
         .withMinItems(2)
         .build();
 
-    FieldSchemaArtifact textFieldArtifact2 = FieldSchemaArtifact.textFieldBuilder()
+    FieldSchemaArtifact textFieldArtifact2 = TextField.builder()
         .withName(fieldName2)
         .withIsMultiple(true)
         .withMinItems(0)
