@@ -122,10 +122,9 @@ public class TerminologyServerHandler {
     Map<String, Object> resultsMap;
     try {
       Map<String, Object> vcMap = new HashMap<>();
-//      vcMap.put("valueConstraints", valueConstraints);
+      vcMap.put("valueConstraints", valueConstraints);
       Map<String, Object> payloadMap = new HashMap<>();
-//      payloadMap.put("parameterObject", vcMap);
-      payloadMap.put("valueConstraints", valueConstraints);
+      payloadMap.put("parameterObject", vcMap);
       payloadMap.put("page", page);
       payloadMap.put("pageSize", pageSize);
       String payload = mapper.writeValueAsString(payloadMap);
