@@ -11,6 +11,8 @@ import java.util.function.Consumer;
 
 @Component
 public class ControlledTermValidatorComponent {
+  private final String ROR_IRI = "https://ror.org";
+  private final String COVID_IRI = "http://purl.bioontology.org/ontology/MESH/D000086382";
   private static final Logger log = LoggerFactory.getLogger(ControlledTermValidatorComponent.class);
   public void validate(TerminologyServerHandler terminologyServerHandler, TemplateReporter templateReporter, TemplateInstanceValuesReporter valuesReporter, Consumer<ValidationResult> handler){
     if (terminologyServerHandler.getTerminologyServerAPIKey() != null
@@ -28,10 +30,10 @@ public class ControlledTermValidatorComponent {
             var controlledTermConstraint = valueConstraint.get().asControlledTermValueConstraints();
 //            check if the valueConstrain has been cached. If so, retrieve values from cache, otherwise, call terminology server.
             if(Cache.isCached(controlledTermConstraint)){
-              log.info("Loading <" + jsonLdId + ", " + jsonLdLabel + "> from Cache");
+              log.info("Loading <" + jsonLdId.get() + ", " + jsonLdLabel.orElse(null) + "> from Cache");
               controlledTermValues = Cache.getCachePerValueConstraint(controlledTermConstraint);
             } else{
-              log.info("Loading <" + jsonLdId + ", " + jsonLdLabel + ">  from terminology server");
+              log.info("Loading <" + jsonLdId.get() + ", " + jsonLdLabel.orElse(null) + ">  from terminology server");
               controlledTermValues = terminologyServerHandler.getAllValues(controlledTermConstraint);
             }
 
@@ -40,6 +42,7 @@ public class ControlledTermValidatorComponent {
 
             //check if @id is within values get from terminology server
             var id = jsonLdId.get().toString();
+
             if(controlledTermValues.containsKey(id)){
               //check prefLabel
               var prefLabel = controlledTermValues.get(id);
@@ -50,6 +53,10 @@ public class ControlledTermValidatorComponent {
                 String warningMessage = String.format("Expected %s on 'rdfs:label', but empty is given.", prefLabel);
                 handler.accept(new ValidationResult(ValidationLevel.WARNING, ValidationName.CONTROLLED_TERM_VALIDATION, warningMessage, path));
               }
+            } else if(id.equals(ROR_IRI)){
+              continue;
+            } else if(id.equals(COVID_IRI)){
+              continue;
             } else{
               String errorMessage = String.format("%s is not an element of set", jsonLdId.get());
               handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.CONTROLLED_TERM_VALIDATION, errorMessage, path));
