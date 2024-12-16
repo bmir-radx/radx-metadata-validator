@@ -53,9 +53,7 @@ public class ControlledTermValidatorComponent {
                 String warningMessage = String.format("Expected %s on 'rdfs:label', but empty is given.", prefLabel);
                 handler.accept(new ValidationResult(ValidationLevel.WARNING, ValidationName.CONTROLLED_TERM_VALIDATION, warningMessage, path));
               }
-            } else if(id.equals(ROR_IRI)){
-              continue;
-            } else if(id.equals(COVID_IRI)){
+            } else if(id.equals(ROR_IRI) || id.equals(COVID_IRI)){
               continue;
             } else{
               String errorMessage = String.format("%s is not an element of set", jsonLdId.get());
