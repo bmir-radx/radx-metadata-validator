@@ -110,7 +110,6 @@ public class RequiredFieldValidatorComponentTest {
 
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
-
     String fieldPath = "/" + textFieldName;
     String textFieldValue = "text value";
 
@@ -329,7 +328,6 @@ public class RequiredFieldValidatorComponentTest {
 
     var valueConstraintsReporter = new TemplateReporter(templateSchemaArtifact);
 
-
     String fieldPath = "/" + textFieldName1;
     String textFieldValue = "text value";
 
@@ -342,6 +340,90 @@ public class RequiredFieldValidatorComponentTest {
 
     requiredFieldValidatorComponent.validate(templateSchemaArtifact, valueConstraintsReporter, valuesReporter, handler);
 
+    assertEquals(1, results.size());
+  }
+
+  // =========================
+  // NEW TESTS FOR PARENT-AWARE REQUIRED LOGIC
+  // =========================
+
+  @Test
+  void testRequiredChildSkippedWhenParentAbsent() {
+    // Required child path is "/Parent/Child"; parent ("/Parent") is not present in instance.
+    String templateName = "My template";
+    FieldSchemaArtifact childRequired = TextField.builder()
+        .withName("Parent/Child")           // path used by TemplateReporter → "/Parent/Child"
+        .withRequiredValue(true)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(childRequired)
+        .build();
+
+    var reporter = new TemplateReporter(templateSchemaArtifact);
+
+    Map<String, FieldValues> values = new HashMap<>();
+    // NOTE: No "/Parent" and no "/Parent/Child" provided → parent ABSENT, child ABSENT
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, reporter, valuesReporter, handler);
+
+    // With the new logic, missing required child is SKIPPED because the parent is absent.
+    assertEquals(0, results.size());
+  }
+
+  @Test
+  void testRequiredChildErrorsWhenParentPresentButChildMissing() {
+    String templateName = "My template";
+    FieldSchemaArtifact childRequired = TextField.builder()
+        .withName("Parent/Child")
+        .withRequiredValue(true)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(childRequired)
+        .build();
+
+    var reporter = new TemplateReporter(templateSchemaArtifact);
+
+    Map<String, FieldValues> values = new HashMap<>();
+    // Parent present (as an empty container marker), child missing
+    values.put("/Parent", new FieldValues(List.of(), Optional.empty(), Optional.empty(), Optional.empty()));
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, reporter, valuesReporter, handler);
+
+    // Expect one error for the missing required child since parent exists.
+    assertEquals(1, results.size());
+  }
+
+  @Test
+  void testRequiredChildErrorsWhenParentPresentAndChildEmpty() {
+    String templateName = "My template";
+    FieldSchemaArtifact childRequired = TextField.builder()
+        .withName("Parent/Child")
+        .withRequiredValue(true)
+        .build();
+
+    TemplateSchemaArtifact templateSchemaArtifact = TemplateSchemaArtifact.builder()
+        .withName(templateName)
+        .withFieldSchema(childRequired)
+        .build();
+
+    var reporter = new TemplateReporter(templateSchemaArtifact);
+
+    Map<String, FieldValues> values = new HashMap<>();
+    // Parent present
+    values.put("/Parent", new FieldValues(List.of(), Optional.empty(), Optional.empty(), Optional.empty()));
+    // Child present but with empty @value
+    values.put("/Parent/Child", new FieldValues(List.of(), Optional.empty(), Optional.of(""), Optional.empty()));
+    when(valuesReporter.getValues()).thenReturn(values);
+
+    requiredFieldValidatorComponent.validate(templateSchemaArtifact, reporter, valuesReporter, handler);
+
+    // Expect one error for empty required literal value (@value == "")
     assertEquals(1, results.size());
   }
 }
