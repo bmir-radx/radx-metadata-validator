@@ -19,21 +19,14 @@ public class RequiredFieldValidatorComponent {
 
     //literate values report and check filled required fields.
     var checkedRequiredFields = new HashSet<String>();
-    var presentAncestors = new HashSet<String>(); // ADDED: tracks present element paths (including the path itself)
     var values = valuesReporter.getValues();
+    var elements = valuesReporter.getElementCardinalities();
+
     //Iterate the valuesReporter
     for (Map.Entry<String, FieldValues> fieldEntry : values.entrySet()) {
       var normalizedPath = normalizePath(fieldEntry.getKey());
       checkedRequiredFields.add(normalizedPath);
 
-      // ADDED: mark the path itself and all its parents as "present"
-      String p = normalizedPath;
-      while (p != null && !p.isEmpty()) {
-        presentAncestors.add(p);
-        int idx = p.lastIndexOf('/');
-        if (idx <= 0) break;
-        p = p.substring(0, idx);
-      }
       validateSingleField(fieldEntry.getKey(), fieldEntry.getValue(), templateReporter, handler);
     }
 
@@ -43,7 +36,7 @@ public class RequiredFieldValidatorComponent {
       if (!checkedRequiredFields.contains(fieldPath)) {
         int j = fieldPath.lastIndexOf('/');
         String parentPath = (j > 0) ? fieldPath.substring(0, j) : null; // inline parentOf
-        if (parentPath != null && presentAncestors.contains(parentPath)) {
+        if (elements.get(parentPath) != null) {
           String errorMessage = "Missing required value at " + fieldPath;
           handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, errorMessage, fieldPath));
         }
