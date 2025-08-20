@@ -75,4 +75,14 @@ public class ValidationResult {
   public int hashCode() {
     return Objects.hash(validationLevel, validationName, message, pointer);
   }
+
+  @Override
+  public String toString() {
+    return "ValidationResult{" +
+           "validationLevel=" + validationLevel +
+           ", validationName=" + validationName +
+           ", message='" + message + '\'' +
+           ", pointer='" + pointer + '\'' +
+           '}';
+  }
 }
