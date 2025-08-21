@@ -20,11 +20,11 @@ public class RequiredFieldValidatorComponent {
     //literate values report and check filled required fields.
     var checkedRequiredFields = new HashSet<String>();
     var values = valuesReporter.getValues();
-    var elements = valuesReporter.getElementCardinalities();
+    var elements = valuesReporter.getElementCardinalities(); // Map of element path → instance count to detect parent presence
 
     //Iterate the valuesReporter
     for (Map.Entry<String, FieldValues> fieldEntry : values.entrySet()) {
-      var normalizedPath = normalizePath(fieldEntry.getKey());
+      var normalizedPath = normalizePath(fieldEntry.getKey()); // Normalize the path (strip [indexes]) and mark this field as seen in the instance
       checkedRequiredFields.add(normalizedPath);
 
       validateSingleField(fieldEntry.getKey(), fieldEntry.getValue(), templateReporter, handler);
