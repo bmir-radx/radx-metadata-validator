@@ -8,7 +8,7 @@ import org.metadatacenter.artifacts.model.core.*;
 import org.metadatacenter.artifacts.model.visitors.TemplateReporter;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.junit.jupiter.api.TestInfo;
+
 
 import java.net.URI;
 import java.util.function.Consumer;
@@ -64,18 +64,18 @@ public class ElementFieldTest {
     }
 
     @Test
-    public void shouldPassCheckWithNoElementInstance(TestInfo testInfo) {
+    public void shouldPassCheckWithNoElementInstance() {
         var instance = TemplateInstanceArtifact.builder()
                 .withIsBasedOn(TEMPLATE_URI)
                 .build();
         var valuesReporter = new TemplateInstanceValuesReporter(instance);
         validator.validate(template, templateReporter, valuesReporter, validationResultHandler);
         verify(validationResultHandler, never()).accept(any());
-        System.out.println("✅ PASS: " + testInfo.getDisplayName());
+
     }
 
     @Test
-    public void shouldPassCheckWithElementInstanceAndFieldInstance(TestInfo testInfo) {
+    public void shouldPassCheckWithElementInstanceAndFieldInstance() {
         var fieldInstance = new TextFieldInstance.TextFieldInstanceBuilder()
                 .withValue("John")
                 .build();
@@ -90,11 +90,11 @@ public class ElementFieldTest {
         var valuesReporter = new TemplateInstanceValuesReporter(templateInstance);
         validator.validate(template, templateReporter, valuesReporter, validationResultHandler);
         verify(validationResultHandler, never()).accept(any());
-        System.out.println("✅ PASS: " + testInfo.getDisplayName());
+        
     }
 
     @Test
-    public void shouldFailCheckWithElementInstanceAndNoFieldInstance(TestInfo testInfo) {
+    public void shouldFailCheckWithElementInstanceAndNoFieldInstance() {
         var elementInstance = ElementInstanceArtifact.builder()
                 .withName(ELEMENT_NAME)
                 .build();
@@ -108,7 +108,7 @@ public class ElementFieldTest {
             return validationResult.validationLevel().equals(ValidationLevel.ERROR)
                     && validationResult.pointer().equals("/" + ELEMENT_NAME + "/" + FIELD_NAME);
         }));
-        System.out.println("✅ PASS: " + testInfo.getDisplayName());
+        
     }
 
 }
