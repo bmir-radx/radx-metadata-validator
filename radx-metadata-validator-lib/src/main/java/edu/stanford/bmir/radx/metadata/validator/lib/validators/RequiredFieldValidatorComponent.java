@@ -35,8 +35,8 @@ public class RequiredFieldValidatorComponent {
     for (var fieldPath : requiredFields) {
       if (!checkedRequiredFields.contains(fieldPath)) {
         int j = fieldPath.lastIndexOf('/');
-        String parentPath = (j > 0) ? fieldPath.substring(0, j) : null; // inline parentOf
-        if (elements.get(parentPath) != null) {
+        String parentPath = (j > 0) ? fieldPath.substring(1, j) : null; // inline parentOf
+        if (elements.get("/" + parentPath) != null || templateSchemaArtifact.elementSchemas().get(parentPath).minItems().get() > 0) {
           String errorMessage = "Missing required value at " + fieldPath;
           handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, errorMessage, fieldPath));
         }
