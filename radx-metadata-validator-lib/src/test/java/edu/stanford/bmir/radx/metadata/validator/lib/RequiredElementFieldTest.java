@@ -141,7 +141,7 @@ public class RequiredElementFieldTest {
     }
 
     @Test
-    public void shouldPassCheckWithElementInstanceAndMultiNoFieldInstance() {
+    public void shouldFailCheckWithElementInstanceAndMultiNoFieldInstance() {
         var fieldInstance1 = new TextFieldInstance.TextFieldInstanceBuilder()
                 .withValue("John")
                 .build();
