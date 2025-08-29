@@ -1,0 +1,2 @@
+LEVEL,PATH,VALIDATION TYPE,MESSAGE
+ERROR,,CEDAR_MODEL_VALIDATION,Template is invalid. object has missing required properties (['pages'])

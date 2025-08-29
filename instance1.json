@@ -1,0 +1,63 @@
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "pav": "http://purl.org/pav/",
+    "schema": "http://schema.org/",
+    "oslc": "http://open-services.net/ns/core#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "rdfs:label": {
+      "@type": "xsd:string"
+    },
+    "schema:isBasedOn": {
+      "@type": "@id"
+    },
+    "schema:name": {
+      "@type": "xsd:string"
+    },
+    "schema:description": {
+      "@type": "xsd:string"
+    },
+    "pav:derivedFrom": {
+      "@type": "@id"
+    },
+    "pav:createdOn": {
+      "@type": "xsd:dateTime"
+    },
+    "pav:createdBy": {
+      "@type": "@id"
+    },
+    "pav:lastUpdatedOn": {
+      "@type": "xsd:dateTime"
+    },
+    "oslc:modifiedBy": {
+      "@type": "@id"
+    },
+    "skos:notation": {
+      "@type": "xsd:string"
+    },
+    "element draft test": "https://schema.metadatacenter.org/properties/c4aff2f8-633a-4f65-a94d-f7ad22e4ed54",
+    "draft 2": "https://schema.metadatacenter.org/properties/845073b6-7aa7-42ba-8103-baa9e69fc114",
+    "draft 3": "https://schema.metadatacenter.org/properties/802a5146-007d-4a6c-a911-85c21f4a2ca9"
+  },
+  "element draft test": [
+    {
+      "@context": {},
+      "@id": "https://repo.metadatacenter.org/template-element-instances/143563ad-a1f5-401c-8165-79b5f118fe3d"
+    }
+  ],
+  "draft 2": {
+    "@value": "linked data file name"
+  },
+  "draft 3": {
+    "@value": "common variables"
+  },
+  "schema:isBasedOn": "https://repo.metadatacenter.org/templates/7ef69374-3bb9-4a51-ab4c-65b1f6508bef",
+  "schema:name": "template test 3 metadata",
+  "schema:description": "",
+  "pav:createdOn": "2025-08-12T09:48:23-07:00",
+  "pav:createdBy": "https://metadatacenter.org/users/61c56da9-82e5-4545-b5d1-9b954efcda00",
+  "pav:lastUpdatedOn": "2025-08-12T09:48:23-07:00",
+  "oslc:modifiedBy": "https://metadatacenter.org/users/61c56da9-82e5-4545-b5d1-9b954efcda00",
+  "@id": "https://repo.metadatacenter.org/template-instances/51eaf5ad-8563-4b30-86f2-44b3123abb76"
+}

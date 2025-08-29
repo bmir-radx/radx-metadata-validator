@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import java.net.URI;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -18,7 +19,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ElementFieldTest {
+public class RequiredElementFieldTest {
 
     public static final String FIELD_NAME = "Person first name";
 
@@ -49,7 +50,7 @@ public class ElementFieldTest {
 
         var element = ElementSchemaArtifact.builder()
                 .withName(ELEMENT_NAME)
-                .withMinItems(0)
+                .withMinItems(1)
                 .withFieldSchema(field)
                 .build();
 
@@ -64,13 +65,16 @@ public class ElementFieldTest {
     }
 
     @Test
-    public void shouldPassCheckWithNoElementInstance() {
+    public void shouldFailCheckWithNoElementInstance() {
         var instance = TemplateInstanceArtifact.builder()
                 .withIsBasedOn(TEMPLATE_URI)
                 .build();
         var valuesReporter = new TemplateInstanceValuesReporter(instance);
         validator.validate(template, templateReporter, valuesReporter, validationResultHandler);
-        verify(validationResultHandler, never()).accept(any());
+        verify(validationResultHandler, times(1)).accept(argThat(validationResult -> {
+            return validationResult.validationLevel().equals(ValidationLevel.ERROR)
+                    && validationResult.pointer().equals("/" + ELEMENT_NAME + "/" + FIELD_NAME);
+        }));
 
     }
 
@@ -90,13 +94,16 @@ public class ElementFieldTest {
         var valuesReporter = new TemplateInstanceValuesReporter(templateInstance);
         validator.validate(template, templateReporter, valuesReporter, validationResultHandler);
         verify(validationResultHandler, never()).accept(any());
-        
+
     }
 
     @Test
     public void shouldFailCheckWithElementInstanceAndNoFieldInstance() {
+        var fieldInstance = new TextFieldInstance.TextFieldInstanceBuilder()
+                .build();
         var elementInstance = ElementInstanceArtifact.builder()
                 .withName(ELEMENT_NAME)
+                .withSingleInstanceFieldInstance(FIELD_NAME, fieldInstance)
                 .build();
         var templateInstance = TemplateInstanceArtifact.builder()
                 .withIsBasedOn(TEMPLATE_URI)
@@ -108,7 +115,52 @@ public class ElementFieldTest {
             return validationResult.validationLevel().equals(ValidationLevel.ERROR)
                     && validationResult.pointer().equals("/" + ELEMENT_NAME + "/" + FIELD_NAME);
         }));
-        
+
     }
 
+    @Test
+    public void shouldPassCheckWithElementInstanceAndMultiFieldInstance() {
+        var fieldInstance1 = new TextFieldInstance.TextFieldInstanceBuilder()
+                .withValue("John")
+                .build();
+        var fieldInstance2 = new TextFieldInstance.TextFieldInstanceBuilder()
+                .withValue("Jane")
+                .build();
+        var elementInstance = ElementInstanceArtifact.builder()
+                .withName(ELEMENT_NAME)
+                .withMultiInstanceFieldInstances(FIELD_NAME, List.of(fieldInstance1, fieldInstance2))
+                .build();
+        var templateInstance = TemplateInstanceArtifact.builder()
+                .withIsBasedOn(TEMPLATE_URI)
+                .withSingleInstanceElementInstance(ELEMENT_NAME, elementInstance)
+                .build();
+        var valuesReporter = new TemplateInstanceValuesReporter(templateInstance);
+        validator.validate(template, templateReporter, valuesReporter, validationResultHandler);
+        verify(validationResultHandler, never()).accept(any());
+
+    }
+
+    @Test
+    public void shouldFailCheckWithElementInstanceAndMultiNoFieldInstance() {
+        var fieldInstance1 = new TextFieldInstance.TextFieldInstanceBuilder()
+                .withValue("John")
+                .build();
+        var fieldInstance2 = new TextFieldInstance.TextFieldInstanceBuilder()
+                .build();
+        var elementInstance = ElementInstanceArtifact.builder()
+                .withName(ELEMENT_NAME)
+                .withMultiInstanceFieldInstances(FIELD_NAME, List.of(fieldInstance1, fieldInstance2)) // Index 0 is John, Index 1 is missing
+                .build();
+        var templateInstance = TemplateInstanceArtifact.builder()
+                .withIsBasedOn(TEMPLATE_URI)
+                .withSingleInstanceElementInstance(ELEMENT_NAME, elementInstance)
+                .build();
+        var valuesReporter = new TemplateInstanceValuesReporter(templateInstance);
+        validator.validate(template, templateReporter, valuesReporter, validationResultHandler);
+        verify(validationResultHandler, times(1)).accept(argThat(validationResult -> {
+            return validationResult.validationLevel().equals(ValidationLevel.ERROR)
+                    && validationResult.pointer().equals("/" + ELEMENT_NAME + "/" + FIELD_NAME + "[1]");
+        }));
+
+    }
 }

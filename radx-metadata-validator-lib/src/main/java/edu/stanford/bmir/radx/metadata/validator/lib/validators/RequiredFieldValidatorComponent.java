@@ -20,17 +20,26 @@ public class RequiredFieldValidatorComponent {
     //literate values report and check filled required fields.
     var checkedRequiredFields = new HashSet<String>();
     var values = valuesReporter.getValues();
+    var elements = valuesReporter.getElementCardinalities(); // Map of element path → instance count to detect parent presence
+
     //Iterate the valuesReporter
     for (Map.Entry<String, FieldValues> fieldEntry : values.entrySet()) {
-      checkedRequiredFields.add(normalizePath(fieldEntry.getKey()));
+      var normalizedPath = normalizePath(fieldEntry.getKey()); // Normalize the path (strip [indexes]) and mark this field as seen in the instance
+      checkedRequiredFields.add(normalizedPath);
+
       validateSingleField(fieldEntry.getKey(), fieldEntry.getValue(), templateReporter, handler);
     }
 
     //add error message to unfilled required fields.
-    for(var fieldPath: requiredFields){
-      if(!checkedRequiredFields.contains(fieldPath)){
-        String errorMessage = "Missing required value at " + fieldPath;
-        handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, errorMessage, fieldPath));
+    // BUT ONLY if their parent element is present in the instance.
+    for (var fieldPath : requiredFields) {
+      if (!checkedRequiredFields.contains(fieldPath)) {
+        int j = fieldPath.lastIndexOf('/');
+        String parentPath = (j > 0) ? fieldPath.substring(1, j) : null; // inline parentOf
+        if (elements.get("/" + parentPath) != null || templateSchemaArtifact.elementSchemas().get(parentPath).minItems().get() > 0) {
+          String errorMessage = "Missing required value at " + fieldPath;
+          handler.accept(new ValidationResult(ValidationLevel.ERROR, ValidationName.REQUIREMENT_VALIDATION, errorMessage, fieldPath));
+        }
       }
     }
   }
